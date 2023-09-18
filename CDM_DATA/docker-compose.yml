@@ -1,0 +1,44 @@
+version: '3.5'
+
+services:
+
+  i2b2-etl:
+    image: i2b2-etl:latest
+    build: ./
+    container_name: i2b2-etl
+    environment:
+      - ACCOUNT=${ACCOUNT}
+      - USERNAME=${USERNAME}
+      - PASSWORD=${PASSWORD}
+      - WAREHOUSE=${WAREHOUSE}
+      - ROLE=${ROLE}
+      - JDBC_URL=${JDBC_URL}
+    
+      - CDM_DB=${CDM_DB}
+      - CDM_VERSION=${CDM_VERSION}
+      - INTERMEDIATE_DB=${INTERMEDIATE_DB}
+      - TARGET_DB=${TARGET_DB}
+      - TARGET_SCHEMA=${TARGET_SCHEMA}
+
+      - DEATH_TABLE=${DEATH_TABLE}
+      - PATIENT_TABLE=${PATIENT_TABLE}
+      - PROVIDER_TABLE=${PROVIDER_TABLE}
+      - VISIT_TABLE=${VISIT_TABLE}
+
+      - DIAGNOSIS_TABLE=${DIAGNOSIS_TABLE}
+      - LAB_TABLE=${LAB_TABLE}
+      - OBS_CLIN_TABLE=${OBS_CLIN_TABLE}
+      - MEDICATION_TABLE=${MEDICATION_TABLE}
+      - PROCEDURES_TABLE=${PROCEDURES_TABLE}
+      - VITAL_TABLE=${VITAL_TABLE}
+
+      - PATIENT_CROSSWALK=${PATIENT_CROSSWALK}
+      - ENCOUNTER_CROSSWALK=${ENCOUNTER_CROSSWALK}
+
+      - DATABASE=${TARGET_DB}
+    networks:
+      - i2b2-etl
+      
+networks:
+  i2b2-etl:
+    name: i2b2-etl

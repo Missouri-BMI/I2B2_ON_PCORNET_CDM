@@ -1,0 +1,1 @@
+execute immediate 'call run_on_all_fact()';
