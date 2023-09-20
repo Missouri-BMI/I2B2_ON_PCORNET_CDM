@@ -1,6 +1,6 @@
 # Use the CentOS 7 base image
 FROM centos/python-38-centos7
-USER root
+
 
 # Install Snowflake Connector
 RUN pip install "snowflake-connector-python[pandas]"

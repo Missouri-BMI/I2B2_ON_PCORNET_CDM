@@ -22,26 +22,25 @@
 	<target name="perform_etl" depends="init">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="abort" autocommit="true">
 			<!-- init-->
-			<transaction src="./SCRIPTS/init.sql" />
+			<transaction src="./SCRIPTS/OTHER/${db.project}/init.sql" />
 			<!-- Dimensions-->
-			<transaction src="./SCRIPTS/DIMENSION_TABLES/patient_dimension.sql" />
-			<transaction src="./SCRIPTS/DIMENSION_TABLES/provider_dimension.sql" />
-			<transaction src="./SCRIPTS/DIMENSION_TABLES/visit_dimension.sql" />
+			<transaction src="./SCRIPTS/DIMENSION_TABLES/${db.project}/patient_dimension.sql" />
+			<transaction src="./SCRIPTS/DIMENSION_TABLES/${db.project}/provider_dimension.sql" />
+			<transaction src="./SCRIPTS/DIMENSION_TABLES/${db.project}/visit_dimension.sql" />
 			<!-- Facts-->
-			<transaction src="./SCRIPTS/FACT_TABLES/observation_fact.sql" />
-			<transaction src="./SCRIPTS/FACT_TABLES/demographic_fact.sql" />
-			<transaction src="./SCRIPTS/FACT_TABLES/visit_fact.sql" />
-			<transaction src="./SCRIPTS/FACT_TABLES/diagnosis_fact.sql" />
-			<transaction src="./SCRIPTS/FACT_TABLES/procedure_fact.sql" />
-			<transaction src="./SCRIPTS/FACT_TABLES/lab_fact.sql" />
-			<transaction src="./SCRIPTS/FACT_TABLES/medication_fact.sql" />
-			<transaction src="./SCRIPTS/FACT_TABLES/covid_fact.sql" />
-			<transaction src="./SCRIPTS/FACT_TABLES/vital_fact.sql" />
-			<transaction src="./SCRIPTS/FACT_TABLES/sdoh_fact.sql" />
-			<!-- warning remove if gpc-->
-			<transaction src="./SCRIPTS/FACT_TABLES/obsclin_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/observation_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/demographic_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/visit_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/diagnosis_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/procedure_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/lab_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/medication_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/covid_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/vital_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/sdoh_fact.sql" />
+			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/obsclin_fact.sql" />
 			<!-- TARGET-->
-			<transaction src="./SCRIPTS/data-migration.sql" />
+			<transaction src="./SCRIPTS/OTHER/${db.project}/data-migration.sql" />
 		</sql>
 	</target>
 </project>

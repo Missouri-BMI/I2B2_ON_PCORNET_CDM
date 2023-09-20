@@ -9,10 +9,7 @@ select
     case 
         when px_type = '10' then concat('ICD10PCS:',px)
         when px_type = '09' then concat('ICD9PROC:',px)
-        --gpc
-        -- when px_type = 'CH' then concat('CPT4',':', px)
-        --MU
-        when px_type = 'CH' then concat(raw_px_type,':', px)
+        when px_type = 'CH' then concat('CPT4',':', px)
         else concat(px_type,':',px)
     end as I2B2_CONCEPT_CD,
     COALESCE(fact.PROVIDERID, '-1') as I2B2_PROVIDER_ID,

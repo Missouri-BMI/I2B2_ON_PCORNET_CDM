@@ -72,8 +72,3 @@ select * from DEID_COVID_FACT;
 -- sdoh fact
 create or replace table identifier($SDOH_FACT) as
 select * from DEID_SDOH_FACT;
-
--- --warning remove if  gpc
--- obsclin fact
-create or replace table identifier($OBSCLIN_FACT) as
-select * from DEID_OBSCLIN_FACT;

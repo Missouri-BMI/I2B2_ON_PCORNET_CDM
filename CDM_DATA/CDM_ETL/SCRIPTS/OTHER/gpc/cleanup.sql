@@ -1,7 +1,7 @@
 /* rename project */
 
 set update_date = 'July 2023';
-set project = 'NextGen Data Lake De-Identified';
+set project = 'GPC DataLake';
 set display_text = $project || ' (' || $update_date || ')';
 
 

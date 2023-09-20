@@ -52,8 +52,6 @@ select
     PAT_PREF_LANGUAGE_SPOKEN as language_cd,
     I2B2_HISPANIC as hispanic,
     I2B2_RACE_CD as race_cd,
-    --warning remove if not gpc
-    -- GPC_SITE,
     I2B2_AGE_IN_YEARS_NUM as AGE_IN_YEARS_NUM,
     I2B2_RELIGION_CD as RELIGION_CD,
     I2B2_ZIP_CD as ZIP_CD,
