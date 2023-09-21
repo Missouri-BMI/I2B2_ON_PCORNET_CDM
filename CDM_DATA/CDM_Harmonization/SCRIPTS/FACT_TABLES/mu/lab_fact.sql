@@ -1,7 +1,10 @@
+use database I2B2_SANDBOX_VASANTHI;
+use schema I2B2DATA;
+
 create or replace sequence lab_text_index;
 create or replace sequence lab_seq;
 
-create or replace table PRIVATE_LAB_FACT
+create or replace view PRIVATE_LAB_FACT
 as
 select fact.*,
      pc.i2b2_patid                                as I2B2_PATIENT_NUM,
@@ -31,10 +34,10 @@ select fact.*,
        cast($cdm_version as VARCHAR(50))  as I2B2_SOURCESYSTEM_CD,    
        cast(null as integer)              as I2B2_UPLOAD_ID,
        lab_text_index.nextval                 AS I2B2_TEXT_SEARCH_INDEX
-from identifier($lab_source_table) fact 
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_LAB_RESULT_CM fact 
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID)
 where result_modifier <> 'TX'
 UNION
@@ -61,15 +64,15 @@ select fact.*,
        cast($cdm_version as VARCHAR(50))        as I2B2_SOURCESYSTEM_CD,     
        cast(null as integer)             as I2B2_UPLOAD_ID,
        lab_text_index.nextval                 AS I2B2_TEXT_SEARCH_INDEX
-from identifier($lab_source_table) fact 
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_LAB_RESULT_CM fact 
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID)
 where result_modifier = 'TX'
 ;
 
-create or replace table DEID_LAB_FACT_T as          
+create or replace view LAB_FACT as          
 select *
      , lab_seq.nextval as TEXT_SEARCH_INDEX
 from (
@@ -99,7 +102,3 @@ from (
          where CONCEPT_CD <> 'LOINC:'
          order by ENCOUNTER_NUM, patient_num, CONCEPT_CD, PROVIDER_ID, START_DATE, MODIFIER_CD
      ) as t;
-
--- create view from temp table
-create or replace view DEID_LAB_FACT as
-select * from DEID_LAB_FACT_T; 

@@ -1,6 +1,9 @@
+use database I2B2_SANDBOX_VASANTHI;
+use schema I2B2DATA;
+
 create or replace sequence procedures_seq;   
 
-create or replace table PRIVATE_PROCEDURE_FACT
+create or replace view PRIVATE_PROCEDURE_FACT
 as
 select
     fact.*, 
@@ -33,14 +36,14 @@ select
     cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_IMPORT_DATE,
     cast($cdm_version 	as VARCHAR(50))      as I2B2_SOURCESYSTEM_CD,       
     cast(null	as INT)                      as I2B2_UPLOAD_ID
-from identifier($procedures_source_table) fact
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_PROCEDURE fact
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID);  
 
--- create temp table with sequence
-create or replace table DEID_PROCEDURE_FACT_T as        
+-- create view with sequence
+create or replace view PROCEDURE_FACT as        
 select *
      , procedures_seq.nextval as TEXT_SEARCH_INDEX
 from (
@@ -70,10 +73,7 @@ from (
          from PRIVATE_PROCEDURE_FACT
      ) as t;
 
-
--- create view
-create or replace view DEID_PROCEDURE_FACT as
-select * from DEID_PROCEDURE_FACT_T;                
+             
           
 
 

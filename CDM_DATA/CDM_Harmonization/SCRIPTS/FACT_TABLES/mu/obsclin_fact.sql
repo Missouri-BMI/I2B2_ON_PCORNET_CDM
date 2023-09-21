@@ -1,3 +1,6 @@
+use database I2B2_SANDBOX_VASANTHI;
+use schema I2B2DATA;
+
 create or replace sequence obs_clin_text_index;
 create or replace sequence obs_clin_seq;
 
@@ -35,10 +38,10 @@ select fact.*,
     cast($cdm_version as VARCHAR(50))  as I2B2_SOURCESYSTEM_CD,    
     cast(null as integer)              as I2B2_UPLOAD_ID,
     obs_clin_text_index.nextval                 AS I2B2_TEXT_SEARCH_INDEX
-from identifier($obs_clin_source_table) fact   
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_OBSCLIN fact   
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID)
 where obsclin_result_modifier <> 'TX'
 UNION
@@ -69,15 +72,15 @@ select fact.*,
     cast($cdm_version as VARCHAR(50))        as I2B2_SOURCESYSTEM_CD,     
     cast(null as integer)             as I2B2_UPLOAD_ID,
     obs_clin_text_index.nextval                 AS I2B2_TEXT_SEARCH_INDEX
-from identifier($obs_clin_source_table) fact  
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_OBSCLIN fact  
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID)   
 where obsclin_result_modifier = 'TX'
 ;
 
-create or replace table DEID_OBSCLIN_FACT_T as          
+create or replace view OBSCLIN_FACT as          
 select *
      , obs_clin_seq.nextval as TEXT_SEARCH_INDEX
 from (
@@ -108,6 +111,3 @@ from (
          order by ENCOUNTER_NUM, patient_num, CONCEPT_CD, PROVIDER_ID, START_DATE, MODIFIER_CD
      ) as t;
 
--- create view from temp table
-create or replace view DEID_OBSCLIN_FACT as
-select * from DEID_OBSCLIN_FACT_T; 

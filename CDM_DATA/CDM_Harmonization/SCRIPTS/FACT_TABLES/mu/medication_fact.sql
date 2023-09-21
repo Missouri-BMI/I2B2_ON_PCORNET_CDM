@@ -1,6 +1,9 @@
+use database I2B2_SANDBOX_VASANTHI;
+use schema I2B2DATA;
+
 create or replace sequence prescribing_seq;
 
-create or replace table PRIVATE_PRESCRIBING_FACT
+create or replace view PRIVATE_PRESCRIBING_FACT
 as
 select fact.*,
      pc.i2b2_patid                                as I2B2_PATIENT_NUM,
@@ -24,13 +27,13 @@ select fact.*,
        cast(null as TIMESTAMP)            as I2B2_IMPORT_DATE,
        cast($cdm_version as VARCHAR(50))         as I2B2_SOURCESYSTEM_CD,       
        cast(null as integer)              as I2B2_UPLOAD_ID
-from identifier($prescribing_source_table) fact
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_PRESCRIBING fact
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID);         
 
-create or replace table DEID_PRESCRIBING_FACT_T as
+create or replace view PRESCRIBING_FACT as
 select *
      , prescribing_seq.nextval as TEXT_SEARCH_INDEX
 from (
@@ -60,6 +63,4 @@ from (
          where concept_cd <> 'RXNORM:'
      ) as t;
 
--- create view
-create or replace view DEID_PRESCRIBING_FACT as
-select * from DEID_PRESCRIBING_FACT_T;         
+       

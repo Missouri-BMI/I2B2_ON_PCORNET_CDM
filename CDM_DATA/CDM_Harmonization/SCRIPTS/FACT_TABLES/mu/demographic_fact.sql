@@ -1,48 +1,42 @@
+use database I2B2_SANDBOX_VASANTHI;
+use schema I2B2DATA;
+
 create or replace sequence demographic_text_index;
-CREATE OR REPLACE TABLE PRIVATE_DEMOGRAPHIC_FACT LIKE PRIVATE_OBSERVATION_FACT;
 
+
+create or replace view DEMOGRAPHIC_FACT
+as 
 -- demographic hispanic
-
-insert into PRIVATE_DEMOGRAPHIC_FACT (
-  ENCOUNTER_NUM, PATIENT_NUM, CONCEPT_CD, PROVIDER_ID, START_DATE, MODIFIER_CD, INSTANCE_NUM, VALTYPE_CD, 
-  TVAL_CHAR, NVAL_NUM, VALUEFLAG_CD, QUANTITY_NUM, UNITS_CD, END_DATE, LOCATION_CD, OBSERVATION_BLOB, CONFIDENCE_NUM,
-  UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, UPLOAD_ID, TEXT_SEARCH_INDEX)
 select
-    -1, 
-    dim.PATIENT_NUM, 
-    concat('DEM|HISP:', COALESCE(dim.HISPANIC, 'NI')),
-    '-1', 
-    CURRENT_DATE(), 
-    '@',
-    1, 
-    '',
-    '', 
-    null, 
-    '',
-    null, 
-    '@', 
-    null, 
-    '@', 
-    null, 
-    null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    $cdm_version,                                                                    
-    null, 
-    demographic_text_index.nextVal 
-from DEID_PATIENT_DIMENSION as dim;        
-
-
-
+	'-1' as ENCOUNTER_NUM,
+    dim.PATIENT_NUM  as PATIENT_NUM, 
+    concat('DEM|HISP:', COALESCE(dim.HISPANIC, 'NI')) as CONCEPT_CD,
+    '-1' as PROVIDER_ID, 
+    CURRENT_DATE() as START_DATE, 
+    '@' as MODIFIER_CD,
+    1 as INSTANCE_NUM, 
+    '' as VALTYPE_CD,
+    '' as TVAL_CHAR, 
+    null as NVAL_NUM, 
+    '' as VALUEFLAG_CD,
+    null as QUANTITY_NUM, 
+    '@' as UNITS_CD, 
+    null as END_DATE, 
+    '@' as LOCATION_CD, 
+    null as OBSERVATION_BLOB, 
+    null as CONFIDENCE_NUM, 
+    CURRENT_DATE() as UPDATE_DATE,
+    CURRENT_DATE() as DOWNLOAD_DATE,
+    CURRENT_DATE() as IMPORT_DATE,
+    'CDM 6.0' as SOURCESYSTEM_CD,                                                                    
+    null AS UPLOAD_ID, 
+    demographic_text_index.nextVal  as TEXT_SEARCH_INDEX
+from PATIENT_DIMENSION as dim
+union
 -- demographic race
-insert into PRIVATE_DEMOGRAPHIC_FACT (                            
-  ENCOUNTER_NUM, PATIENT_NUM, CONCEPT_CD, PROVIDER_ID, START_DATE, MODIFIER_CD, INSTANCE_NUM, VALTYPE_CD, 
-  TVAL_CHAR, NVAL_NUM, VALUEFLAG_CD, QUANTITY_NUM, UNITS_CD, END_DATE, LOCATION_CD, OBSERVATION_BLOB, CONFIDENCE_NUM,
-  UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, UPLOAD_ID, TEXT_SEARCH_INDEX)
 select
-    -1, 
-    dim.PATIENT_NUM, 
+    -1 as ENCOUNTER_NUM, 
+    dim.PATIENT_NUM as PATIENT_NUM, 
     CASE
         WHEN dim.RACE_CD =  'American Indian or Alaska Native' THEN  concat('DEM|RACE:', '01')
         WHEN dim.RACE_CD =  'Asian' THEN  concat('DEM|RACE:', '02')
@@ -55,103 +49,85 @@ select
         WHEN dim.RACE_CD =  'Unknown' THEN  concat('DEM|RACE:', 'UN')
         WHEN dim.RACE_CD =  'Other' THEN  concat('DEM|RACE:', 'OT')
         ELSE concat('DEM|RACE:', 'NI')
-    END,
-    '-1', 
-    CURRENT_DATE(), 
-    '@',
-    1, 
-    '',
-    '', 
-    null, 
-    '',
-    null, 
-    '@', 
-    null, 
-    '@', 
-    null, 
-    null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    $cdm_version,                                            
-    null, 
-    demographic_text_index.nextVal 
-from DEID_PATIENT_DIMENSION as dim; 
-
-
-insert into PRIVATE_DEMOGRAPHIC_FACT (      
-  ENCOUNTER_NUM, PATIENT_NUM, CONCEPT_CD, PROVIDER_ID, START_DATE, MODIFIER_CD, INSTANCE_NUM, VALTYPE_CD, 
-  TVAL_CHAR, NVAL_NUM, VALUEFLAG_CD, QUANTITY_NUM, UNITS_CD, END_DATE, LOCATION_CD, OBSERVATION_BLOB, CONFIDENCE_NUM,
-  UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, UPLOAD_ID, TEXT_SEARCH_INDEX)
+    END as CONCEPT_CD,
+    '-1' as PROVIDER_ID, 
+    CURRENT_DATE() as START_DATE, 
+    '@' as MODIFIER_CD,
+    1 as INSTANCE_NUM, 
+    '' as VALTYPE_CD,
+    '' as TVAL_CHAR, 
+    null as NVAL_NUM, 
+    '' as VALUEFLAG_CD,
+    null as QUANTITY_NUM, 
+    '@' as UNITS_CD, 
+    null as END_DATE, 
+    '@' as LOCATION_CD, 
+    null as OBSERVATION_BLOB, 
+    null as CONFIDENCE_NUM, 
+    CURRENT_DATE() as UPDATE_DATE,
+    CURRENT_DATE() as DOWNLOAD_DATE,
+    CURRENT_DATE() as IMPORT_DATE,
+    'CDM 6.0' as SOURCESYSTEM_CD,                                            
+    null as UPLOAD_ID, 
+    demographic_text_index.nextVal as TEXT_SEARCH_INDEX
+from DEID_PATIENT_DIMENSION as dim
+union
 select
-    -1, 
-    dim.PATIENT_NUM, 
-    concat('DEM|SEX:', COALESCE(dim.SEX_CD, 'NI')),
-    '-1', 
-    CURRENT_DATE(), 
-    '@',
-    1, 
-    '',
-    '', 
-    null, 
-    '',
-    null, 
-    '@', 
-    null, 
-    '@', 
-    null, 
-    null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    $cdm_version,                                  
-    null, 
-    demographic_text_index.nextVal 
-from DEID_PATIENT_DIMENSION as dim;          
-
-
-
--- demographic vital status
-insert into PRIVATE_DEMOGRAPHIC_FACT (            
-  ENCOUNTER_NUM, PATIENT_NUM, CONCEPT_CD, PROVIDER_ID, START_DATE, MODIFIER_CD, INSTANCE_NUM, VALTYPE_CD, 
-  TVAL_CHAR, NVAL_NUM, VALUEFLAG_CD, QUANTITY_NUM, UNITS_CD, END_DATE, LOCATION_CD, OBSERVATION_BLOB, CONFIDENCE_NUM,
-  UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, UPLOAD_ID, TEXT_SEARCH_INDEX)
+    -1 as ENCOUNTER_NUM, 
+    dim.PATIENT_NUM as PATIENT_NUM, 
+    concat('DEM|SEX:', COALESCE(dim.SEX_CD, 'NI')) as CONCEPT_CD,
+    '-1' as PROVIDER_ID, 
+    CURRENT_DATE() as START_DATE, 
+    '@' as MODIFIER_CD,
+    1 as INSTANCE_NUM, 
+    '' as VALTYPE_CD,
+    '' as TVAL_CHAR, 
+    null as NVAL_NUM, 
+    '' as VALUEFLAG_CD,
+    null as QUANTITY_NUM, 
+    '@' as UNITS_CD, 
+    null as END_DATE, 
+    '@' as LOCATION_CD, 
+    null as OBSERVATION_BLOB, 
+    null as CONFIDENCE_NUM, 
+    CURRENT_DATE() as UPDATE_DATE,
+    CURRENT_DATE() as DOWNLOAD_DATE,
+    CURRENT_DATE() as IMPORT_DATE,
+    'CDM 6.0' as SOURCESYSTEM_CD,                                            
+    null as UPLOAD_ID, 
+    demographic_text_index.nextVal as TEXT_SEARCH_INDEX
+from DEID_PATIENT_DIMENSION as dim
+union
 select
-    -1, 
-    dim.PATIENT_NUM, 
+    -1 as ENCOUNTER_NUM, 
+    dim.PATIENT_NUM as PATIENT_NUM, 
     CASE
         WHEN VITAL_STATUS_CD = 'Y' THEN 'DEM|VITAL STATUS:D'
         ELSE '@'
-    END,
-    '-1', 
-    CURRENT_DATE(), -- no data
-    '@',
-    1, 
-    '',
-    '', 
-    null, 
-    '',
-    null, 
-    '@', 
-    null, 
-    '@', 
-    null, 
-    null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    $cdm_version,    
-    null, 
-    demographic_text_index.nextVal 
+    END as CONCEPT_CD,
+    '-1' as PROVIDER_ID, 
+    CURRENT_DATE() as START_DATE, 
+    '@' as MODIFIER_CD,
+    1 as INSTANCE_NUM, 
+    '' as VALTYPE_CD,
+    '' as TVAL_CHAR, 
+    null as NVAL_NUM, 
+    '' as VALUEFLAG_CD,
+    null as QUANTITY_NUM, 
+    '@' as UNITS_CD, 
+    null as END_DATE, 
+    '@' as LOCATION_CD, 
+    null as OBSERVATION_BLOB, 
+    null as CONFIDENCE_NUM, 
+    CURRENT_DATE() as UPDATE_DATE,
+    CURRENT_DATE() as DOWNLOAD_DATE,
+    CURRENT_DATE() as IMPORT_DATE,
+    'CDM 6.0' as SOURCESYSTEM_CD,                                            
+    null as UPLOAD_ID, 
+    demographic_text_index.nextVal as TEXT_SEARCH_INDEX
 from DEID_PATIENT_DIMENSION as dim; 
 
-delete from PRIVATE_DEMOGRAPHIC_FACT where concept_cd = '@';
-
--- CREATE VIEW
-create or replace view  DEID_DEMOGRAPHIC_FACT as 
-select * from PRIVATE_DEMOGRAPHIC_FACT;         
-
-
+-- delete from PRIVATE_DEMOGRAPHIC_FACT where concept_cd = '@';
 
 
 

@@ -1,47 +1,41 @@
-CREATE OR REPLACE TABLE PRIVATE_VISIT_FACT LIKE PRIVATE_OBSERVATION_FACT;
+use database I2B2_SANDBOX_VASANTHI;
+use schema I2B2DATA;
+
 create or replace sequence visit_text_index;
 
 -- visit type
-insert into PRIVATE_VISIT_FACT (
-  ENCOUNTER_NUM, PATIENT_NUM, CONCEPT_CD, PROVIDER_ID, START_DATE, MODIFIER_CD, INSTANCE_NUM, VALTYPE_CD, 
-  TVAL_CHAR, NVAL_NUM, VALUEFLAG_CD, QUANTITY_NUM, UNITS_CD, END_DATE, LOCATION_CD, OBSERVATION_BLOB, CONFIDENCE_NUM,
-  UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, UPLOAD_ID, TEXT_SEARCH_INDEX)
+create or replace view VISIT_FACT
+as
 select
-    ENCOUNTER_NUM, 
-    PATIENT_NUM, 
-    concat('VISIT|TYPE:', COALESCE(inout_cd, 'UN')),
-    PROVIDER_ID, 
-    coalesce(START_DATE, CURRENT_DATE()), 
-    '@',
-    1, 
-    '',
-    '', 
-    null, 
-    '',
-    null, 
-    '@', 
-    null, 
-    '@', 
-    null, 
-    null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    $cdm_version,                                                                    
-    null, 
-    visit_text_index.nextVal 
-from DEID_VISIT_DIMENSION as dim;        
-
-
-
+    ENCOUNTER_NUM as ENCOUNTER_NUM, 
+    PATIENT_NUM as PATIENT_NUM, 
+    concat('VISIT|TYPE:', COALESCE(inout_cd, 'UN')) as CONCEPT_CD,
+    PROVIDER_ID as PROVIDER_ID, 
+    CURRENT_DATE() as START_DATE, 
+    '@' as MODIFIER_CD,
+    1 as INSTANCE_NUM, 
+    '' as VALTYPE_CD,
+    '' as TVAL_CHAR, 
+    null as NVAL_NUM, 
+    '' as VALUEFLAG_CD,
+    null as QUANTITY_NUM, 
+    '@' as UNITS_CD, 
+    null as END_DATE, 
+    '@' as LOCATION_CD, 
+    null as OBSERVATION_BLOB, 
+    null as CONFIDENCE_NUM, 
+    CURRENT_DATE() as UPDATE_DATE,
+    CURRENT_DATE() as DOWNLOAD_DATE,
+    CURRENT_DATE() as IMPORT_DATE,
+    'CDM 6.0' as SOURCESYSTEM_CD,                                                                    
+    null AS UPLOAD_ID, 
+    visit_text_index.nextVal as TEXT_SEARCH_INDEX
+from DEID_VISIT_DIMENSION as dim
+UNION ALL
 -- Length of stay
-insert into PRIVATE_VISIT_FACT (                            
-  ENCOUNTER_NUM, PATIENT_NUM, CONCEPT_CD, PROVIDER_ID, START_DATE, MODIFIER_CD, INSTANCE_NUM, VALTYPE_CD, 
-  TVAL_CHAR, NVAL_NUM, VALUEFLAG_CD, QUANTITY_NUM, UNITS_CD, END_DATE, LOCATION_CD, OBSERVATION_BLOB, CONFIDENCE_NUM,
-  UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, UPLOAD_ID, TEXT_SEARCH_INDEX)
 select
-    encounter_num, 
-    PATIENT_NUM, 
+    encounter_num as ENCOUNTER_NUM, 
+    PATIENT_NUM as PATIENT_NUM, 
     CASE
         WHEN LENGTH_OF_STAY =  0 THEN  concat('VISIT|LENGTH:', '0')
         WHEN LENGTH_OF_STAY =  1 THEN  concat('VISIT|LENGTH:', '1')
@@ -56,32 +50,30 @@ select
         WHEN LENGTH_OF_STAY =  10 THEN  concat('VISIT|LENGTH:', '10')
         WHEN LENGTH_OF_STAY >  10 THEN  concat('VISIT|LENGTH:', '>10')
         ELSE concat('VISIT|LENGTH:', '0')
-    END,
-    PROVIDER_ID, 
-    coalesce(START_DATE, CURRENT_DATE()), 
-    '@',
-    1, 
-    '',
-    '', 
-    null, 
-    '',
-    null, 
-    '@', 
-    null, 
-    '@', 
-    null, 
-    null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    $cdm_version,                                            
-    null, 
-    visit_text_index.nextVal 
+    END as CONCEPT_CD,
+    PROVIDER_IDas PROVIDER_ID, 
+    CURRENT_DATE() as START_DATE, 
+    '@' as MODIFIER_CD,
+    1 as INSTANCE_NUM, 
+    '' as VALTYPE_CD,
+    '' as TVAL_CHAR, 
+    null as NVAL_NUM, 
+    '' as VALUEFLAG_CD,
+    null as QUANTITY_NUM, 
+    '@' as UNITS_CD, 
+    null as END_DATE, 
+    '@' as LOCATION_CD, 
+    null as OBSERVATION_BLOB, 
+    null as CONFIDENCE_NUM, 
+    CURRENT_DATE() as UPDATE_DATE,
+    CURRENT_DATE() as DOWNLOAD_DATE,
+    CURRENT_DATE() as IMPORT_DATE,
+    'CDM 6.0' as SOURCESYSTEM_CD,                                                                    
+    null AS UPLOAD_ID, 
+    visit_text_index.nextVal  as TEXT_SEARCH_INDEX
 from DEID_VISIT_DIMENSION as dim;
 
--- CREATE VIEW
-create or replace view  DEID_VISIT_FACT as 
-select * from PRIVATE_VISIT_FACT;         
+     
 
 
 

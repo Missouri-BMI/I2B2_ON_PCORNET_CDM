@@ -1,7 +1,10 @@
+use database I2B2_SANDBOX_VASANTHI;
+use schema I2B2DATA;
+
 create or replace sequence vital_text_index;
 create or replace sequence vital_seq;
 
-create or replace table PRIVATE_VITAL_FACT
+create or replace view PRIVATE_VITAL_FACT
 as
 ---HT
 select fact.*,
@@ -29,9 +32,9 @@ select fact.*,
        cast(null as integer)                                        as I2B2_UPLOAD_ID,
        vital_text_index.nextval                                     as I2B2_TEXT_SEARCH_INDEX
 from identifier($vital_source_table) fact 
-inner join identifier($patient_crosswalk) as pc
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID)
 union all
 ----WT
@@ -59,10 +62,10 @@ select fact.*,
        cast($cdm_version as VARCHAR(50))                            as I2B2_SOURCESYSTEM_CD,
        cast(null as integer)                                        as I2B2_UPLOAD_ID,
        vital_text_index.nextval                                     as I2B2_TEXT_SEARCH_INDEX
-from identifier($vital_source_table) fact 
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_VITALS fact 
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID)
 union all
 ---DIASTOLIC
@@ -90,10 +93,10 @@ select fact.*,
        cast($cdm_version as VARCHAR(50))                            as I2B2_SOURCESYSTEM_CD,
        cast(null as integer)                                        as I2B2_UPLOAD_ID,
        vital_text_index.nextval                                     as I2B2_TEXT_SEARCH_INDEX
-from identifier($vital_source_table) fact 
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_VITALS fact 
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID)
 union all
 ---SYSTOLIC
@@ -121,10 +124,10 @@ select fact.*,
        cast($cdm_version as VARCHAR(50))                            as I2B2_SOURCESYSTEM_CD,
        cast(null as integer)                                        as I2B2_UPLOAD_ID,
        vital_text_index.nextval                                     as I2B2_TEXT_SEARCH_INDEX
-from identifier($vital_source_table) fact 
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_VITALS fact 
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID)
 union all
 ---BMI
@@ -152,14 +155,14 @@ select fact.*,
        cast($cdm_version as VARCHAR(50))                            as I2B2_SOURCESYSTEM_CD,
        cast(null as integer)                                        as I2B2_UPLOAD_ID,
        vital_text_index.nextval                                     as I2B2_TEXT_SEARCH_INDEX
-from identifier($vital_source_table) fact 
-inner join identifier($patient_crosswalk) as pc
+from DEIDENTIFIED_PCORNET_CDM.CDM_2023_JULY.DEID_VITALS fact 
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.PATIENT_CROSSWALK as pc
 using (patid)
-inner join identifier($encounter_crosswalk) as ec
+inner join I2B2_PCORNET_CDM.CDM_2023_JULY.ENCOUNTER_CROSSWALK as ec
 using (ENCOUNTERID);
 
 
-create or replace table DEID_VITAL_FACT_T as
+create or replace view VITAL_FACT as
 select *
      , vital_seq.nextval as TEXT_SEARCH_INDEX
 from (
@@ -191,6 +194,3 @@ from (
          from PRIVATE_VITAL_FACT
          order by ENCOUNTER_NUM, PATIENT_NUM, CONCEPT_CD, PROVIDER_ID, START_DATE, MODIFIER_CD
      ) as t;
-
-create or replace view DEID_VITAL_FACT as
-select * from DEID_VITAL_FACT_T;
