@@ -33,7 +33,7 @@ sed -i "s|#encounter_crosswalk|$ENCOUNTER_CROSSWALK|g" ${CONFIGURE_PATH}
 ant -f ./CDM_ETL/data_build.xml perform_etl
 
 # Generate patient count in ontology
-# python3 ./CDM_COUNT/run_all_counts.py
+ant -f ./CDM_ETL/data_build.xml cdm_count
 
-# Generate gap in CDM vs Ontologies
-# python3 ./ETL_VALIDATOR/validator.py
+# Generate missing obs ontology
+ant -f ./CDM_ETL/data_build.xml missing_obs

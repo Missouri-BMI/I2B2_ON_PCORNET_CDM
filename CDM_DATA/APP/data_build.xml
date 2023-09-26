@@ -43,4 +43,25 @@
 			<transaction src="./SCRIPTS/OTHER/${db.project}/data-migration.sql" />
 		</sql>
 	</target>
+
+	<target name="cdm_count" depends="init">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="abort" autocommit="true">
+			<transaction src="./SCRIPTS/COMMON/CDM_COUNT/generate_count.sql" />
+		</sql>
+	</target>
+
+
+	<target name="missing_obs" depends="init">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="continue" escapeprocessing="true">
+			<path>
+				<sort>
+				   <fileset dir="./SCRIPTS/COMMON/MISSING_OBS">
+					 	<include name="*.sql"/>
+				   </fileset>
+				</sort>
+			 </path>
+	   </sql>
+	</target>
+
+
 </project>
