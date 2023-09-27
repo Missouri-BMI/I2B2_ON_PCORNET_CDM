@@ -21,6 +21,7 @@ sed -i "s|#visit_table|$VISIT_TABLE|g" ${CONFIGURE_PATH}
 sed -i "s|#diagnosis_table|$DIAGNOSIS_TABLE|g" ${CONFIGURE_PATH}
 sed -i "s|#lab_table|$LAB_TABLE|g" ${CONFIGURE_PATH}
 sed -i "s|#obs_clin_table|$OBS_CLIN_TABLE|g" ${CONFIGURE_PATH}
+sed -i "s|#obs_gen_table|$OBS_GEN_TABLE|g" ${CONFIGURE_PATH}
 sed -i "s|#medication_table|$MEDICATION_TABLE|g" ${CONFIGURE_PATH}
 sed -i "s|#procedures_table|$PROCEDURES_TABLE|g" ${CONFIGURE_PATH}
 sed -i "s|#vital_table|$VITAL_TABLE|g" ${CONFIGURE_PATH}

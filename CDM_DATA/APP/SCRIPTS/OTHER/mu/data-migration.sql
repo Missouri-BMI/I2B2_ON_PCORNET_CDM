@@ -11,6 +11,8 @@ set prescribing_fact = $target_schema || '.' || 'prescribing_fact';
 set vital_fact = $target_schema || '.' || 'vital_fact';
 set visit_fact = $target_schema || '.' || 'visit_fact';
 set OBSCLIN_FACT = $target_schema || '.' || 'obsclin_fact';
+
+set OBSGEN_FACT = $target_schema || '.' || 'obsgen_fact';
 set COVID_FACT = $target_schema || '.' || 'covid_fact';
 set SDOH_FACT = $target_schema || '.' || 'sdoh_fact';
 
@@ -75,3 +77,8 @@ select * from DEID_SDOH_FACT;
 -- obsclin fact
 create or replace table identifier($OBSCLIN_FACT) as
 select * from DEID_OBSCLIN_FACT;
+
+
+-- obsgen fact
+create or replace table identifier($OBSGEN_FACT) as
+select * from DEID_OBSGEN_FACT;
