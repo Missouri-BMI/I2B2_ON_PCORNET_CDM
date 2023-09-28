@@ -11,5 +11,4 @@ ONTOLOGY_TABLES/ACT_V4_LOADER/READ_SCRIPTS/act_ontology_v4/*
 *.cnf
 *.rpm
 *.csv
-**/db.properties
 **/cred.json
