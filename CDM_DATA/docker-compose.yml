@@ -7,6 +7,7 @@ services:
     build: ./
     container_name: i2b2-etl
     environment:
+      - PROJECT=${PROJECT}
       - ACCOUNT=${ACCOUNT}
       - USERNAME=${USERNAME}
       - PASSWORD=${PASSWORD}
@@ -36,7 +37,6 @@ services:
       - PATIENT_CROSSWALK=${PATIENT_CROSSWALK}
       - ENCOUNTER_CROSSWALK=${ENCOUNTER_CROSSWALK}
 
-      - DATABASE=${TARGET_DB}
     networks:
       - i2b2-etl
       
