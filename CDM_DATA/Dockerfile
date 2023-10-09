@@ -1,9 +1,10 @@
-FROM alpine:3.14
+FROM alpine
 
 # Download required packages
 RUN apk add \
     openjdk8 \
-    apache-ant
+    apache-ant \
+    bash
 
 WORKDIR /app
 COPY /APP ./

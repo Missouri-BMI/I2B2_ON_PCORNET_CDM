@@ -4,43 +4,54 @@ create or replace sequence sdoh_seq;
 ---SMOKING
 create or replace table PRIVATE_SDOH_FACT as
 select fact.*,
-          pc.i2b2_patid                                               as I2B2_PATIENT_NUM,
-          ec.i2b2_encounterid                                         as I2B2_ENCOUNTER_NUM,
-          case 
-            when smoking = '04' then  'LOINC:LA18978-9'
-            when smoking = '05' then  'LOINC:LA18979-7'
-            when smoking = '03' then  'LOINC:LA15920-4'
-            when smoking = '01' then  'LOINC:LA18976-3'
-            when smoking = '06' then 'LOINC:LA18980-5'
-            when smoking = '02' then  'LOINC:LA18977-1'
-            when smoking = '07' then  'LOINC:LA18981-3'
-            when smoking = '08' then  'LOINC:LA18982-1'
-            else 'LOINC:LA18980-5'
-            end                                                       as I2B2_CONCEPT_CD,
-       '-1'                                                           as I2B2_PROVIDER_ID,
-       fact.MEASURE_DATE                                              as I2B2_START_DATE,
-       '@'                                                            as I2B2_MODIFIER_CD,
-       1                                                              as I2B2_INSTANCE_NUM,
-       '@'                                                            as I2B2_VALTYPE_CD,
-       null                                                           as I2B2_TVAL_CHAR,
-       null                                                           as I2B2_NVAL_NUM,
-       '@'                                                            as I2B2_VALUEFLAG_CD,
-       null                                                           as I2B2_QUANTITY_NUM,
-       '@'                                                            as I2B2_UNITS_CD,
-       null                                                           as I2B2_END_DATE,
-       '@'                                                            as I2B2_LOCATION_CD,
-       ''                                                             as I2B2_OBSERVATION_BLOB,
-       null                                                           as I2B2_CONFIDENCE_NUM,
-       CURRENT_DATE                                                   as I2B2_UPDATE_DATE,
-       CURRENT_DATE                                                   as I2B2_DOWNLOAD_DATE,
-       CURRENT_DATE                                                   as I2B2_IMPORT_DATE,
-       $cdm_version                                                   as I2B2_SOURCESYSTEM_CD,
-       null                                                           as I2B2_UPLOAD_ID,
-       sdoh_text_index.nextval                                        as I2B2_TEXT_SEARCH_INDEX
-from identifier($vital_source_table) fact 
+     pc.i2b2_patid                                               as I2B2_PATIENT_NUM,
+     ec.i2b2_encounterid                                         as I2B2_ENCOUNTER_NUM,
+     case 
+     --   when smoking = '04' then  'LOINC:LA18978-9'
+     --   when smoking = '05' then  'LOINC:LA18979-7'
+     --   when smoking = '03' then  'LOINC:LA15920-4'
+     --   when smoking = '01' then  'LOINC:LA18976-3'
+     --   when smoking = '06' then 'LOINC:LA18980-5'
+     --   when smoking = '02' then  'LOINC:LA18977-1'
+     --   when smoking = '07' then  'LOINC:LA18981-3'
+     --   when smoking = '08' then  'LOINC:LA18982-1'
+     --   else 'LOINC:LA18980-5'
+          when OBSCLIN_RESULT_TEXT = 'Never smoker' then  'LOINC:LA18978-9'
+          when OBSCLIN_RESULT_TEXT = 'Smoker, current status unknown' then  'LOINC:LA18979-7'
+          when OBSCLIN_RESULT_TEXT = 'Former smoker quit within 12 months' then  'LOINC:LA15920-4'
+          when OBSCLIN_RESULT_TEXT = 'Former smoker quit longer than 12 months' then  'LOINC:LA15920-4'
+          when OBSCLIN_RESULT_TEXT = 'Current every day smoker' then  'LOINC:LA18976-3'
+          when OBSCLIN_RESULT_TEXT = 'Unknown if ever smoked' then 'LOINC:LA18980-5'
+          when OBSCLIN_RESULT_TEXT = 'Current some day smoker' then  'LOINC:LA18977-1'
+          when OBSCLIN_RESULT_TEXT = 'Heavy tobacco smoker' then  'LOINC:LA18981-3'
+          when OBSCLIN_RESULT_TEXT = 'Light tobacco smoker' then  'LOINC:LA18982-1'
+               else 'LOINC:LA18980-5'
+     end                                                            as I2B2_CONCEPT_CD,
+     '-1'                                                           as I2B2_PROVIDER_ID,
+     fact.OBSCLIN_DATE                                              as I2B2_START_DATE,
+     '@'                                                            as I2B2_MODIFIER_CD,
+     1                                                              as I2B2_INSTANCE_NUM,
+     '@'                                                            as I2B2_VALTYPE_CD,
+     null                                                           as I2B2_TVAL_CHAR,
+     null                                                           as I2B2_NVAL_NUM,
+     '@'                                                            as I2B2_VALUEFLAG_CD,
+     null                                                           as I2B2_QUANTITY_NUM,
+     '@'                                                            as I2B2_UNITS_CD,
+     null                                                           as I2B2_END_DATE,
+     '@'                                                            as I2B2_LOCATION_CD,
+     ''                                                             as I2B2_OBSERVATION_BLOB,
+     null                                                           as I2B2_CONFIDENCE_NUM,
+     CURRENT_DATE                                                   as I2B2_UPDATE_DATE,
+     CURRENT_DATE                                                   as I2B2_DOWNLOAD_DATE,
+     CURRENT_DATE                                                   as I2B2_IMPORT_DATE,
+     $cdm_version                                                   as I2B2_SOURCESYSTEM_CD,
+     null                                                           as I2B2_UPLOAD_ID,
+     sdoh_text_index.nextval                                        as I2B2_TEXT_SEARCH_INDEX
+from identifier($obs_clin_source_table) fact 
 inner join identifier($patient_crosswalk) as pc
 using (patid)
 inner join identifier($encounter_crosswalk) as ec
+where OBSCLIN_CODE = 'C29719'
 using (ENCOUNTERID);
 
 
