@@ -51,8 +51,8 @@ from identifier($obs_clin_source_table) fact
 inner join identifier($patient_crosswalk) as pc
 using (patid)
 inner join identifier($encounter_crosswalk) as ec
-where OBSCLIN_CODE = 'C29719'
-using (ENCOUNTERID);
+using (ENCOUNTERID)
+where OBSCLIN_CODE = 'C29719';
 
 
 create or replace table DEID_SDOH_FACT_T as

@@ -32,12 +32,17 @@ sed -i "s|#vital_table|$VITAL_TABLE|g" ${CONFIGURE_PATH}
 sed -i "s|#patient_crosswalk|$PATIENT_CROSSWALK|g" ${CONFIGURE_PATH}
 sed -i "s|#encounter_crosswalk|$ENCOUNTER_CROSSWALK|g" ${CONFIGURE_PATH}
 
+CONFIGURE_PATH=/app/SCRIPTS/OTHER/$PROJECT/cleanup.sql
+
+sed -i "s|#update_date|$UPDATE_DATE|g" ${CONFIGURE_PATH}
+sed -i "s|#project_text|$PROJECT_TEXT|g" ${CONFIGURE_PATH}
+
 
 # Perform ETL opertation
 ant -f ./data_build.xml perform_etl
 
-# # Generate patient count in ontology
+# Generate patient count in ontology
 ant -f ./data_build.xml cdm_count
 
-# # Generate missing obs ontology
+# Generate missing obs ontology
 ant -f ./data_build.xml missing_obs
