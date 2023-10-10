@@ -1,13 +1,13 @@
 /* rename project */
+set update_date = '#update_date';
+set project_text = "#project_text";
 
-set update_date = 'July 2023';
-set project = 'GPC DataLake';
-set display_text = $project || ' (' || $update_date || ')';
+set display_text = $project_text || ' (' || $update_date || ')';
 
 
 update i2b2pm.pm_project_data
 set project_name = $display_text
-where project_id = 'ACT';
+where project_id = 'SANDBOX-GPC';
 
 
 update I2B2HIVE.HIVE_CELL_PARAMS

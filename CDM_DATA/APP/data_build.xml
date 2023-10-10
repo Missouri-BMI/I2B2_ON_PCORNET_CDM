@@ -46,21 +46,29 @@
 	</target>
 
 	<target name="cdm_count" depends="init">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="abort" autocommit="true">
-			<transaction src="./SCRIPTS/COMMON/CDM_COUNT/generate_count.sql" />
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" print="false"
+			delimitertype="row"
+			delimiter="GO"
+			keepformat="true"
+			autocommit="true" classpathref="classpath" onerror="abort">
+				<transaction src="./SCRIPTS/COMMON/CDM_COUNT/generate_count.sql" />
 		</sql>
 	</target>
 
 
 	<target name="missing_obs" depends="init">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="continue" escapeprocessing="true">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" print="false"
+			delimitertype="row"
+			delimiter="GO"
+			keepformat="true"
+			autocommit="true" classpathref="classpath" onerror="abort">
 			<path>
 				<sort>
 				   <fileset dir="./SCRIPTS/COMMON/MISSING_OBS">
 					 	<include name="*.sql"/>
 				   </fileset>
 				</sort>
-			 </path>
+			</path>
 	   </sql>
 	</target>
 

@@ -1,8 +1,8 @@
 /* rename project */
+set update_date = '#update_date';
+set project_text = "#project_text";
 
-set update_date = 'July 2023';
-set project = 'NextGen Data Lake De-Identified';
-set display_text = $project || ' (' || $update_date || ')';
+set display_text = $project_text || ' (' || $update_date || ')';
 
 
 update i2b2pm.pm_project_data

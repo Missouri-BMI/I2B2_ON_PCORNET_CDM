@@ -8,6 +8,8 @@ services:
     container_name: i2b2-etl
     environment:
       - PROJECT=${PROJECT}
+      - UPDATE_DATE=${UPDATE_DATE}
+      - PROJECT_TEXT= ${PROJECT_TEXT}
       - ACCOUNT=${ACCOUNT}
       - USERNAME=${USERNAME}
       - PASSWORD=${PASSWORD}
