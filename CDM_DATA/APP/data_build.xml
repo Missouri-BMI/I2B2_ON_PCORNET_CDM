@@ -42,6 +42,7 @@
 			<transaction src="./SCRIPTS/FACT_TABLES/${db.project}/obsgen_fact.sql" />
 			<!-- TARGET-->
 			<transaction src="./SCRIPTS/OTHER/${db.project}/data-migration.sql" />
+			<transaction src="./SCRIPTS/OTHER/${db.project}/cleanup.sql" />
 		</sql>
 	</target>
 

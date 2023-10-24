@@ -1,31 +1,36 @@
 /* rename project */
 set update_date = '#update_date';
-set project_text = "#project_text";
+set project_text = '#project_text';
 
 set display_text = $project_text || ' (' || $update_date || ')';
 
+set target_pm_schema = $target_db || '.' || 'i2b2pm';
+set target_hive_schema = $target_db || '.' || 'I2B2HIVE';
 
-update i2b2pm.pm_project_data
+set table_name = $target_pm_schema || '.' || 'pm_project_data';
+update identifier($table_name)
 set project_name = $display_text
 where project_id = 'SANDBOX-GPC';
 
-
-update I2B2HIVE.HIVE_CELL_PARAMS
+set table_name = $target_hive_schema || '.' || 'hive_cell_params';
+update identifier($table_name)
 set value = '11'
 where param_name_cd = 'edu.harvard.i2b2.crc.setfinderquery.obfuscation.minimum.value';
 
 
 --gpc hide
-UPDATE i2b2data.QT_QUERY_RESULT_TYPE
+set table_name = $target_schema || '.' || 'QT_QUERY_RESULT_TYPE';
+update identifier($table_name)
 set VISUAL_ATTRIBUTE_TYPE_ID = 'LA'
 where name = 'PATIENT_GPCSITE_COUNT_XML';
 
 --visit details
-UPDATE i2b2data.QT_QUERY_RESULT_TYPE
+set table_name = $target_schema || '.' || 'QT_QUERY_RESULT_TYPE';
+update identifier($table_name)
 set classname = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultGenerator'
 where name = 'PATIENT_INOUT_XML';
 
-
-UPDATE i2b2data.QT_BREAKDOWN_PATH
+set table_name = $target_schema || '.' || 'QT_BREAKDOWN_PATH';
+update identifier($table_name)
 SET VALUE = '\\\\ACT_VISIT\\ACT\\Visit Details\\Visit type\\'
 WHERE NAME = 'PATIENT_INOUT_XML';

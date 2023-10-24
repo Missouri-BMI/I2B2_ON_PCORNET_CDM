@@ -60,6 +60,8 @@ select
     , NULL
 ;
 
+delete from i2b2data.concept_dimension
+where concept_path like '%\\DocumentOntology\\%';
 
 insert into i2b2data.concept_dimension (CONCEPT_PATH, CONCEPT_CD, NAME_CHAR, CONCEPT_BLOB, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, UPLOAD_ID)
 select 
