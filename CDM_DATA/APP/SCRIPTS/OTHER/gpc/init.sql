@@ -15,6 +15,8 @@ set visit_source_table = $cdm_schema || '.#visit_table';
 set diagnosis_source_table = $cdm_schema || '.#diagnosis_table';
 set lab_source_table = $cdm_schema || '.#lab_table';
 set obs_clin_source_table = $cdm_schema || '.#obs_clin_table';
+set obs_gen_source_table = $cdm_schema || '.#obs_gen_table';
+
 set prescribing_source_table = $cdm_schema || '.#medication_table';
 set procedures_source_table = $cdm_schema || '.#procedures_table';
 set vital_source_table = $cdm_schema || '.#vital_table';

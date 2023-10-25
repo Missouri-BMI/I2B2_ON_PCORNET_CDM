@@ -45,7 +45,7 @@ select
     '',
     null, 
     '@', 
-    coalesce(END_DATE, null),
+    coalesce(END_DATE, null), 
     '@', 
     null, 
     null, 

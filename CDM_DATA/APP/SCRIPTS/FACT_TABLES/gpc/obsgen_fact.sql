@@ -1,6 +1,8 @@
 create or replace sequence obs_gen_text_index;
 create or replace sequence obs_gen_seq;
 
+
+ 
 create or replace table PRIVATE_OBSGEN_FACT
 as
 select fact.*,
