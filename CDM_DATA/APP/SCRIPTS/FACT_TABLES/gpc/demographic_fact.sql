@@ -1,4 +1,5 @@
 create or replace sequence demographic_text_index;
+
 CREATE OR REPLACE TABLE PRIVATE_DEMOGRAPHIC_FACT ( 
 	ENCOUNTER_NUM  		INT NOT NULL,
 	PATIENT_NUM    		INT NOT NULL,

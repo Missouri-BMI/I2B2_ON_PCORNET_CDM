@@ -18,7 +18,7 @@ set value = '11'
 where param_name_cd = 'edu.harvard.i2b2.crc.setfinderquery.obfuscation.minimum.value';
 
 
---gpc hide
+--gpc breakdown
 set table_name = $target_schema || '.' || 'QT_QUERY_RESULT_TYPE';
 update identifier($table_name)
 set VISUAL_ATTRIBUTE_TYPE_ID = 'LA'
