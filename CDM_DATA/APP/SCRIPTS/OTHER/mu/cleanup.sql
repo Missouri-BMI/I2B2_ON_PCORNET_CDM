@@ -4,8 +4,8 @@ set project_text = '#project_text';
 
 set display_text = $project_text || ' (' || $update_date || ')';
 
-set target_pm_schema = $target_db || '.' || 'i2b2pm';
-set target_hive_schema = $target_db || '.' || 'I2B2HIVE';
+set target_pm_schema = $pm_db || '.' || 'i2b2pm';
+set target_hive_schema = $pm_db || '.' || 'I2B2HIVE';
 
 set table_name = $target_pm_schema || '.' || 'pm_project_data';
 update identifier($table_name)

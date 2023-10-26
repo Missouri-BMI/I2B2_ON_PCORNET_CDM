@@ -12,7 +12,8 @@ select
         when px_type = 'CH' then concat(raw_px_type,':', px)
         else concat(px_type,':',px)
     end as I2B2_CONCEPT_CD,
-    COALESCE(fact.PROVIDERID, '-1') as I2B2_PROVIDER_ID,
+    ADMIT_DATE   :: TIMESTAMP          as I2B2_START_DATE,
+    COALESCE(fact.PROVIDERID, '@') as I2B2_PROVIDER_ID,
     cast('@'    as VARCHAR(100))    as I2B2_MODIFIER_CD,
     cast(1      as INT)         as I2B2_INSTANCE_NUM,
     cast(''     as VARCHAR(50))     as I2B2_VALTYPE_CD,
@@ -45,7 +46,7 @@ from (
                          I2B2_PATIENT_NUM                   as PATIENT_NUM,
                          I2B2_CONCEPT_CD                    as CONCEPT_CD,
                          I2B2_PROVIDER_ID                   as PROVIDER_ID,
-                         ADMIT_DATE                         as START_DATE,
+                         I2B2_START_DATE                    as START_DATE,
                          I2B2_MODIFIER_CD                   as MODIFIER_CD,
                          I2B2_INSTANCE_NUM                  as INSTANCE_NUM,
                          I2B2_VALTYPE_CD                    as VALTYPE_CD,

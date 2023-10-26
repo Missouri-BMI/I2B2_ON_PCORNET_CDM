@@ -22,7 +22,8 @@ select
         WHEN dead.DEATH_DATE is not null THEN 'Y'
         ELSE 'N'
     END                                          as I2B2_VITAL_STATUS_CD,
-    pc.i2b2_patid                                as I2B2_PATIENT_NUM,                                    
+    pc.i2b2_patid                                as I2B2_PATIENT_NUM,  
+    dim.birth_date :: TIMESTAMP                  as I2B2_BIRTH_DATE,                                  
     cast(null  as TIMESTAMP)                     as I2B2_DEATH_DATE,
     cast(null as integer)                        as I2B2_AGE_IN_YEARS_NUM,
     cast(null as VARCHAR(50))                    as I2B2_RELIGION_CD,
@@ -30,9 +31,9 @@ select
     cast(null as VARCHAR(700))                   as I2B2_STATECITYZIP_PATH,
     cast(null as VARCHAR(50))                    as I2B2_INCOME_CD,
     cast(null as text)                           as I2B2_PATIENT_BLOB,
-    cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_UPDATE_DATE,
-    cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_DOWNLOAD_DATE,
-    cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_IMPORT_DATE,
+    CURRENT_TIMESTAMP                          as I2B2_UPDATE_DATE,
+    CURRENT_TIMESTAMP                          as I2B2_DOWNLOAD_DATE,
+    CURRENT_TIMESTAMP                          as I2B2_IMPORT_DATE,
     cast($cdm_version 	as VARCHAR(50))      as I2B2_SOURCESYSTEM_CD,        
     cast(null	as INT)                      as I2B2_UPLOAD_ID
 from identifier($patient_source_table) as dim
@@ -46,7 +47,7 @@ create or replace view "DEID_PATIENT_DIMENSION" as
 select 
     I2B2_PATIENT_NUM as PATIENT_NUM,
     I2B2_VITAL_STATUS_CD as VITAL_STATUS_CD,
-    birth_date as BIRTH_DATE,
+    I2B2_BIRTH_DATE as BIRTH_DATE,
     I2B2_DEATH_DATE as DEATH_DATE,
     I2B2_SEX_CD as SEX_CD,
     PAT_PREF_LANGUAGE_SPOKEN as language_cd,

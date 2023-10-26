@@ -37,8 +37,8 @@ select
     -1, 
     dim.PATIENT_NUM, 
     concat('DEM|HISP:', COALESCE(dim.HISPANIC, 'NI')),
-    '-1', 
-    CURRENT_DATE(), 
+    '@', 
+    CURRENT_TIMESTAMP, 
     '@',
     1, 
     '',
@@ -51,9 +51,9 @@ select
     '@', 
     null, 
     null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP,
     $cdm_version,                                                                    
     null, 
     demographic_text_index.nextVal 
@@ -82,8 +82,8 @@ select
         WHEN dim.RACE_CD =  'Other' THEN  concat('DEM|RACE:', 'OT')
         ELSE concat('DEM|RACE:', 'NI')
     END,
-    '-1', 
-    CURRENT_DATE(), 
+    '@', 
+    CURRENT_TIMESTAMP, 
     '@',
     1, 
     '',
@@ -96,9 +96,9 @@ select
     '@', 
     null, 
     null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP,
     $cdm_version,                                            
     null, 
     demographic_text_index.nextVal 
@@ -113,8 +113,8 @@ select
     -1, 
     dim.PATIENT_NUM, 
     concat('DEM|SEX:', COALESCE(dim.SEX_CD, 'NI')),
-    '-1', 
-    CURRENT_DATE(), 
+    '@', 
+    CURRENT_TIMESTAMP, 
     '@',
     1, 
     '',
@@ -127,9 +127,9 @@ select
     '@', 
     null, 
     null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP,
     $cdm_version,                                  
     null, 
     demographic_text_index.nextVal 
@@ -149,8 +149,8 @@ select
         WHEN VITAL_STATUS_CD = 'Y' THEN 'DEM|VITAL STATUS:D'
         ELSE '@'
     END,
-    '-1', 
-    CURRENT_DATE(), -- no data
+    '@', 
+    CURRENT_TIMESTAMP, -- no data
     '@',
     1, 
     '',
@@ -163,9 +163,9 @@ select
     '@', 
     null, 
     null, 
-    CURRENT_DATE(),
-    CURRENT_DATE(),
-    CURRENT_DATE(),
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP,
     $cdm_version,    
     null, 
     demographic_text_index.nextVal 
@@ -175,10 +175,4 @@ delete from PRIVATE_DEMOGRAPHIC_FACT where concept_cd = '@';
 
 -- CREATE VIEW
 create or replace view  DEID_DEMOGRAPHIC_FACT as 
-select * from PRIVATE_DEMOGRAPHIC_FACT;         
-
-
-
-
-
-
+select * from PRIVATE_DEMOGRAPHIC_FACT;

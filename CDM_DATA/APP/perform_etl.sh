@@ -13,6 +13,7 @@ sed -i "s|#cdm_db|$CDM_DB|g" ${CONFIGURE_PATH}
 sed -i "s|#cdm_version|$CDM_VERSION|g" ${CONFIGURE_PATH}
 sed -i "s|#intermediate_db|$INTERMEDIATE_DB|g" ${CONFIGURE_PATH}
 sed -i "s|#target_db|$TARGET_DB|g" ${CONFIGURE_PATH}
+sed -i "s|#pm_db|$PM_DB|g" ${CONFIGURE_PATH}
 sed -i "s|#target_schema|$TARGET_SCHEMA|g" ${CONFIGURE_PATH}
 
 

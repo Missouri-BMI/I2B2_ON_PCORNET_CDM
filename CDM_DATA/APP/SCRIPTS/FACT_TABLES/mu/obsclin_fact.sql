@@ -11,7 +11,7 @@ select fact.*,
         when obsclin_type = 'SM' then concat('SNOMED:', obsclin_code)
         else concat('OT:', obsclin_code)
         END                                 as I2B2_CONCEPT_CD,
-    '-1'                               as I2B2_PROVIDER_ID,
+    '@'                               as I2B2_PROVIDER_ID,
     TO_TIMESTAMP(obsclin_start_date   :: DATE || ' ' || obsclin_start_time, 'YYYY-MM-DD HH24:MI:SS') as I2B2_START_DATE,
     cast('@' as VARCHAR(100))          as I2B2_MODIFIER_CD,
     cast(1 as integer)                 as I2B2_INSTANCE_NUM,
@@ -51,7 +51,7 @@ select fact.*,
         when obsclin_type = 'SM' then concat('SNOMED:', obsclin_code)
         else concat('OT:', obsclin_code)
         END                                 as I2B2_CONCEPT_CD,
-    '-1'                              as I2B2_PROVIDER_ID,
+    '@'                              as I2B2_PROVIDER_ID,
     TO_TIMESTAMP(obsclin_start_date   :: DATE || ' ' || obsclin_start_time, 'YYYY-MM-DD HH24:MI:SS') as I2B2_START_DATE,
     cast('@' as VARCHAR(100))         as I2B2_MODIFIER_CD,
     cast(1 as integer)                as I2B2_INSTANCE_NUM,
