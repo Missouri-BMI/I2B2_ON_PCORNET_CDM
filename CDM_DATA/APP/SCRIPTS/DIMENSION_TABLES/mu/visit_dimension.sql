@@ -2,17 +2,20 @@ create or replace table PRIVATE_VISIT_DIMENSION
 as 
 select 
     dim.*,
+    COALESCE(providerID, '@') as I2B2_PROVIDER_ID,
     pc.i2b2_patid                                as I2B2_PATIENT_NUM,
     ec.i2b2_encounterid                          as I2B2_ENCOUNTER_NUM,
+    TO_TIMESTAMP(admit_date :: DATE || ' ' || admit_time, 'YYYY-MM-DD HH24:MI:SS') AS I2B2_START_DATE,
+    TO_TIMESTAMP(COALESCE(discharge_date, admit_date) :: DATE || ' ' || COALESCE(discharge_time, '00:00:00'), 'YYYY-MM-DD HH24:MI:SS') AS I2B2_END_DATE,
     cast(null as VARCHAR(50))                    as I2B2_ACTIVE_STATUS_CD,
     cast(null as VARCHAR(50))                    as I2B2_LOCATION_CD,
     cast(null as VARCHAR(900))                   as I2B2_LOCATION_PATH,
     cast(null as text)                           as I2B2_VISIT_BLOB,
-    cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_UPDATE_DATE,
-    cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_DOWNLOAD_DATE,
-    cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_IMPORT_DATE,
-    cast($cdm_version 	as VARCHAR(50))          as I2B2_SOURCESYSTEM_CD,    
-    cast(null	as integer)                      as I2B2_UPLOAD_ID
+    CURRENT_TIMESTAMP                            as I2B2_UPDATE_DATE,
+    CURRENT_TIMESTAMP                            as I2B2_DOWNLOAD_DATE,
+    CURRENT_TIMESTAMP                            as I2B2_IMPORT_DATE,
+    cast($cdm_version as VARCHAR(50))            as I2B2_SOURCESYSTEM_CD,    
+    cast(null as  integer)                        as I2B2_UPLOAD_ID
 from identifier($visit_source_table) as dim
 inner join identifier($patient_crosswalk) as pc
 using (patid)
@@ -26,9 +29,9 @@ as
 select
     I2B2_ENCOUNTER_NUM as encounter_num,
     I2B2_PATIENT_NUM   as patient_num,
-    COALESCE(providerID, '-1') as provider_id,
-    TO_TIMESTAMP(admit_date :: DATE || ' ' || admit_time, 'YYYY-MM-DD HH24:MI:SS') AS start_date,
-    TO_TIMESTAMP(COALESCE(discharge_date, admit_date) :: DATE || ' ' || COALESCE(discharge_time, '00:00:00'), 'YYYY-MM-DD HH24:MI:SS') AS end_date,
+    I2B2_PROVIDER_ID as provider_id,
+    I2B2_START_DATE AS start_date,
+    I2B2_END_DATE AS end_date,
     ENC_TYPE as INOUT_CD,
     facilityid,
     facility_location,

@@ -5,9 +5,9 @@ select
     cast('@'  as VARCHAR(700))                   as I2B2_PROVIDER_PATH,
     cast(null as VARCHAR(850))                   as I2B2_NAME_CHAR,
     cast(null as text)                           as I2B2_PROVIDER_BLOB,
-    cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_UPDATE_DATE,
-    cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_DOWNLOAD_DATE,
-    cast(CURRENT_DATE()  as TIMESTAMP)           as I2B2_IMPORT_DATE,
+    CURRENT_TIMESTAMP                          as I2B2_UPDATE_DATE,
+    CURRENT_TIMESTAMP                          as I2B2_DOWNLOAD_DATE,
+    CURRENT_TIMESTAMP                          as I2B2_IMPORT_DATE,
     cast($cdm_version 	as VARCHAR(50))          as I2B2_SOURCESYSTEM_CD,         
     cast(null	as INT)                          as I2B2_UPLOAD_ID
 from identifier($provider_source_table) as dim;            

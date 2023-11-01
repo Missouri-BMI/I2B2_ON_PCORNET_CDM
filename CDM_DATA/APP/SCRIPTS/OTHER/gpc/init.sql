@@ -3,6 +3,7 @@ set cdm_version = '#cdm_version';
 set cdm_schema = $cdm_db || '.' || $cdm_version;
 set i2b2_intermediate_db = '#intermediate_db';
 set target_db = '#target_db';
+set pm_db = '#pm_db';
 set target_schema = $target_db || '.' || '#target_schema';
 
 --dimensions
