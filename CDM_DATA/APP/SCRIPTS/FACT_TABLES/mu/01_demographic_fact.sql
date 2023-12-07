@@ -32,12 +32,12 @@ select
     cast(-1 as NUMBER(38, 0))                                                       as ENCOUNTER_NUM, 
     PATIENT_NUM, 
     CASE
-        WHEN dim.RACE_CD =  'American Indian or Alaska Native' THEN  concat('DEM|RACE:', '01')
-        WHEN dim.RACE_CD =  'Asian' THEN  concat('DEM|RACE:', '02')
-        WHEN dim.RACE_CD =  'Black or African American' THEN  concat('DEM|RACE:', '03')
-        WHEN dim.RACE_CD =  'Native Hawaiian or Other Pacific Islander' THEN  concat('DEM|RACE:', '04')
-        WHEN dim.RACE_CD =  'White' THEN  concat('DEM|RACE:', '05')
-        WHEN dim.RACE_CD =  'Multiple race' THEN  concat('DEM|RACE:', '06')
+        WHEN dim.RACE_CD =  'American Indian or Alaska Native' THEN  concat('DEM|RACE:', 'NA')
+        WHEN dim.RACE_CD =  'Asian' THEN  concat('DEM|RACE:', 'AS')
+        WHEN dim.RACE_CD =  'Black or African American' THEN  concat('DEM|RACE:', 'B')
+        WHEN dim.RACE_CD =  'Native Hawaiian or Other Pacific Islander' THEN  concat('DEM|RACE:', 'H')
+        WHEN dim.RACE_CD =  'White' THEN  concat('DEM|RACE:', 'W')
+        WHEN dim.RACE_CD =  'Multiple race' THEN  concat('DEM|RACE:', 'M')
         WHEN dim.RACE_CD =  'Refuse to answer' THEN  concat('DEM|RACE:', '07')
         WHEN dim.RACE_CD =  'No information' THEN  concat('DEM|RACE:', 'NI')
         WHEN dim.RACE_CD =  'Unknown' THEN  concat('DEM|RACE:', 'UN')

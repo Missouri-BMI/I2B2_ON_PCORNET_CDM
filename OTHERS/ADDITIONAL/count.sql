@@ -13,8 +13,8 @@ select runtotalnum('procedure_fact', 'i2b2demodata', 'ACT_CPT_PX_2018AA');
 select runtotalnum('procedure_fact', 'i2b2demodata', 'I2B2_CPT4');
 select runtotalnum('procedure_fact', 'i2b2demodata', 'ACT_HCPCS_PX_2018AA');
 
-select runtotalnum('prescribing_fact', 'i2b2demodata', 'ACT_MED_VA_V2_092818');
-select runtotalnum('prescribing_fact', 'i2b2demodata', 'ACT_MED_ALPHA_V2_092818');
+select runtotalnum('MEDICATION_FACT', 'i2b2demodata', 'ACT_MED_VA_V2_092818');
+select runtotalnum('MEDICATION_FACT', 'i2b2demodata', 'ACT_MED_ALPHA_V2_092818');
 
 select runtotalnum('lab_fact', 'i2b2demodata', 'ACT_LOINC_LAB_2018AA');
 select runtotalnum('lab_fact', 'i2b2demodata', 'NCATS_LABS');

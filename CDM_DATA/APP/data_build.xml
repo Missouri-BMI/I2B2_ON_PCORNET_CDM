@@ -11,7 +11,7 @@
 	<!-- =================================================================== -->
 	<target name="init"  description="Prepare for build">
 		<path id="classpath">
-			<pathelement location="./snowflake-jdbc-3.13.29.jar"/>
+			<pathelement location="./snowflake-jdbc-3.14.5.jar"/>
 		</path>
 	</target>
 
@@ -20,6 +20,9 @@
 	<!-- 								ETL 								 -->
 	<!-- =================================================================== -->
 	<target name="perform_etl" depends="init">
+		<!-- <sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="abort" autocommit="true">
+			<transaction src="./SCRIPTS/OTHER/${db.project}/delete.sql" />
+	   	</sql> -->
 		
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="abort" autocommit="true">
 			<transaction src="./SCRIPTS/OTHER/${db.project}/crosswalk.sql" />

@@ -3,8 +3,21 @@ create or replace view #target_schema.VISIT_FACT as
 select
     ENCOUNTER_NUM, 
     PATIENT_NUM, 
-    concat('VISIT|TYPE:', COALESCE(inout_cd, 'UN'))                                             as CONCEPT_CD,
-    PROVIDER_ID, 
+    CASE
+        WHEN inout_cd =  'IS' THEN  concat('VISIT|TYPE:', 'NA')
+        WHEN inout_cd =  'OS' THEN  concat('VISIT|TYPE:', 'OB')
+        WHEN inout_cd =  'OA' THEN  concat('VISIT|TYPE:', 'X')
+        WHEN inout_cd =  'NI' THEN  concat('VISIT|TYPE:', 'N')
+        WHEN inout_cd =  'AV' THEN  concat('VISIT|TYPE:', 'O')
+        WHEN inout_cd =  'ED' THEN  concat('VISIT|TYPE:', 'E')
+        WHEN inout_cd =  'EI' THEN  concat('VISIT|TYPE:', 'EI')
+        WHEN inout_cd =  'IP' THEN  concat('VISIT|TYPE:', 'I')
+        WHEN inout_cd =  'IC' THEN  concat('VISIT|TYPE:', 'IC')
+        WHEN inout_cd =  'UN' THEN  concat('VISIT|TYPE:', 'N')
+        WHEN inout_cd =  'TH' THEN  concat('VISIT|TYPE:', 'T')
+        ELSE concat('VISIT|TYPE:', 'N')
+    END                                                                                         as CONCEPT_CD,
+    '@'                                                                                         as PROVIDER_ID,
     coalesce(START_DATE, CURRENT_TIMESTAMP)                                                     as START_DATE,  
     '@'                                                                                         as MODIFIER_CD,
     1                                                                                           as INSTANCE_NUM, 
@@ -44,7 +57,7 @@ select
         WHEN LENGTH_OF_STAY >  10 THEN  concat('VISIT|LENGTH:', '>10')
         ELSE concat('VISIT|LENGTH:', '0')
     END                                                                                        as CONCEPT_CD,
-    PROVIDER_ID, 
+    '@'                                                                                        as PROVIDER_ID, 
     coalesce(START_DATE, CURRENT_TIMESTAMP)                                                    as START_DATE,  
     '@'                                                                                        as MODIFIER_CD,
     1                                                                                          as INSTANCE_NUM, 

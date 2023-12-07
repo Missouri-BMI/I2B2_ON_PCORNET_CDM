@@ -1,0 +1,24 @@
+CONCEPT_PATH	CONCEPT_CD	NAME_CHAR	CONCEPT_BLOB	UPDATE_DATE	DOWNLOAD_DATE	IMPORT_DATE	SOURCESYSTEM_CD	UPLOAD_ID
+\ACT\Demographics\Sex\Ambiguous\	DEM|SEX:A	Ambiguous		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Sex\Other\	DEM|SEX:OT	Other		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Sex\No Information\	DEM|SEX:NI	No Infomation		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Sex\Female\	DEM|SEX:F	Female		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Sex\Male\	DEM|SEX:M	Male		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Sex\Unknown\	DEM|SEX:UN	Unknown		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Hispanic\Yes\	DEM|HISP:Y	Yes		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Hispanic\No\	DEM|HISP:N	No		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	              
+\ACT\Demographics\Hispanic\Refuse to answer\	DEM|HISP:R	Refuse to answer		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Hispanic\No Information\	DEM|HISP:NI	No Information		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Hispanic\Unknown\	DEM|HISP:UN	Unknown		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Hispanic\Other\	DEM|HISP:OT	Other		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	              
+\ACT\Demographics\Race\American Indian or Alaska Native\	DEM|RACE:01	American Indian or Alaska Native		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	       
+\ACT\Demographics\Race\Asian\	DEM|RACE:02	Asian		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	   
+\ACT\Demographics\Race\Black or African American\	DEM|RACE:03	Black or African American		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	             
+\ACT\Demographics\Race\Native Hawaiian or Other Pacific Islander\	DEM|RACE:04	Native Hawaiian or Other Pacific Islander		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	    
+\ACT\Demographics\Race\White\	DEM|RACE:05	White		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	
+\ACT\Demographics\Race\Multiple race\	DEM|RACE:06	Multiple race		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	           
+\ACT\Demographics\Race\Refuse to answer\	DEM|RACE:07	Refuse to answer		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	           
+\ACT\Demographics\Race\No information\	DEM|RACE:NI	No information		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	           
+\ACT\Demographics\Race\Unknown\	DEM|RACE:UN	Unknown		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	           
+\ACT\Demographics\Race\Other\	DEM|RACE:OT	Other		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT	     
+\ACT\Demographics\Vital Status\Known Deceased\	DEM|VITAL STATUS:D	Known Deceased		CURRENT_DATE	CURRENT_DATE	CURRENT_DATE	ACT 
