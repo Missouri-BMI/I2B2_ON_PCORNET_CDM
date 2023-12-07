@@ -24,6 +24,7 @@ find /app/SCRIPTS/DIMENSION_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_sch
 
 find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#source_schema.|$SOURCE_DB.$SOURCE_SCHEMA.|g" {} +
 find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_schema.|$TARGET_DB.$TARGET_SCHEMA.|g" {} +
+find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_db.|$TARGET_DB.|g" {} +
 
 
 # Perform ETL opertation
