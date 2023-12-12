@@ -69,3 +69,11 @@ BEGIN
 END;
 
 call create_tumor_fact();
+
+
+update i2b2_dev.i2b2metadata.table_access
+        set c_facttablecolumn = 'tumor_fact.concept_cd'
+        where c_table_name = 'NAACCR_ONTOLOGY';
+
+update i2b2_dev.i2b2metadata.NAACCR_ONTOLOGY
+set c_facttablecolumn = 'tumor_fact.concept_cd';
