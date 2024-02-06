@@ -10,21 +10,25 @@ sed -i "s|db.project=.*|db.project=$PROJECT|g" ${CONFIGURE_PATH}
 
 CONFIGURE_PATH=/app/SCRIPTS/OTHER/$PROJECT/project_config.sql
 sed -i "s|#target_db|$TARGET_DB|g" ${CONFIGURE_PATH}
+sed -i "s|#source_schema|$SOURCE_DB.$SOURCE_SCHEMA|g" ${CONFIGURE_PATH}
 sed -i "s|#target_schema|$TARGET_SCHEMA|g" ${CONFIGURE_PATH}
 sed -i "s|#pm_db|$PM_DB|g" ${CONFIGURE_PATH}
-sed -i "s|#update_date|$UPDATE_DATE|g" ${CONFIGURE_PATH}
-sed -i "s|#project_text|$PROJECT_TEXT|g" ${CONFIGURE_PATH}
+
 
 CONFIGURE_PATH=/app/SCRIPTS/OTHER/$PROJECT/crosswalk.sql
-sed -i "s|#source_schema.|$SOURCE_DB.$SOURCE_SCHEMA.|g" ${CONFIGURE_PATH}
-sed -i "s|#target_schema.|$TARGET_DB.$TARGET_SCHEMA.|g" ${CONFIGURE_PATH}
+sed -i "s|#source_schema|$SOURCE_DB.$SOURCE_SCHEMA|g" ${CONFIGURE_PATH}
+sed -i "s|#target_schema|$TARGET_DB.$TARGET_SCHEMA|g" ${CONFIGURE_PATH}
 
-find /app/SCRIPTS/DIMENSION_TABLES/$PROJECT/ -type f -exec sed -i "s|#source_schema.|$SOURCE_DB.$SOURCE_SCHEMA.|g" {} +
-find /app/SCRIPTS/DIMENSION_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_schema.|$TARGET_DB.$TARGET_SCHEMA.|g" {} +
 
-find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#source_schema.|$SOURCE_DB.$SOURCE_SCHEMA.|g" {} +
-find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_schema.|$TARGET_DB.$TARGET_SCHEMA.|g" {} +
-find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_db.|$TARGET_DB.|g" {} +
+CONFIGURE_PATH=/app/SCRIPTS/OTHER/$PROJECT/delete.sql
+sed -i "s|#target_db|$TARGET_DB|g" ${CONFIGURE_PATH}
+
+find /app/SCRIPTS/DIMENSION_TABLES/$PROJECT/ -type f -exec sed -i "s|#source_schema|$SOURCE_DB.$SOURCE_SCHEMA|g" {} +
+find /app/SCRIPTS/DIMENSION_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_schema|$TARGET_DB.$TARGET_SCHEMA|g" {} +
+
+find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#source_schema|$SOURCE_DB.$SOURCE_SCHEMA|g" {} +
+find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_schema|$TARGET_DB.$TARGET_SCHEMA|g" {} +
+find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_db|$TARGET_DB|g" {} +
 
 
 # Perform ETL opertation

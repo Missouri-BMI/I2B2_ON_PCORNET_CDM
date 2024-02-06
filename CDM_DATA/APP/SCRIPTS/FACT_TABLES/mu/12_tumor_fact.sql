@@ -1,14 +1,17 @@
+set target_db = '#target_db';
+use database identifier($target_db);
+
 CREATE OR REPLACE PROCEDURE tumor_columns()
 RETURNS VARCHAR
 LANGUAGE SQL
-AS
+AS 
 DECLARE
   column_names VARCHAR DEFAULT '';  
   cur CURSOR FOR 
     SELECT column_name from DEIDENTIFIED_PCORNET_CDM.information_schema.columns
     where 
         table_name = 'DEID_TUMOR' 
-        and table_schema = 'CDM_2023_OCT'
+        and table_schema = 'CDM'
         and lower(column_name) like lower('%_N%') 
         and lower(column_name) not like lower('RAW_%')
         and data_type = 'TEXT';
@@ -25,7 +28,6 @@ BEGIN
     end for;
     return column_names;
 END;
-
 
 CREATE OR REPLACE PROCEDURE create_tumor_fact()
 RETURNS VARCHAR NULL
@@ -60,7 +62,7 @@ BEGIN
         ||  '   CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,' || '\n'
         ||  '   cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,   '     || '\n'                                                             
         ||  '   cast(null as  integer)                                                                          as UPLOAD_ID ' || '\n'
-        ||  'from DEIDENTIFIED_PCORNET_CDM.CDM_2023_OCT.DEID_TUMOR' || '\n'
+        ||  'from DEIDENTIFIED_PCORNET_CDM.CDM.DEID_TUMOR' || '\n'
         ||  'unpivot (concept_cd for concept IN (' || :column_names || '))' || '\n'
         ||  'order by patid;'
     ;
