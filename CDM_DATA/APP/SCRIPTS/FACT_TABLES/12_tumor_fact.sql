@@ -1,5 +1,8 @@
-set target_db = '#target_db';
+set target_db = 'i2b2_dev';
+set target_schema = $target_db || '.' || 'i2b2data';
+
 use database identifier($target_db);
+use schema identifier($target_schema);
 
 CREATE OR REPLACE PROCEDURE tumor_columns()
 RETURNS VARCHAR
@@ -38,7 +41,7 @@ DECLARE
     v_sql VARCHAR;
 BEGIN
     call tumor_columns() into :column_names;
-    v_sql := 'CREATE OR REPLACE TABLE TUMOR_FACT AS ' || '\n' 
+    v_sql := 'CREATE OR REPLACE TABLE i2b2_dev.i2b2data.TUMOR_FACT AS ' || '\n' 
         ||  'select ' 
         ||  '   -1 :: NUMBER(38, 0)                                                                             as ENCOUNTER_NUM, ' || '\n'
         ||  '   PATID :: NUMBER(38, 0)                                                                          as PATIENT_NUM, ' || '\n'
