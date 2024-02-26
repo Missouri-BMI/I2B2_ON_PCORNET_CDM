@@ -53,6 +53,3 @@ select
 -- from #source_schema.DEID_ADI fact
 from DEIDENTIFIED_PCORNET_CDM.CDM.DEID_ADI fact
 where ADI_STATERNK is not null;
-
-
-call I2B2_DEV.I2B2METADATA.RUNTOTALNUM('ADI_FACT', 'I2B2DATA', 'ADI_RANKING');

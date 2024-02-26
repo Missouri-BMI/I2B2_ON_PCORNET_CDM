@@ -1,0 +1,7 @@
+#!/bin/bash
+
+./import/00_stage-init.sh
+./import/01_stage.sh
+./import/02_load.sh
+
+

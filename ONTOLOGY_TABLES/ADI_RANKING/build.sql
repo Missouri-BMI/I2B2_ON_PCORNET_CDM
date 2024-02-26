@@ -131,7 +131,7 @@ union all
 select
     3
     ,  '\\ADI_RANKING\\ADI_STATERNK\\' || ADI_STATERNK || '\\'
-    , ADI_STATERNK
+    , 'ADI State Rank:' || ADI_STATERNK
     , 'N'
     , 'LA'
     , NULL
@@ -144,7 +144,7 @@ select
     , 'LIKE'
     , '\\ADI_RANKING\\ADI_STATERNK\\' || ADI_STATERNK || '\\'
     , NULL
-    , ADI_STATERNK
+    , 'ADI State Rank:' || ADI_STATERNK
     , '@'
     , CURRENT_DATE
     , CURRENT_DATE
@@ -159,8 +159,8 @@ union all
 -- Insert national ranks 
 select
     3
-    ,  '\\ADI_RANKING\\ADI_NATRANK\\' || ADI_NATRANK || '\\'
-    , ADI_NATRANK
+    , '\\ADI_RANKING\\ADI_NATRANK\\' || ADI_NATRANK || '\\'
+    , 'ADI National Rank:' || ADI_NATRANK
     , 'N'
     , 'LA'
     , NULL
@@ -173,7 +173,7 @@ select
     , 'LIKE'
     , '\\ADI_RANKING\\ADI_NATRANK\\' || ADI_NATRANK || '\\'
     , NULL
-    , ADI_NATRANK
+    , 'ADI National Rank:' || ADI_NATRANK
     , '@'
     , CURRENT_DATE
     , CURRENT_DATE
