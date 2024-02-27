@@ -54,3 +54,7 @@ where PARAM_NAME_CD = 'edu.harvard.i2b2.crc.analysis.queue.medium.maxjobcount';
 update identifier($table_name)
 set value = 1000
 where PARAM_NAME_CD = 'edu.harvard.i2b2.crc.lockout.setfinderquery.count';
+
+update identifier($table_name)
+set value = true
+where PARAM_NAME_CD = 'queryprocessor.multifacttable';
