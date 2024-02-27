@@ -25,7 +25,7 @@ concept_df[columns] = concept_df[columns].astype('object')
 #
 concept_df['C_FACTTABLECOLUMN'].loc[(concept_df['C_FACTTABLECOLUMN'] == 'concept_cd')] = 'demographic_fact.concept_cd'
 #
-concept_df['C_FACTTABLECOLUMN'].loc[(concept_df['C_FULLNAME'] == '\ACT\Demographics\Patient Counts\One Medication\\')] = 'PRESCRIBING_FACT.concept_cd'
+concept_df['C_FACTTABLECOLUMN'].loc[(concept_df['C_FULLNAME'] == '\ACT\Demographics\Patient Counts\One Medication\\')] = 'MEDICATION_FACT.concept_cd'
 #
 concept_df['C_FACTTABLECOLUMN'].loc[(concept_df['C_FULLNAME'] == '\ACT\Demographics\Patient Counts\One Procedure\\')] = 'PROCEDURE_FACT.concept_cd'
 #

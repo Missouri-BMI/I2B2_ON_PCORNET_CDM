@@ -4,7 +4,7 @@ select
     ENCOUNTER_NUM, 
     PATIENT_NUM, 
     concat('VISIT|TYPE:', COALESCE(inout_cd, 'UN'))                                             as CONCEPT_CD,
-    PROVIDER_ID, 
+    '@'                                                                                         as PROVIDER_ID, 
     coalesce(START_DATE, CURRENT_TIMESTAMP)                                                     as START_DATE,  
     '@'                                                                                         as MODIFIER_CD,
     1                                                                                           as INSTANCE_NUM, 
@@ -44,7 +44,7 @@ select
         WHEN LENGTH_OF_STAY >  10 THEN  concat('VISIT|LENGTH:', '>10')
         ELSE concat('VISIT|LENGTH:', '0')
     END                                                                                        as CONCEPT_CD,
-    PROVIDER_ID, 
+    '@'                                                                                        as PROVIDER_ID, 
     coalesce(START_DATE, CURRENT_TIMESTAMP)                                                    as START_DATE,  
     '@'                                                                                        as MODIFIER_CD,
     1                                                                                          as INSTANCE_NUM, 

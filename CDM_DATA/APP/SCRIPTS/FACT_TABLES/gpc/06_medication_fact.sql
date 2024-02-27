@@ -1,4 +1,4 @@
-create or replace view  #target_schema.PRESCRIBING_FACT as
+create or replace view  #target_schema.MEDICATION_FACT as
 select
     ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
     pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 

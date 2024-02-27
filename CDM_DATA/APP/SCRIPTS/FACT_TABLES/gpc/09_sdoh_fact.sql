@@ -53,7 +53,7 @@ select
           WHEN PAYER_TYPE_PRIMARY =  'UN' THEN 'LOINC:LA22079-0'
           ELSE 'LOINC:LA22079-0'
      END                                                                                            as CONCEPT_CD,
-    PROVIDER_ID                                                                                     as PROVIDER_ID, 
+    '@'                                                                                             as PROVIDER_ID, 
     coalesce(START_DATE, CURRENT_TIMESTAMP)                                                         as START_DATE,  
     '@'                                                                                             as MODIFIER_CD,
     1                                                                                               as INSTANCE_NUM, 

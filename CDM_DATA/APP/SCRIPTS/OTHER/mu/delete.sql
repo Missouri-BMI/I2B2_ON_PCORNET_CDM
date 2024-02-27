@@ -16,5 +16,4 @@ BEGIN
         end if;
     END FOR;
 END;
-
 call delete_all_facts();

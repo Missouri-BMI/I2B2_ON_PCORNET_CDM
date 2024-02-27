@@ -25,6 +25,7 @@ select
         WHEN dim.RACE is null then 'No information'
         ELSE 'No information'
     END                                                     AS RACE_CD,
+    cast(null as VARCHAR(50))                               AS MARITAL_STATUS_CD,
     cast(null as integer)                                   as AGE_IN_YEARS_NUM,
     cast(null as VARCHAR(50))                               as RELIGION_CD,
     cast(null as VARCHAR(10))                               as ZIP_CD,
@@ -34,7 +35,7 @@ select
     CURRENT_TIMESTAMP                                       as UPDATE_DATE,
     CURRENT_TIMESTAMP                                       as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                       as IMPORT_DATE,
-    cast(null 	as VARCHAR(50))                     as SOURCESYSTEM_CD,
+    cast(null 	as VARCHAR(50))                             as SOURCESYSTEM_CD,
     cast(null	as INT)                                     as UPLOAD_ID
 from #source_schema.DEID_DEMOGRAPHIC as dim
 left join #source_schema.DEID_DEATH as dead  
