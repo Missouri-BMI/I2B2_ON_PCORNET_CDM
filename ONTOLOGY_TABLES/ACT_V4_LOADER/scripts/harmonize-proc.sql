@@ -19,24 +19,37 @@ BEGIN
     for record in cur do
         ont_table_cd := record.c_table_cd;
         case (ont_table_cd)
-            when 'ACT_COVID_V1' then fact_table_column := 'covid_fact.concept_cd';
-            when 'ACT_PX_CPT_2018' then fact_table_column := 'procedure_fact.concept_cd';
             when 'ACT_DEMO' then fact_table_column := 'demographic_fact.concept_cd';
-            when 'ACT_PX_HCPCS_2018' then fact_table_column := 'procedure_fact.concept_cd';
             when 'ACT_DX_ICD10_2018' then fact_table_column := 'diagnosis_fact.concept_cd';
-            when 'ACT_PX_ICD10_2018' then fact_table_column := 'procedure_fact.concept_cd';
             when 'ACT_DX_10_9' then fact_table_column := 'diagnosis_fact.concept_cd';
-            when 'ACT_DX_ICD9_2018' then fact_table_column := 'diagnosis_fact.concept_cd';
+            when 'ACT_DX_ICD9_2018' 
+            then 
+                fact_table_column := 'diagnosis_fact.concept_cd';
+                execute immediate ('update ' || r.c_table_name || ' set c_visualattributes = \'FH\' where c_name like \'630-677.99 Complications Of Pregnancy, Childbirth, And The Puerperium\'');
+            when 'ACT_RESEARCH' then fact_table_column := 'diagnosis_fact.concept_cd';
+
+
+
+            when 'ACT_PX_CPT_2018' then fact_table_column := 'procedure_fact.concept_cd';
+            when 'ACT_PX_HCPCS_2018' then fact_table_column := 'procedure_fact.concept_cd';
+            when 'ACT_PX_ICD10_2018' then fact_table_column := 'procedure_fact.concept_cd';
             when 'ACT_PX_ICD9_2018' then fact_table_column := 'procedure_fact.concept_cd';
-            when 'ACT_LAB_LOINC_2018' then fact_table_column := 'lab_fact.concept_cd';
-            when 'ACT_LAB' then fact_table_column := 'lab_fact.concept_cd';
+            when 'ACT_VAX' then fact_table_column := 'procedure_fact.concept_cd';
+
             when 'ACT_MED_ALPHA_2018' then fact_table_column := 'medication_fact.concept_cd';
             when 'ACT_MED_VA_2018' then fact_table_column := 'medication_fact.concept_cd';
-            when 'ACT_RESEARCH' then fact_table_column := 'diagnosis_fact.concept_cd';
-            when 'ACT_SDOH' then fact_table_column := 'sdoh_fact.concept_cd';
-            when 'ACT_VAX' then fact_table_column := 'procedure_fact.concept_cd';
+
+            when 'ACT_LAB_LOINC_2018' then fact_table_column := 'lab_fact.concept_cd';
+            when 'ACT_LAB' then fact_table_column := 'lab_fact.concept_cd';
+            
+            when 'ACT_COVID_V1' then fact_table_column := 'covid_fact.concept_cd';
+            
             when 'ACT_VISIT' then fact_table_column := 'visit_fact.concept_cd';
-            when 'ACT_VITAL_SIGNS' then fact_table_column := 'vital_fact.concept_cd';
+            when 'ACT_VITAL_SIGNS' 
+            then 
+                fact_table_column := 'vital_fact.concept_cd';
+                execute immediate ('update ' || r.c_table_name || ' set c_metadataxml = replace(c_metadataxml,\'>gm<\', \'>kg<\') where lower(c_name) like \'body weight%\'');
+            when 'ACT_SDOH' then fact_table_column := 'sdoh_fact.concept_cd';
             when 'ACT_ZIPCODE' then fact_table_column := 'sdoh_fact.concept_cd';
             ELSE fact_table_column := 'concept_cd';
         end;

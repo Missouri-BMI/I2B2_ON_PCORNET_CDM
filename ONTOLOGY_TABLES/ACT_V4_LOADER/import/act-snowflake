@@ -1,9 +1,0 @@
-#!/bin/bash
-
-./import/00_stage-init.sh
-./import/01_stage.sh
-./import/02_load.sh
-./import/03_harmonize.sh
-./import/04_import.sh
-
-

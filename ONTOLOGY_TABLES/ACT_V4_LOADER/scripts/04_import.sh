@@ -17,9 +17,9 @@ snowsql -c etl_user -d $SOURCE_DB -s $SOURCE_SCHEMA  <<- EOSQL
     
 EOSQL
 
-snowsql -c etl_user -d $TARGET_DB -s $TARGET_METADATA -f /home/import/clean-proc.sql
+snowsql -c etl_user -d $TARGET_DB -s $TARGET_METADATA -f /home/scripts/clean-proc.sql
 snowsql -c etl_user -d $TARGET_DB -s $TARGET_METADATA -q "call clear_ont_tables();"
 
 
-snowsql -c etl_user -d $SOURCE_DB -s $SOURCE_SCHEMA -f /home/import/import-proc.sql
+snowsql -c etl_user -d $SOURCE_DB -s $SOURCE_SCHEMA -f /home/scripts/import-proc.sql
 snowsql -c etl_user -d $SOURCE_DB -s $SOURCE_SCHEMA -q "call import_ont_tables('$TARGET_DB','$TARGET_METADATA');"

@@ -9,9 +9,9 @@ WORKDIR /home
 
 COPY /conf/snowsql.cnf /etc/
 
-COPY import/ ./import/
+COPY scripts/ ./scripts/
 
-RUN chmod -R 755 ./import
+RUN chmod -R 755 ./scripts
 
 
-CMD [ "./import/act-snowflake" ]
+CMD [ "./scripts/act-snowflake" ]
