@@ -12,7 +12,7 @@ c_basecode = concat('VISIT|TYPE:', c_basecode)
 where c_fullname like '%\\ACT\\Visit Details\\Visit type\\%';
 
 insert into i2b2data.concept_dimension ( concept_path, concept_cd, name_char, concept_blob, update_date, download_date, import_date, sourcesystem_cd, upload_id)
-select c_fullname
+select c_dimcode
 , c_basecode
 , c_name
 , null
