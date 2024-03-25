@@ -1,4 +1,4 @@
-create or replace view  #target_schema.PRESCRIBING_FACT as
+create or replace view  #target_schema.MEDICATION_FACT as
 select
     cast(ENCOUNTERID as NUMBER(38, 0))                                                              as ENCOUNTER_NUM, 
     cast(PATID as NUMBER(38, 0))                                                                    as PATIENT_NUM, 

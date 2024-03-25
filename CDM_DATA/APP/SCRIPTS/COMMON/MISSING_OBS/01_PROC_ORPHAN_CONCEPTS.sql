@@ -3,7 +3,7 @@ RETURNS INTEGER NULL
 LANGUAGE SQL
 AS
 DECLARE
-    fact_tables RESULTSET DEFAULT (select table_name from information_schema.tables where lower(table_name) like lower('%_FACT'));
+    fact_tables RESULTSET DEFAULT (select table_name from information_schema.tables where lower(table_name) like lower('%_FACT') and lower(table_name) != 'tumor_fact');
     v_sqlStr TEXT DEFAULT '';  
     fact_cur CURSOR FOR fact_tables; 
 BEGIN
