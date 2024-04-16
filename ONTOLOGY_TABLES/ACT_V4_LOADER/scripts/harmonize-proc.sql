@@ -101,6 +101,52 @@ end;
 $$
 ;
 
+create or replace procedure handle_covid_ont(tableName varchar)
+RETURNS INTEGER NULL
+LANGUAGE SQL
+AS
+$$
+begin
+    ---visit type in covid
+    update identifier(:tableName) 
+    set c_basecode = 
+    CASE 
+        WHEN c_dimcode = 'O' THEN concat('VISIT|TYPE:', 'AV')
+        WHEN c_dimcode = 'I' THEN concat('VISIT|TYPE:', 'IP')
+        WHEN c_dimcode = 'E' THEN concat('VISIT|TYPE:', 'ED')
+        WHEN c_dimcode = 'EI' THEN concat('VISIT|TYPE:', 'EI')
+    end
+    , c_facttablecolumn = 'covid_fact.concept_cd'
+    , c_tablename = 'concept_dimension'
+    , c_columnname = 'concept_path'
+    , c_columndatatype = 'T'
+    , c_operator = 'LIKE'
+    , c_dimcode = c_fullname
+    where c_columnname = 'inout_cd';
+    
+    --
+    update identifier(:tableName) 
+    set c_facttablecolumn = 'patient_num'
+    where c_columnname = 'patient_num';
+
+    --
+    insert into concept_dimension ( concept_path, concept_cd, name_char, concept_blob, update_date, download_date, import_date, sourcesystem_cd, upload_id)
+        select
+            c_dimcode
+            , c_basecode
+            , c_name
+            , null
+            , current_timestamp
+            , current_timestamp
+            , current_timestamp
+            , 'ACT'
+            , null
+        from identifier(:tableName) 
+        WHERE C_BASECODE LIKE 'VISIT|TYPE:%';         
+end;
+$$
+;
+
 CREATE OR REPLACE PROCEDURE harmonize_proc(
 
 )
@@ -164,8 +210,11 @@ BEGIN
             when 'ACT_LAB_LOINC_2018' then fact_table_column := 'lab_fact.concept_cd';
             when 'ACT_LAB' then fact_table_column := 'lab_fact.concept_cd';
             
-            when 'ACT_COVID_V1' then fact_table_column := 'covid_fact.concept_cd';
-            
+            when 'ACT_COVID_V1' then 
+                fact_table_column := 'covid_fact.concept_cd';
+                tableName := record.c_table_name;
+                call handle_covid_ont(:tableName);
+                
             when 'ACT_VITAL_SIGNS' 
             then 
                 fact_table_column := 'vital_fact.concept_cd';

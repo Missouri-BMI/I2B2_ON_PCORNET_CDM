@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-# ./scripts/00_stage-init.sh
-# ./scripts/01_stage.sh
-# ./scripts/02_load.sh
+./scripts/00_stage-init.sh
+./scripts/01_stage.sh
+./scripts/02_load.sh
 ./scripts/03_harmonize.sh
 ./scripts/04_import.sh
 
