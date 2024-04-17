@@ -25,9 +25,9 @@ select
     cast( null as VARCHAR(50))                                                                  as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from #source_schema.V_DEID_OBS_GEN fact
-where OBSGEN_TYPE = 'LC' and ENCOUNTERID is not null
 inner join #target_schema.patient_crosswalk as pc
 using (patid)
 inner join #target_schema.encounter_crosswalk as ec
 using (ENCOUNTERID)
+where OBSGEN_TYPE = 'LC' and ENCOUNTERID is not null
 ;
