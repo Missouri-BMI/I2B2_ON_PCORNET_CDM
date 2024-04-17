@@ -28,7 +28,7 @@ select
     cast(null as VARCHAR(50))                                                                   as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from #source_schema.GPC_DEID_PROCEDURES fact
-inner join #source_schema.patient_crosswalk as pc
+inner join #target_schema.patient_crosswalk as pc
 using (patid)
-inner join #source_schema.encounter_crosswalk as ec
+inner join #target_schema.encounter_crosswalk as ec
 using (ENCOUNTERID);  

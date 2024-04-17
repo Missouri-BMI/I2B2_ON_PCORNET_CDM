@@ -24,7 +24,7 @@ select
     CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
-from #source_schema.GPC_DEID_VITAL fact 
+from #source_schema.V_DEID_VITAL fact 
 where ENCOUNTERID is not null
 inner join #target_schema.patient_crosswalk as pc
 using (patid)
@@ -55,7 +55,7 @@ select
     CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
-from #source_schema.GPC_DEID_VITAL fact 
+from #source_schema.V_DEID_VITAL fact 
 where ENCOUNTERID is not null
 inner join #target_schema.patient_crosswalk as pc
 using (patid)
@@ -86,7 +86,7 @@ select
     CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
-from #source_schema.GPC_DEID_VITAL fact 
+from #source_schema.V_DEID_VITAL fact 
 where ENCOUNTERID is not null
 inner join #target_schema.patient_crosswalk as pc
 using (patid)
@@ -117,7 +117,7 @@ select
     CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
-from #source_schema.GPC_DEID_VITAL fact 
+from #source_schema.V_DEID_VITAL fact 
 where ENCOUNTERID is not null
 inner join #target_schema.patient_crosswalk as pc
 using (patid)
@@ -148,9 +148,10 @@ select
     CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
-from #source_schema.GPC_DEID_VITAL fact 
+from #source_schema.V_DEID_VITAL fact 
 where ENCOUNTERID is not null
 inner join #target_schema.patient_crosswalk as pc
 using (patid)
 inner join #target_schema.encounter_crosswalk as ec
 using (ENCOUNTERID);
+

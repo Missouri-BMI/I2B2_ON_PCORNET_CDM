@@ -22,7 +22,7 @@ select
     PAYER_TYPE_PRIMARY,
     facilityid,
     facility_location
-from #source_schema.GPC_DEID_ENCOUNTER as dim   
+from #source_schema.V_DEID_ENCOUNTER as dim   
 inner join #target_schema.patient_crosswalk as pc
 using (patid)
 inner join #target_schema.encounter_crosswalk as ec

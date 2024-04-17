@@ -35,11 +35,11 @@ select
     CURRENT_TIMESTAMP                                       as UPDATE_DATE,
     CURRENT_TIMESTAMP                                       as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                       as IMPORT_DATE,
-    cast(null as VARCHAR(50))                           as SOURCESYSTEM_CD,
+    cast(null as VARCHAR(50))                               as SOURCESYSTEM_CD,
     cast(null	as INT)                                     as UPLOAD_ID,
-                                                            GPC_SITE
-from #source_schema.GPC_DEID_DEMOGRAPHIC as dim
+    'C4WU'                                                  as GPC_SITE
+from #source_schema.V_DEID_DEMOGRAPHIC as dim
 inner join #target_schema.patient_crosswalk as pc
 using(patid)
-left join #source_schema.GPC_DEID_DEATH as dead  
+left join #source_schema.V_DEID_DEATH as dead  
 using (patid);
