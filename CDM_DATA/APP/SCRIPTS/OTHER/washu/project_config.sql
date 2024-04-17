@@ -5,7 +5,7 @@ set pm_db = '#pm_db';
 
 /* rename project */
 set project_text = 'WASHU';
-set harvest = $source_schema || '.' || 'HARVEST';
+set harvest = $source_schema || '.' || 'V_DEID_HARVEST';
 
 set target_pm_schema = $pm_db || '.' || 'i2b2pm';
 set target_hive_schema = $pm_db || '.' || 'I2B2HIVE';
