@@ -32,7 +32,7 @@ select
     cast(null as VARCHAR(50))                                                           as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from #source_schema.DEID_OBS_CLIN fact 
-where obsclin_result_modifier <> 'TX'
+where obsclin_result_modifier <> 'TX'  and ENCOUNTERID is not null
 UNION all
 select
     cast(ENCOUNTERID as NUMBER(38, 0))                                                          as ENCOUNTER_NUM, 
@@ -62,4 +62,4 @@ select
     cast(null as VARCHAR(50))                                                                  as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from #source_schema.DEID_OBS_CLIN fact 
-where obsclin_result_modifier = 'TX';
+where obsclin_result_modifier = 'TX'  and ENCOUNTERID is not null;

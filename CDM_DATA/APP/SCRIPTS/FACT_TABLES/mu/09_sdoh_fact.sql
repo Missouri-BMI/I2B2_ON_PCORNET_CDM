@@ -43,7 +43,7 @@ select
     cast( null as VARCHAR(50))                                                               as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.DEID_OBS_CLIN fact 
-where OBSCLIN_CODE = 'C29719'
+where OBSCLIN_CODE = 'C29719'  and ENCOUNTERID is not null
 union all
 select
     ENCOUNTER_NUM, 

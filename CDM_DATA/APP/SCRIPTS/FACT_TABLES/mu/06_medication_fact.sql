@@ -23,4 +23,4 @@ select
     cast(null as VARCHAR(50))                                                               as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.DEID_PRESCRIBING fact
-where RXNORM_CUI is not null;
+where RXNORM_CUI is not null and ENCOUNTERID is not null;

@@ -23,4 +23,4 @@ select
     cast( null as VARCHAR(50))                                                                  as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from #source_schema.DEID_OBS_GEN fact
-where OBSGEN_TYPE = 'LC';
+where OBSGEN_TYPE = 'LC'  and ENCOUNTERID is not null;

@@ -25,6 +25,7 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.GPC_DEID_VITAL fact 
+where ENCOUNTERID is not null
 inner join identifier($patient_crosswalk) as pc
 using (patid)
 inner join identifier($encounter_crosswalk) as ec
@@ -55,6 +56,7 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.GPC_DEID_VITAL fact 
+where ENCOUNTERID is not null
 inner join identifier($patient_crosswalk) as pc
 using (patid)
 inner join identifier($encounter_crosswalk) as ec
@@ -85,6 +87,7 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.GPC_DEID_VITAL fact 
+where ENCOUNTERID is not null
 inner join identifier($patient_crosswalk) as pc
 using (patid)
 inner join identifier($encounter_crosswalk) as ec
@@ -115,6 +118,7 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.GPC_DEID_VITAL fact 
+where ENCOUNTERID is not null
 inner join identifier($patient_crosswalk) as pc
 using (patid)
 inner join identifier($encounter_crosswalk) as ec
@@ -145,6 +149,7 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.GPC_DEID_VITAL fact 
+where ENCOUNTERID is not null
 inner join identifier($patient_crosswalk) as pc
 using (patid)
 inner join identifier($encounter_crosswalk) as ec

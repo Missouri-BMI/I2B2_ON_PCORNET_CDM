@@ -28,4 +28,4 @@ inner join #source_schema.patient_crosswalk as pc
 using (patid)
 inner join #source_schema.encounter_crosswalk as ec
 using (ENCOUNTERID)
-where RXNORM_CUI is not null;
+where RXNORM_CUI is not null and ENCOUNTERID is not null ;

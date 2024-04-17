@@ -24,6 +24,7 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.DEID_VITAL fact 
+where ENCOUNTERID is not null
 union all
 ----WT
 select
@@ -50,6 +51,7 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.DEID_VITAL fact
+where ENCOUNTERID is not null
 union all
 ---DIASTOLIC
 select
@@ -76,6 +78,7 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.DEID_VITAL fact
+where ENCOUNTERID is not null
 union all
 ---SYSTOLIC
 select
@@ -102,6 +105,7 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from #source_schema.DEID_VITAL fact
+where ENCOUNTERID is not null
 union all
 ---BMI
 select
@@ -127,4 +131,5 @@ select
     CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
-from #source_schema.DEID_VITAL fact;
+from #source_schema.DEID_VITAL fact
+where ENCOUNTERID is not null;

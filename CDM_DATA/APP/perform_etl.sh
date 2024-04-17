@@ -38,7 +38,7 @@ ant -f ./data_build.xml perform_etl
 ant -f ./data_build.xml project_config
 
 # Generate patient count in ontology
-# ant -f ./data_build.xml cdm_count
+ant -f ./data_build.xml cdm_count
 
 # Generate missing obs ontology
-# ant -f ./data_build.xml missing_obs
+ant -f ./data_build.xml missing_obs

@@ -34,11 +34,11 @@ select
     cast(null as VARCHAR(50))                                                           as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from #source_schema.GPC_OBS_CLIN fact 
+where obsclin_result_modifier <> 'TX' and ENCOUNTERID is not null
 inner join  #source_schema.patient_crosswalk as pc
 using (patid)
 inner join  #source_schema.encounter_crosswalk as ec
 using (ENCOUNTERID)  
-where obsclin_result_modifier <> 'TX'
 UNION all
 select
     ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
@@ -70,8 +70,8 @@ select
     cast(null as VARCHAR(50))                                                                  as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from #source_schema.GPC_OBS_CLIN fact 
+where obsclin_result_modifier = 'TX' and ENCOUNTERID is not null
 inner join  #source_schema.patient_crosswalk as pc
 using (patid)
 inner join  #source_schema.encounter_crosswalk as ec
-using (ENCOUNTERID)  
-where obsclin_result_modifier = 'TX';
+using (ENCOUNTERID)  ;
