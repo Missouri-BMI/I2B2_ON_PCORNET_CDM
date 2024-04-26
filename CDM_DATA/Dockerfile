@@ -7,6 +7,6 @@ RUN apk add \
     bash
 
 WORKDIR /app
-COPY /APP ./
+COPY /harmonizer ./
 
 CMD ["/bin/bash", "-C", "./perform_etl.sh"]

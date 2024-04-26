@@ -1,0 +1,40 @@
+#!/bin/bash
+set -e
+
+SNOWFLAKE_STAGE="i2b2_ont_import"
+COPY_PARAMETERS=""
+
+snowsql -c etl_user -d I2B2_ETL_TEST -s I2B2_ONT_RAW  <<- EOSQL
+
+    COPY INTO CONCEPT_DIMENSION FROM @$SNOWFLAKE_STAGE/CONCEPT_DIMENSION_V41.tsv $COPY_PARAMETERS ;
+    
+
+EOSQL
+
+find /home/ENACT_V41_POSTGRES_I2B2_TSV -type f -name "ACT_*" | while IFS= read -r file; do
+  filename=$(basename -- "$file")
+  filename_without_extension="${filename%.*}"
+  
+snowsql -c etl_user -d I2B2_ETL_TEST -s I2B2_ONT_RAW  <<- EOSQL
+    COPY INTO $filename_without_extension FROM @$SNOWFLAKE_STAGE/$filename $COPY_PARAMETERS;
+EOSQL
+  
+done
+
+COPY_PARAMETERS="FILE_FORMAT=DSV_FORMAT"
+snowsql -c etl_user -d I2B2_ETL_TEST -s I2B2_ONT_RAW  <<- EOSQL
+    
+    CREATE OR REPLACE FILE FORMAT DSV_FORMAT
+    TYPE=CSV
+    FIELD_DELIMITER = '\t'
+    COMPRESSION=AUTO
+    SKIP_HEADER=1
+    FIELD_OPTIONALLY_ENCLOSED_BY = '"';
+
+    COPY INTO TABLE_ACCESS FROM @$SNOWFLAKE_STAGE/TABLE_ACCESS_V41.dsv $COPY_PARAMETERS;
+    COPY INTO SCHEMES FROM @$SNOWFLAKE_STAGE/SCHEMES_V41.dsv $COPY_PARAMETERS;
+    
+
+EOSQL
+
+

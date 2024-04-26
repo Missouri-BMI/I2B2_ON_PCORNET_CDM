@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+
+docker run --platform=linux/amd64  ont-loader 
