@@ -30,7 +30,7 @@ insert into ACS (C_HLEVEL, C_FULLNAME, C_NAME, C_SYNONYM_CD, C_VISUALATTRIBUTES,
         C_METADATAXML, C_FACTTABLECOLUMN, C_TABLENAME, C_COLUMNNAME, C_COLUMNDATATYPE, C_OPERATOR, C_DIMCODE, C_COMMENT, C_TOOLTIP,
         M_APPLIED_PATH, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, VALUETYPE_CD, M_EXCLUSION_CD, C_PATH, C_SYMBOL)
 with distinct_trim_universe as (
-   select  distinct  trim(split_part(universe, 'Universe:', 2)) as universe, subject_area, DESC_1, DESC_2 from PRIVATE_SDOH_ACS
+   select  distinct RAW_OBSGEN_TYPE, RAW_OBSGEN_NAME,  trim(split_part(universe, 'Universe:', 2)) as universe, subject_area, DESC_1, DESC_2 from PRIVATE_SDOH_ACS
    order by universe,subject_area, DESC_1, DESC_2
 )
 select 
@@ -151,7 +151,7 @@ select distinct
     , 'N'
     , 'LA'
     , NULL
-    , NULL
+    , concat(raw_obsgen_type,':',raw_obsgen_name)
     , NULL
     , 'acs_fact.concept_cd'
     , 'concept_dimension'
@@ -171,6 +171,7 @@ select distinct
     , NULL
     , NULL
     from  distinct_trim_universe order by c_hlevel;
+
 
 update  acs
 set c_fullname = replace(c_fullname, '\'', '');
