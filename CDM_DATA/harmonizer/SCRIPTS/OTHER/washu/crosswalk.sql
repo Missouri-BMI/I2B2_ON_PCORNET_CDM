@@ -7,8 +7,8 @@ CREATE OR REPLACE TABLE #target_schema.patient_crosswalk (
 );
 
 INSERT into #target_schema.patient_crosswalk  (patid)
-select distinct patid from #source_schema.V_DEID_DEMOGRAPHIC
-limit 1000;
+select distinct patid from #source_schema.V_DEID_DEMOGRAPHIC;
+-- limit 1000;
 
 --
 CREATE OR REPLACE SEQUENCE  #target_schema.ENCOUNTER_SEQ START = 1 INCREMENT = 1;
