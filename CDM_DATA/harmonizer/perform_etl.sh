@@ -34,11 +34,11 @@ find /app/SCRIPTS/FACT_TABLES/$PROJECT/ -type f -exec sed -i "s|#target_db|$TARG
 # Perform ETL opertation
 ant -f ./data_build.xml perform_etl
 
-# prject_config
-ant -f ./data_build.xml project_config
-
 # Generate patient count in ontology
 ant -f ./data_build.xml cdm_count
+
+# prject_config
+ant -f ./data_build.xml project_config
 
 # Generate missing obs ontology
 ant -f ./data_build.xml missing_obs
