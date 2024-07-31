@@ -1,0 +1,8 @@
+jupyterlab
+tabula-py
+PyPDF2
+pandas
+snowflake-connector-python[pandas]
+python-dotenv
+openpyxl
+xlrd
