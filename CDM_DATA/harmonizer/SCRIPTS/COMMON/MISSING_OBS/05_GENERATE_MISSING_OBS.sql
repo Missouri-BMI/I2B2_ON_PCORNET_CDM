@@ -52,7 +52,7 @@ BEGIN
         , 'N'
         , 1
         , '\\' || gn || '\\'
-        , 'Miscellaneous Observations'
+        , 'Missing Terms in ACT Ontology'
         , 'N'
         , 'CA '
         , null
@@ -85,7 +85,7 @@ BEGIN
     select 
         1
         , '\\' || gn || '\\'
-        , 'Miscellaneous Observations'
+        , 'Missing Terms in ACT Ontology'
         , 'N'
         , 'CA'
         , NULL
