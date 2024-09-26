@@ -1,0 +1,14 @@
+Section Name,Section Hierarchy
+Cancer Identification,1
+Demographic,2
+Edit Overrides/Conversion History/System Admin,3
+Follow-up/Recurrence/Death,4
+Hospital-Specific,5
+Special Use,6
+Stage/Prognostic Factors,7
+Text-Diagnosis,8
+Text-Miscellaneous,9
+Text-Treatment,10
+Treatment-1st Course,11
+Treatment-Subsequent & Other,12
+Pathology,13

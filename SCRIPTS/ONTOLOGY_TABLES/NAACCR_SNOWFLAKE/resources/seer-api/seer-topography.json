@@ -1,0 +1,1323 @@
+
+[
+    {
+        "value": "C000",
+        "label": "External upper lip"
+    },
+    {
+        "value": "C001",
+        "label": "External lower lip"
+    },
+    {
+        "value": "C002",
+        "label": "External lip"
+    },
+    {
+        "value": "C003",
+        "label": "Inner aspect"
+    },
+    {
+        "value": "C004",
+        "label": "Inner aspect"
+    },
+    {
+        "value": "C005",
+        "label": "Inner aspect of lip"
+    },
+    {
+        "value": "C006",
+        "label": "Commissure of lip"
+    },
+    {
+        "value": "C008",
+        "label": "Overlapping lesion of lip"
+    },
+    {
+        "value": "C009",
+        "label": "Lip"
+    },
+    {
+        "value": "C019",
+        "label": "Base of tongue"
+    },
+    {
+        "value": "C020",
+        "label": "Dorsal surface of tongue"
+    },
+    {
+        "value": "C021",
+        "label": "Border of tongue"
+    },
+    {
+        "value": "C022",
+        "label": "Ventral surface of tongue"
+    },
+    {
+        "value": "C023",
+        "label": "Anterior two-thirds of tongue"
+    },
+    {
+        "value": "C024",
+        "label": "Lingual tonsil"
+    },
+    {
+        "value": "C028",
+        "label": "Overlapping lesion of tongue"
+    },
+    {
+        "value": "C029",
+        "label": "Tongue"
+    },
+    {
+        "value": "C030",
+        "label": "Upper gum"
+    },
+    {
+        "value": "C031",
+        "label": "Lower gum"
+    },
+    {
+        "value": "C039",
+        "label": "Gum"
+    },
+    {
+        "value": "C040",
+        "label": "Anterior floor of mouth"
+    },
+    {
+        "value": "C041",
+        "label": "Lateral floor of mouth"
+    },
+    {
+        "value": "C048",
+        "label": "Overlapping lesion of floor of mouth"
+    },
+    {
+        "value": "C049",
+        "label": "Floor of mouth"
+    },
+    {
+        "value": "C050",
+        "label": "Hard palate"
+    },
+    {
+        "value": "C051",
+        "label": "Soft palate"
+    },
+    {
+        "value": "C052",
+        "label": "Uvula"
+    },
+    {
+        "value": "C058",
+        "label": "Overlapping lesion of palate"
+    },
+    {
+        "value": "C059",
+        "label": "Palate"
+    },
+    {
+        "value": "C060",
+        "label": "Cheek mucosa"
+    },
+    {
+        "value": "C061",
+        "label": "Vestibule of mouth"
+    },
+    {
+        "value": "C062",
+        "label": "Retromolar area"
+    },
+    {
+        "value": "C068",
+        "label": "Overlapping lesion of other & unspecified parts of mouth"
+    },
+    {
+        "value": "C069",
+        "label": "Mouth"
+    },
+    {
+        "value": "C079",
+        "label": "Parotid gland"
+    },
+    {
+        "value": "C080",
+        "label": "Submandibular gland"
+    },
+    {
+        "value": "C081",
+        "label": "Sublingual gland"
+    },
+    {
+        "value": "C088",
+        "label": "Overlapping lesion of major salivary glands"
+    },
+    {
+        "value": "C089",
+        "label": "Major salivary gland"
+    },
+    {
+        "value": "C090",
+        "label": "Tonsillar fossa"
+    },
+    {
+        "value": "C091",
+        "label": "Tonsillar pillar"
+    },
+    {
+        "value": "C098",
+        "label": "Overlapping lesion of tonsil"
+    },
+    {
+        "value": "C099",
+        "label": "Tonsil"
+    },
+    {
+        "value": "C100",
+        "label": "Vallecula"
+    },
+    {
+        "value": "C101",
+        "label": "Anterior surface of epiglottis"
+    },
+    {
+        "value": "C102",
+        "label": "Lateral wall of oropharynx"
+    },
+    {
+        "value": "C103",
+        "label": "Posterior wall of oropharynx"
+    },
+    {
+        "value": "C104",
+        "label": "Branchial cleft"
+    },
+    {
+        "value": "C108",
+        "label": "Overlapping lesion of oropharynx"
+    },
+    {
+        "value": "C109",
+        "label": "Oropharynx"
+    },
+    {
+        "value": "C110",
+        "label": "Superior wall of nasopharynx"
+    },
+    {
+        "value": "C111",
+        "label": "Posterior wall of nasopharynx"
+    },
+    {
+        "value": "C112",
+        "label": "Lateral wall of nasopharynx"
+    },
+    {
+        "value": "C113",
+        "label": "Anterior wall of nasopharynx"
+    },
+    {
+        "value": "C118",
+        "label": "Overlapping lesion of nasopharynx"
+    },
+    {
+        "value": "C119",
+        "label": "Nasopharynx"
+    },
+    {
+        "value": "C129",
+        "label": "Pyriform sinus"
+    },
+    {
+        "value": "C130",
+        "label": "Postcricoid region"
+    },
+    {
+        "value": "C131",
+        "label": "Aryepiglottic fold"
+    },
+    {
+        "value": "C132",
+        "label": "Posterior wall of hypopharynx"
+    },
+    {
+        "value": "C138",
+        "label": "Overlapping lesion of hypopharynx"
+    },
+    {
+        "value": "C139",
+        "label": "Hypopharynx"
+    },
+    {
+        "value": "C140",
+        "label": "Pharynx"
+    },
+    {
+        "value": "C142",
+        "label": "Waldeyer's ring"
+    },
+    {
+        "value": "C148",
+        "label": "Overlapping lesion of lip"
+    },
+    {
+        "value": "C150",
+        "label": "Cervical part of esophagus"
+    },
+    {
+        "value": "C151",
+        "label": "Thoracic part of esophagus"
+    },
+    {
+        "value": "C152",
+        "label": "Abdominal part of esophagus"
+    },
+    {
+        "value": "C153",
+        "label": "Upper third of esophagus"
+    },
+    {
+        "value": "C154",
+        "label": "Middle third of esophagus"
+    },
+    {
+        "value": "C155",
+        "label": "Lower third of esophagus"
+    },
+    {
+        "value": "C158",
+        "label": "Overlapping lesion of esophagus"
+    },
+    {
+        "value": "C159",
+        "label": "Esophagus"
+    },
+    {
+        "value": "C160",
+        "label": "Cardia"
+    },
+    {
+        "value": "C161",
+        "label": "Fundus of stomach"
+    },
+    {
+        "value": "C162",
+        "label": "Body of stomach"
+    },
+    {
+        "value": "C163",
+        "label": "Gastric antrum"
+    },
+    {
+        "value": "C164",
+        "label": "Pylorus"
+    },
+    {
+        "value": "C165",
+        "label": "Lesser curvature of stomach"
+    },
+    {
+        "value": "C166",
+        "label": "Greater curvature of stomach"
+    },
+    {
+        "value": "C168",
+        "label": "Overlapping lesion of stomach"
+    },
+    {
+        "value": "C169",
+        "label": "Stomach"
+    },
+    {
+        "value": "C170",
+        "label": "Duodenum"
+    },
+    {
+        "value": "C171",
+        "label": "Jejunum"
+    },
+    {
+        "value": "C172",
+        "label": "Ileum"
+    },
+    {
+        "value": "C173",
+        "label": "Meckel diverticulum"
+    },
+    {
+        "value": "C178",
+        "label": "Overlapping lesion of small intestine"
+    },
+    {
+        "value": "C179",
+        "label": "Small intestine"
+    },
+    {
+        "value": "C180",
+        "label": "Cecum"
+    },
+    {
+        "value": "C181",
+        "label": "Appendix"
+    },
+    {
+        "value": "C182",
+        "label": "Ascending colon"
+    },
+    {
+        "value": "C183",
+        "label": "Hepatic flexure of colon"
+    },
+    {
+        "value": "C184",
+        "label": "Transverse colon"
+    },
+    {
+        "value": "C185",
+        "label": "Splenic flexure of colon"
+    },
+    {
+        "value": "C186",
+        "label": "Descending colon"
+    },
+    {
+        "value": "C187",
+        "label": "Sigmoid colon"
+    },
+    {
+        "value": "C188",
+        "label": "Overlapping lesion of colon"
+    },
+    {
+        "value": "C189",
+        "label": "Colon"
+    },
+    {
+        "value": "C199",
+        "label": "Rectosigmoid junction"
+    },
+    {
+        "value": "C209",
+        "label": "Rectum"
+    },
+    {
+        "value": "C210",
+        "label": "Anus"
+    },
+    {
+        "value": "C211",
+        "label": "Anal canal"
+    },
+    {
+        "value": "C212",
+        "label": "Cloacogenic zone"
+    },
+    {
+        "value": "C218",
+        "label": "Overlapping lesion of rectum"
+    },
+    {
+        "value": "C220",
+        "label": "Liver"
+    },
+    {
+        "value": "C221",
+        "label": "Intrahepatic bile duct"
+    },
+    {
+        "value": "C239",
+        "label": "Gallbladder"
+    },
+    {
+        "value": "C240",
+        "label": "Extrahepatic bile duct"
+    },
+    {
+        "value": "C241",
+        "label": "Ampulla of vater"
+    },
+    {
+        "value": "C248",
+        "label": "Overlapping lesion of biliary tract"
+    },
+    {
+        "value": "C249",
+        "label": "Biliary tract"
+    },
+    {
+        "value": "C250",
+        "label": "Head of pancreas"
+    },
+    {
+        "value": "C251",
+        "label": "Body of pancreas"
+    },
+    {
+        "value": "C252",
+        "label": "Tail of pancreas"
+    },
+    {
+        "value": "C253",
+        "label": "Pancreatic duct"
+    },
+    {
+        "value": "C254",
+        "label": "Endocrine pancreas"
+    },
+    {
+        "value": "C257",
+        "label": "Oth parts of pancreas"
+    },
+    {
+        "value": "C258",
+        "label": "Overlapping lesion of pancreas"
+    },
+    {
+        "value": "C259",
+        "label": "Pancreas"
+    },
+    {
+        "value": "C260",
+        "label": "Intestinal tract"
+    },
+    {
+        "value": "C268",
+        "label": "Overlapping lesion of digestive system"
+    },
+    {
+        "value": "C269",
+        "label": "Gastrointestinal tract"
+    },
+    {
+        "value": "C300",
+        "label": "Nasal cavity"
+    },
+    {
+        "value": "C301",
+        "label": "Middle ear"
+    },
+    {
+        "value": "C310",
+        "label": "Maxillary sinus"
+    },
+    {
+        "value": "C311",
+        "label": "Ethmoidal sinus"
+    },
+    {
+        "value": "C312",
+        "label": "Frontal sinus"
+    },
+    {
+        "value": "C313",
+        "label": "Sphenoidal sinus"
+    },
+    {
+        "value": "C318",
+        "label": "Overlapping lesion of accessory sinuses"
+    },
+    {
+        "value": "C319",
+        "label": "Accessory sinus"
+    },
+    {
+        "value": "C320",
+        "label": "Glottis"
+    },
+    {
+        "value": "C321",
+        "label": "Supraglottis"
+    },
+    {
+        "value": "C322",
+        "label": "Subglottis"
+    },
+    {
+        "value": "C323",
+        "label": "Laryngeal cartilage"
+    },
+    {
+        "value": "C328",
+        "label": "Overlapping lesion of larynx"
+    },
+    {
+        "value": "C329",
+        "label": "Larynx"
+    },
+    {
+        "value": "C339",
+        "label": "Trachea"
+    },
+    {
+        "value": "C340",
+        "label": "Main bronchus"
+    },
+    {
+        "value": "C341",
+        "label": "Upper lobe"
+    },
+    {
+        "value": "C342",
+        "label": "Middle lobe"
+    },
+    {
+        "value": "C343",
+        "label": "Lower lobe"
+    },
+    {
+        "value": "C348",
+        "label": "Overlapping lesion of bronchus & lung"
+    },
+    {
+        "value": "C349",
+        "label": "Bronchus or lung"
+    },
+    {
+        "value": "C379",
+        "label": "Thymus"
+    },
+    {
+        "value": "C380",
+        "label": "Heart"
+    },
+    {
+        "value": "C381",
+        "label": "Anterior mediastinum"
+    },
+    {
+        "value": "C382",
+        "label": "Posterior mediastinum"
+    },
+    {
+        "value": "C383",
+        "label": "Mediastinum"
+    },
+    {
+        "value": "C384",
+        "label": "Pleura"
+    },
+    {
+        "value": "C388",
+        "label": "Overlapping lesion of heart"
+    },
+    {
+        "value": "C390",
+        "label": "Upper respiratory tract"
+    },
+    {
+        "value": "C398",
+        "label": "Overlapping lesion of respiratory & intrathoracic organs"
+    },
+    {
+        "value": "C399",
+        "label": "Ill-defined sites within respiratory system"
+    },
+    {
+        "value": "C400",
+        "label": "Long bones of upper limb"
+    },
+    {
+        "value": "C401",
+        "label": "Short bones of upper limb and associative joints"
+    },
+    {
+        "value": "C402",
+        "label": "Long bones of lower limb and associative joints"
+    },
+    {
+        "value": "C403",
+        "label": "Short bones of lower limb and associative joints"
+    },
+    {
+        "value": "C408",
+        "label": "Overlapping lesion of bone & articular cartilage of limbs"
+    },
+    {
+        "value": "C409",
+        "label": "Bone & articular cartilage of limb"
+    },
+    {
+        "value": "C410",
+        "label": "Bones of skull & face"
+    },
+    {
+        "value": "C411",
+        "label": "Mandible"
+    },
+    {
+        "value": "C412",
+        "label": "Vertebral column"
+    },
+    {
+        "value": "C413",
+        "label": "Ribs"
+    },
+    {
+        "value": "C414",
+        "label": "Pelvic bones"
+    },
+    {
+        "value": "C418",
+        "label": "Overlapping lesion of bone & articular cartilage"
+    },
+    {
+        "value": "C419",
+        "label": "Bone & articular cartilage"
+    },
+    {
+        "value": "C420",
+        "label": "Blood"
+    },
+    {
+        "value": "C421",
+        "label": "Bone marrow"
+    },
+    {
+        "value": "C422",
+        "label": "Spleen"
+    },
+    {
+        "value": "C423",
+        "label": "Reticuloendothelial system"
+    },
+    {
+        "value": "C424",
+        "label": "Hematopoietic system"
+    },
+    {
+        "value": "C440",
+        "label": "Skin of lip"
+    },
+    {
+        "value": "C441",
+        "label": "Skin of eyelid"
+    },
+    {
+        "value": "C442",
+        "label": "Skin of ear & external auricular canal"
+    },
+    {
+        "value": "C443",
+        "label": "Skin of other & unspecified parts of face"
+    },
+    {
+        "value": "C444",
+        "label": "Skin of scalp & neck"
+    },
+    {
+        "value": "C445",
+        "label": "Skin of trunk"
+    },
+    {
+        "value": "C446",
+        "label": "Skin of upper limb and shoulder"
+    },
+    {
+        "value": "C447",
+        "label": "Skin of lower limb and hip"
+    },
+    {
+        "value": "C448",
+        "label": "Overlapping lesion of skin"
+    },
+    {
+        "value": "C449",
+        "label": "Skin"
+    },
+    {
+        "value": "C470",
+        "label": "Peripheral nerves of head"
+    },
+    {
+        "value": "C471",
+        "label": "Peripheral nerves of upper limb and shoulder"
+    },
+    {
+        "value": "C472",
+        "label": "Peripheral nerves of lower limb and hip"
+    },
+    {
+        "value": "C473",
+        "label": "Peripheral nerves of thorax"
+    },
+    {
+        "value": "C474",
+        "label": "Peripheral nerves of abdomen"
+    },
+    {
+        "value": "C475",
+        "label": "Peripheral nerves of pelvis"
+    },
+    {
+        "value": "C476",
+        "label": "Peripheral nerves of trunk"
+    },
+    {
+        "value": "C478",
+        "label": "Overlapping lesion of peripheral nerves & autonomic nervous system"
+    },
+    {
+        "value": "C479",
+        "label": "Peripheral nerves & autonomic nervous system"
+    },
+    {
+        "value": "C480",
+        "label": "Retroperitoneum"
+    },
+    {
+        "value": "C481",
+        "label": "Specified parts of peritoneum"
+    },
+    {
+        "value": "C482",
+        "label": "Peritoneum"
+    },
+    {
+        "value": "C488",
+        "label": "Overlapping lesion of retroperitoneum & peritoneum"
+    },
+    {
+        "value": "C490",
+        "label": "Connective & soft tissue of head"
+    },
+    {
+        "value": "C491",
+        "label": "Connective & soft tissue of upper limb and shoulder"
+    },
+    {
+        "value": "C492",
+        "label": "Connective & soft tissue of lower limb and hip"
+    },
+    {
+        "value": "C493",
+        "label": "Connective & soft tissue of thorax"
+    },
+    {
+        "value": "C494",
+        "label": "Connective & soft tissue of abdomen"
+    },
+    {
+        "value": "C495",
+        "label": "Connective & soft tissue of pelvis"
+    },
+    {
+        "value": "C496",
+        "label": "Connective & soft tissue of trunk"
+    },
+    {
+        "value": "C498",
+        "label": "Overlapping lesion of connective & soft tissue"
+    },
+    {
+        "value": "C499",
+        "label": "Connective & soft tissue"
+    },
+    {
+        "value": "C500",
+        "label": "Nipple & areola"
+    },
+    {
+        "value": "C501",
+        "label": "Central portion of breast"
+    },
+    {
+        "value": "C502",
+        "label": "Upper-inner quadrant of breast"
+    },
+    {
+        "value": "C503",
+        "label": "Lower-inner quadrant of breast"
+    },
+    {
+        "value": "C504",
+        "label": "Upper-outer quadrant of breast"
+    },
+    {
+        "value": "C505",
+        "label": "Lower-outer quadrant of breast"
+    },
+    {
+        "value": "C506",
+        "label": "Axillary tail of breast"
+    },
+    {
+        "value": "C508",
+        "label": "Overlapping lesion of breast"
+    },
+    {
+        "value": "C509",
+        "label": "Breast"
+    },
+    {
+        "value": "C510",
+        "label": "Labium majus"
+    },
+    {
+        "value": "C511",
+        "label": "Labium minus"
+    },
+    {
+        "value": "C512",
+        "label": "Clitoris"
+    },
+    {
+        "value": "C518",
+        "label": "Overlapping lesion of vulva"
+    },
+    {
+        "value": "C519",
+        "label": "Vulva"
+    },
+    {
+        "value": "C529",
+        "label": "Vagina"
+    },
+    {
+        "value": "C530",
+        "label": "Endocervix"
+    },
+    {
+        "value": "C531",
+        "label": "Exocervix"
+    },
+    {
+        "value": "C538",
+        "label": "Overlapping lesion of cervix uteri"
+    },
+    {
+        "value": "C539",
+        "label": "Cervix uteri"
+    },
+    {
+        "value": "C540",
+        "label": "Isthmus uteri"
+    },
+    {
+        "value": "C541",
+        "label": "Endometrium"
+    },
+    {
+        "value": "C542",
+        "label": "Myometrium"
+    },
+    {
+        "value": "C543",
+        "label": "Fundus uteri"
+    },
+    {
+        "value": "C548",
+        "label": "Overlapping lesion of corpus uteri"
+    },
+    {
+        "value": "C549",
+        "label": "Corpus uteri"
+    },
+    {
+        "value": "C559",
+        "label": "Uterus"
+    },
+    {
+        "value": "C569",
+        "label": "Ovary"
+    },
+    {
+        "value": "C570",
+        "label": "Fallopian tube"
+    },
+    {
+        "value": "C571",
+        "label": "Broad ligament"
+    },
+    {
+        "value": "C572",
+        "label": "Round ligament"
+    },
+    {
+        "value": "C573",
+        "label": "Parametrium"
+    },
+    {
+        "value": "C574",
+        "label": "Uterine adnexa"
+    },
+    {
+        "value": "C577",
+        "label": "Oth specified female genital organs"
+    },
+    {
+        "value": "C578",
+        "label": "Overlapping lesion of female genital organs"
+    },
+    {
+        "value": "C579",
+        "label": "Female genital organ"
+    },
+    {
+        "value": "C589",
+        "label": "Placenta"
+    },
+    {
+        "value": "C600",
+        "label": "Prepuce"
+    },
+    {
+        "value": "C601",
+        "label": "Glans penis"
+    },
+    {
+        "value": "C602",
+        "label": "Body of penis"
+    },
+    {
+        "value": "C608",
+        "label": "Overlapping lesion of penis"
+    },
+    {
+        "value": "C609",
+        "label": "Penis"
+    },
+    {
+        "value": "C619",
+        "label": "Prostate"
+    },
+    {
+        "value": "C620",
+        "label": "Undescended testis"
+    },
+    {
+        "value": "C621",
+        "label": "Descended testis"
+    },
+    {
+        "value": "C629",
+        "label": "Testis"
+    },
+    {
+        "value": "C630",
+        "label": "Epididymis"
+    },
+    {
+        "value": "C631",
+        "label": "Spermatic cord"
+    },
+    {
+        "value": "C632",
+        "label": "Scrotum"
+    },
+    {
+        "value": "C637",
+        "label": "Oth specified male genital organs"
+    },
+    {
+        "value": "C638",
+        "label": "Overlapping lesion of male genital organs"
+    },
+    {
+        "value": "C639",
+        "label": "Male genital organ"
+    },
+    {
+        "value": "C649",
+        "label": "Kidney"
+    },
+    {
+        "value": "C659",
+        "label": "Renal pelvis"
+    },
+    {
+        "value": "C669",
+        "label": "Ureter"
+    },
+    {
+        "value": "C670",
+        "label": "Trigone of bladder"
+    },
+    {
+        "value": "C671",
+        "label": "Dome of bladder"
+    },
+    {
+        "value": "C672",
+        "label": "Lateral wall of bladder"
+    },
+    {
+        "value": "C673",
+        "label": "Anterior wall of bladder"
+    },
+    {
+        "value": "C674",
+        "label": "Posterior wall of bladder"
+    },
+    {
+        "value": "C675",
+        "label": "Bladder neck"
+    },
+    {
+        "value": "C676",
+        "label": "Ureteric orifice"
+    },
+    {
+        "value": "C677",
+        "label": "Urachus"
+    },
+    {
+        "value": "C678",
+        "label": "Overlapping lesion of bladder"
+    },
+    {
+        "value": "C679",
+        "label": "Bladder"
+    },
+    {
+        "value": "C680",
+        "label": "Urethra"
+    },
+    {
+        "value": "C681",
+        "label": "Paraurethral glands"
+    },
+    {
+        "value": "C688",
+        "label": "Overlapping lesion of urinary organs"
+    },
+    {
+        "value": "C689",
+        "label": "Urinary system"
+    },
+    {
+        "value": "C690",
+        "label": "Conjunctiva"
+    },
+    {
+        "value": "C691",
+        "label": "Cornea"
+    },
+    {
+        "value": "C692",
+        "label": "Retina"
+    },
+    {
+        "value": "C693",
+        "label": "Choroid"
+    },
+    {
+        "value": "C694",
+        "label": "Ciliary body"
+    },
+    {
+        "value": "C695",
+        "label": "Lachrymal gland & duct"
+    },
+    {
+        "value": "C696",
+        "label": "Orbit"
+    },
+    {
+        "value": "C698",
+        "label": "Overlapping lesion of eye & adnexa"
+    },
+    {
+        "value": "C699",
+        "label": "Eye"
+    },
+    {
+        "value": "C700",
+        "label": "Cerebral meninges"
+    },
+    {
+        "value": "C701",
+        "label": "Spinal meninges"
+    },
+    {
+        "value": "C709",
+        "label": "Meninges"
+    },
+    {
+        "value": "C710",
+        "label": "Cerebrum"
+    },
+    {
+        "value": "C711",
+        "label": "Frontal lobe"
+    },
+    {
+        "value": "C712",
+        "label": "Temporal lobe"
+    },
+    {
+        "value": "C713",
+        "label": "Parietal lobe"
+    },
+    {
+        "value": "C714",
+        "label": "Occipital lobe"
+    },
+    {
+        "value": "C715",
+        "label": "Cerebral ventricle"
+    },
+    {
+        "value": "C716",
+        "label": "Cerebellum"
+    },
+    {
+        "value": "C717",
+        "label": "Brain stem"
+    },
+    {
+        "value": "C718",
+        "label": "Overlapping lesion of brain"
+    },
+    {
+        "value": "C719",
+        "label": "Brain"
+    },
+    {
+        "value": "C720",
+        "label": "Spinal cord"
+    },
+    {
+        "value": "C721",
+        "label": "Cauda equina"
+    },
+    {
+        "value": "C722",
+        "label": "Olfactory nerve"
+    },
+    {
+        "value": "C723",
+        "label": "Optic nerve"
+    },
+    {
+        "value": "C724",
+        "label": "Acoustic nerve"
+    },
+    {
+        "value": "C725",
+        "label": "Cranial nerves"
+    },
+    {
+        "value": "C728",
+        "label": "Overlapping lesion of brain & central nervous system"
+    },
+    {
+        "value": "C729",
+        "label": "Central nervous system"
+    },
+    {
+        "value": "C739",
+        "label": "Thyroid gland"
+    },
+    {
+        "value": "C740",
+        "label": "Cortex of adrenal gland"
+    },
+    {
+        "value": "C741",
+        "label": "Medulla of adrenal gland"
+    },
+    {
+        "value": "C749",
+        "label": "Adrenal gland"
+    },
+    {
+        "value": "C750",
+        "label": "Parathyroid gland"
+    },
+    {
+        "value": "C751",
+        "label": "Pituitary gland"
+    },
+    {
+        "value": "C752",
+        "label": "Craniopharyngeal duct"
+    },
+    {
+        "value": "C753",
+        "label": "Pineal gland"
+    },
+    {
+        "value": "C754",
+        "label": "Carotid body"
+    },
+    {
+        "value": "C755",
+        "label": "Aortic body & other paraganglia"
+    },
+    {
+        "value": "C758",
+        "label": "Overlapping lesion of endocrine gland"
+    },
+    {
+        "value": "C759",
+        "label": "Endocrine gland"
+    },
+    {
+        "value": "C760",
+        "label": "Head"
+    },
+    {
+        "value": "C761",
+        "label": "Thorax"
+    },
+    {
+        "value": "C762",
+        "label": "Abdomen"
+    },
+    {
+        "value": "C763",
+        "label": "Pelvis"
+    },
+    {
+        "value": "C764",
+        "label": "Upper limb"
+    },
+    {
+        "value": "C765",
+        "label": "Lower limb"
+    },
+    {
+        "value": "C767",
+        "label": "Other ill-defined sites"
+    },
+    {
+        "value": "C768",
+        "label": "Overlapping lesion of ill-defined sites"
+    },
+    {
+        "value": "C770",
+        "label": "Lymph nodes of head"
+    },
+    {
+        "value": "C771",
+        "label": "Intrathoracic lymph nodes"
+    },
+    {
+        "value": "C772",
+        "label": "Intra-abdominal lymph nodes"
+    },
+    {
+        "value": "C773",
+        "label": "Axillary & upper limb lymph nodes"
+    },
+    {
+        "value": "C774",
+        "label": "Inguinal & lower limb lymph nodes"
+    },
+    {
+        "value": "C775",
+        "label": "Pelvic lymph nodes"
+    },
+    {
+        "value": "C778",
+        "label": "Lymph nodes of multiple regions"
+    },
+    {
+        "value": "C779",
+        "label": "Lymph nodes"
+    },
+    {
+        "value": "C809",
+        "label": "Unknown primary site"
+    }
+]
