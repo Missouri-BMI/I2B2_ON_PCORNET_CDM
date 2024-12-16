@@ -23,6 +23,7 @@ def create_snowflake_connection(conn_id, conn_params, session: Session =None):
             conn_type='snowflake',
             login=conn_params['USERNAME'],
             password=conn_params['PASSWORD'],
+            schema=conn_params['METADATA_SCHEMA'],
             extra=f"""{{
                 "account": "{conn_params['ACCOUNT']}",
                 "database": "{conn_params['TARGET_DB']}",

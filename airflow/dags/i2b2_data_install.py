@@ -28,7 +28,7 @@ with DAG(
     tags=["i2b2_data_install"],
 ) as dag:
     
-    args = dotenv_values("/opt/airflow/env/sandbox/.env")
+    args = dotenv_values("/opt/airflow/env/dev/.env")
     
     project = args['PROJECT']
     snowflake_conn_id = 'mu-dev-init'
@@ -113,12 +113,6 @@ with DAG(
         )
 
         with TaskGroup('i2b2-data-cleanup') as i2b2datacleanup:
-#             //TODO:
-# // clean pm_user_data
-# // create agg_service_acc
-# // update hive
-# // create admin user
-# // enable SAML
             read_sql = read_sql_from_file(
                 CLEANUP_SCRIPT_PATH, 
                 **kwargs
@@ -149,7 +143,7 @@ with DAG(
 
         #tsv file format
         tsv_format_query = f"""
-            CREATE OR REPLACE FILE FORMAT {TSV_FORMAT}
+            CREATE OR REPLACE FILE FORMAT {metadata_schema}.{TSV_FORMAT}
             TYPE=CSV
             FIELD_DELIMITER = '\t'
             ESCAPE=NONE
@@ -169,7 +163,7 @@ with DAG(
 
         #dsv file format
         dsv_format_query = f"""
-            CREATE OR REPLACE FILE FORMAT {DSV_FORMAT}
+            CREATE OR REPLACE FILE FORMAT {metadata_schema}.{DSV_FORMAT}
             TYPE=CSV
             FIELD_DELIMITER = '\t'
             COMPRESSION = AUTO
@@ -187,11 +181,11 @@ with DAG(
 
         #snowflake stage
         create_stage_query_tsv = f"""
-            CREATE OR REPLACE STAGE {TSV_STAGE} FILE_FORMAT = {TSV_FORMAT};
+            CREATE OR REPLACE STAGE {metadata_schema}.{TSV_STAGE} FILE_FORMAT = {metadata_schema}.{TSV_FORMAT};
         """
 
         create_stage_query_dsv = f"""
-            CREATE OR REPLACE STAGE {DSV_STAGE} FILE_FORMAT = {DSV_FORMAT};
+            CREATE OR REPLACE STAGE {metadata_schema}.{DSV_STAGE} FILE_FORMAT = {metadata_schema}.{DSV_FORMAT};
         """
 
         create_tsv_stage_task = execute_sql(
@@ -209,7 +203,7 @@ with DAG(
         
         # upload tsvs to snwoflake stage
         stage_tsv_query = f"""
-            PUT {LOCAL_STAGE}/*.tsv @{TSV_STAGE} {PUT_PARAMETERS};
+            PUT {LOCAL_STAGE}/*.tsv @{metadata_schema}.{TSV_STAGE} {PUT_PARAMETERS};
         """
 
         stage_tsv_task = execute_sql(
@@ -220,7 +214,7 @@ with DAG(
          
         # upload dsvs to snwoflake stage
         stage_dsv_query = f"""
-            PUT {LOCAL_STAGE}/*.dsv @{DSV_STAGE} {PUT_PARAMETERS};
+            PUT {LOCAL_STAGE}/*.dsv @{metadata_schema}.{DSV_STAGE} {PUT_PARAMETERS};
         """
 
         stage_dsv_task = execute_sql(
@@ -269,7 +263,7 @@ with DAG(
                     filename_without_extension = filename_without_extension.removesuffix('_POSTGRES')
 
                 query = f"""
-                    COPY INTO {filename_without_extension} FROM @{TSV_STAGE}/{filename} FILE_FORMAT={TSV_FORMAT};
+                    COPY INTO {metadata_schema}.{filename_without_extension} FROM @{metadata_schema}.{TSV_STAGE}/{filename} FILE_FORMAT={metadata_schema}.{TSV_FORMAT};
                 """
 
                 load_act_tables = execute_sql(
@@ -280,7 +274,7 @@ with DAG(
 
         # schemes
         query = f"""
-            COPY INTO SCHEMES FROM @{DSV_STAGE}/SCHEMES_V41.dsv FILE_FORMAT={DSV_FORMAT} ;
+            COPY INTO {metadata_schema}.SCHEMES FROM @{metadata_schema}.{DSV_STAGE}/SCHEMES_V41.dsv FILE_FORMAT={metadata_schema}.{DSV_FORMAT} ;
         """
 
         load_schemes_tasks = execute_sql(
@@ -291,11 +285,11 @@ with DAG(
 
          # table access
         query = f"""
-            COPY INTO TABLE_ACCESS FROM (
+            COPY INTO {metadata_schema}.TABLE_ACCESS FROM (
 	            SELECT $1, $2, $3, $24, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
-	            FROM @{DSV_STAGE}/TABLE_ACCESS_V41.dsv
+	            FROM @{metadata_schema}.{DSV_STAGE}/TABLE_ACCESS_V41.dsv
             )
-            FILE_FORMAT = {DSV_FORMAT};
+            FILE_FORMAT = {metadata_schema}.{DSV_FORMAT};
         """
 
         load_ta_tasks = execute_sql(
@@ -306,7 +300,7 @@ with DAG(
 
          # concepts
         query = f"""
-            COPY INTO {crc_schema}.CONCEPT_DIMENSION FROM @{TSV_STAGE}/CONCEPT_DIMENSION_V41.tsv FILE_FORMAT={TSV_FORMAT} ;
+            COPY INTO {crc_schema}.CONCEPT_DIMENSION FROM @{metadata_schema}.{TSV_STAGE}/CONCEPT_DIMENSION_V41.tsv FILE_FORMAT={metadata_schema}.{TSV_FORMAT} ;
         """
 
         load_concept_tasks = execute_sql(
