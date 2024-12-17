@@ -26,7 +26,7 @@ with DAG(
     tags=["i2b2_data_refresh"],
 ) as dag:
     snowflake_conn_id = 'mu-dev'
-    args = dotenv_values("/opt/airflow/env/sandbox/.env")
+    args = dotenv_values("/opt/airflow/env/dev/.env")
     project = args['PROJECT']
 
     BASE_PATH = '/opt/airflow/SCRIPTS/CDM_DATA'

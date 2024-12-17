@@ -1,11 +1,2 @@
-#!/bin/bash
-
-# mkdir -p ./airflow/dags ./airflow/logs ./airflow/plugins
-# Make expected directories and set an expected environment variable
-echo -e "AIRFLOW_UID=$(id -u)" > .env
-
-# Initialize the database
-docker compose up airflow-init --build
-
 # Start up all services
 docker compose up --build
