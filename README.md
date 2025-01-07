@@ -1,79 +1,105 @@
-## Usage
+# Usage Guide
 
-## Repositories
-```
-git clone https://github.com/Missouri-BMI/I2B2_ON_PCORNET_CDM
-git clone https://github.com/Missouri-BMI/I2B2_SERVERLESS
-```
+This repository contains tools and workflows to facilitate data operations within the i2b2 and PCORnet common datamodel in Snowflake. Follow the steps below to set up and execute the necessary processes.
 
-## New Installation
+## Airflow Setup
 
-### Create database schemas
+Initialize and run Apache Airflow to manage the data workflows:
 ```
-BEGIN
-    CREATE DATABASE IF NOT EXISTS I2B2_DB;
-    USE DATABASE I2B2_DB;
-    
-    CREATE OR REPLACE SCHEMA I2B2DATA;
-    CREATE OR REPLACE SCHEMA I2B2METADATA;
-    CREATE OR REPLACE SCHEMA I2B2HIVE;
-    CREATE OR REPLACE SCHEMA I2B2PM;
-    CREATE OR REPLACE SCHEMA I2B2WORKDATA;
-END;
+./airflow-init
+./airflow-run
 ```
 
-### Create database schema tables and prepopulated data from i2b2 data installer
-```
+## Airflow DAGs
 
-cd I2B2_SERVERLESS/Docker/data-installer
-change database connection properties in config/ path
-./docker-build # sh docker-build
-./docker-run
-```
+The following DAGs (Directed Acyclic Graphs) are available to perform specific tasks:
 
-### Load Snowflake version of ACT Ontology 4.1 mapped with pcornet cdm
+### i2b2_data_install
+**Purpose**:
+ - Creates the i2b2 schema, tables, and common data using i2b2-data.
 
-```
-cd I2B2_ON_P_CDM/ONTOLOGY_TABLES
-modfiy conf/snowsql.cnf
-./docker-build
-./docker-run
-```
-## Refresh i2b2 databa:
+### i2b2_data_refresh
+**Purpose**:
+- Creates PCORnet fact views.
+- Executes total count scripts.
+- Generates analysis results.
 
-### Load i2b2 data
-```
-cd I2B2_ON_P_CDM/CDM_DATA
-put your db configure file in the env directory
-docker-compose --env-file ./env/dev/.env up --build
-```
+### i2b2_generated_ont
+**Purpose**:
+- Creates and populates custom ontologies maintained by the University of Missouri (MU).
 
+## Configuration Variables for the Project:
+```
+# General Configuration
+# PROJECT: The name of the project.
+# Example: mu
+PROJECT=
 
-### Adding user in i2b2
+# ACCOUNT: The Snowflake account identifier, typically including the account name, region, and cloud provider.
+# Example: fp20843.us-east-2.aws
+ACCOUNT=
 
-```
-INSERT INTO PM_USER_DATA (USER_ID, FULL_NAME, PASSWORD, EMAIL,STATUS_CD)
-VALUES('demo_user', 'demo_user_name', 'demo_user_hash_password', 'demo_user_name' ,'A');
-```
+# USERNAME: The username for Snowflake authentication.
+# Example: I2B2_ETL_USER
+USERNAME=
 
-### Enabling saml authentication for the user
-```
-INSERT INTO pm_user_params (datatype_cd, user_id, param_name_cd, value, change_date, entry_date, changeby_char, status_cd)
-VALUES ('T', 'demo_user', 'authentication_method', 'SAML', CURRENT_TIMESTAMP CURRENT_TIMESTAMP,null,'A');
-```
+# PASSWORD: The password for Snowflake authentication.
+# Note: Use a secure method to store and retrieve passwords.
+PASSWORD=
 
-### Adding user in the project (ACT, SANDBOX_GPC, PCORNET)
-```
-INSERT INTO PM_PROJECT_USER_ROLES (PROJECT_ID, USER_ID, USER_ROLE_CD, STATUS_CD)
-VALUES('project_id', 'user_id', 'USER', 'A');
-INSERT INTO PM_PROJECT_USER_ROLES (PROJECT_ID, USER_ID, USER_ROLE_CD, STATUS_CD)
-VALUES('project_id', 'user_id', 'DATA_DEID', 'A');
-INSERT INTO PM_PROJECT_USER_ROLES (PROJECT_ID, USER_ID, USER_ROLE_CD, STATUS_CD)
-VALUES('project_id', 'user_id', 'DATA_OBFSC', 'A');
-INSERT INTO PM_PROJECT_USER_ROLES (PROJECT_ID, USER_ID, USER_ROLE_CD, STATUS_CD)
-VALUES('project_id', 'user_id', 'DATA_AGG', 'A');
-INSERT INTO PM_PROJECT_USER_ROLES (PROJECT_ID, USER_ID, USER_ROLE_CD, STATUS_CD)
-VALUES('project_id', 'user_id', 'DATA_LDS', 'A');
-INSERT INTO PM_PROJECT_USER_ROLES (PROJECT_ID, USER_ID, USER_ROLE_CD, STATUS_CD)
-VALUES('project_id', 'user_id', 'DATA_PROT', 'A');
+# WAREHOUSE: The name of the Snowflake warehouse to be used for queries.
+# Example: I2B2_ETL_WH
+WAREHOUSE=
+
+# ROLE: The role assigned to the Snowflake user.
+# Example: I2B2
+ROLE=
+
+# PROJECT_DB: The database associated with the project in Snowflake.
+# Example: I2B2_DEV
+PROJECT_DB=
+
+# Source Database Configuration
+# SOURCE_DB: The source database name in Snowflake.
+# Example: DEIDENTIFIED_PCORNET_CDM
+SOURCE_DB=
+
+# SOURCE_SCHEMA: The schema within the source database.
+# Example: CDM
+SOURCE_SCHEMA=
+
+# Target Database Configuration
+# TARGET_DB: The target database name in Snowflake.
+# Example: I2B2_DEV
+TARGET_DB=
+
+# TARGET_SCHEMA: The schema within the target database.
+# Example: I2B2DATA
+TARGET_SCHEMA=
+
+# Additional Schema Configuration
+# CRC_SCHEMA: The schema for clinical research data.
+# Example: I2B2DATA
+CRC_SCHEMA=
+
+# HIVE_SCHEMA: The schema for I2B2 hive data.
+# Example: I2B2HIVE
+HIVE_SCHEMA=
+
+# METADATA_SCHEMA: The schema for I2B2 metadata.
+# Example: I2B2METADATA
+METADATA_SCHEMA=
+
+# PM_SCHEMA: The schema for project management data.
+# Example: I2B2PM
+PM_SCHEMA=
+
+# WORKDATA_SCHEMA: The schema for work-related data.
+# Example: I2B2WORKDATA
+WORKDATA_SCHEMA=
+
+# JDBC Configuration
+# JDBC_URL: The JDBC connection string for Snowflake.
+# Example: jdbc:snowflake://<ACCOUNT>.snowflakecomputing.com/?db=<TARGET_DB>&schema=<METADATA_SCHEMA>&warehouse=<WAREHOUSE>&role=<ROLE>&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true
+JDBC_URL=jdbc:snowflake://$ACCOUNT.snowflakecomputing.com/?db=$TARGET_DB&schema=$METADATA_SCHEMA&warehouse=$WAREHOUSE&role=$ROLE&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true
 ```
