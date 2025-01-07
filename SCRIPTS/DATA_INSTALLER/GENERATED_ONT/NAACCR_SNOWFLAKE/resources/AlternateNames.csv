@@ -1,0 +1,425 @@
+﻿
+Data Item Number,Data Item Name,Alternate Name
+70,Addr at DX--City,City or Town (pre-96 CoC)
+70,Addr at DX--City,City/Town at Diagnosis (CoC)
+80,Addr at DX--State,State (pre-96 CoC)
+80,Addr at DX--State,State at Diagnosis (CoC)
+81,State at DX Geocode 1970/80/90,State at DX Geocode1990
+90,County at DX Reported,County (pre-96 SEER/CoC)
+90,County at DX Reported,County at DX
+90,County at DX Reported,County at Diagnosis (CoC)
+94,County at DX Geocode 1970/80/90,County at DX Geocode1990
+100,Addr at DX--Postal Code,Postal Code (CCCR)
+100,Addr at DX--Postal Code,Postal Code at Diagnosis (CoC)
+100,Addr at DX--Postal Code,Zip Code (pre-CoC)
+110,Census Tract 1970/80/90,Census Tract
+110,Census Tract 1970/80/90,Census Tract/Block Numbering Area (BNA) (SEER)
+120,Census Cod Sys 1970/80/90,Census Coding System (CoC)
+120,Census Cod Sys 1970/80/90,Coding System for Census Tract (pre-96 SEER/CoC)
+130,Census Tract 2000,Census Tract--Alternate (pre-2003)
+150,Marital Status at DX,Marital Status at Diagnosis (SEER/CoC)
+150,Marital Status at DX,Marital Status at Initial Diagnosis (pre-96 CoC)
+160,Race 1,Race
+190,Spanish/Hispanic Origin,Spanish Origin--All Sources (96 CoC)
+190,Spanish/Hispanic Origin,Spanish Surname or Origin (SEER)
+192,IHS Link,Indian Health Service Linkage
+193,Race--NAPIIA(derived API),Race--NAPIIA
+240,Date of Birth,Birth Date(SEER/CoC/CCCR)
+272,Census Ind Code CDC,Census Ind Code 2010 CDC
+272,Census Ind Code CDC,Census Industry Code--2010
+282,Census Occ Code CDC,Census Occ Code 2010
+282,Census Occ Code CDC,Census Occ Code 2010 CDC
+285,Urban Indian Organization (UIO) Service Area,UIHO City
+285,Urban Indian Organization (UIO) Service Area,Urban Indian Health Organization City
+339,RUCA 2000,Rural Urban Commuting Area-Tract-level 2000
+341,RUCA 2010,Rural Urban Commuting Area-Tract-level 2010
+345,URIC 2000,Urban Rural Indicator Code-Tract-level 2000
+346,URIC 2010,Urban Rural Indicator Code-Tract-level 2010
+364,Census Tr Cert 1970/80/90,Census Tract Certainty
+368,Census Block Grp 1970/80/90,Census Block Grp 1970-90
+368,Census Block Grp 1970/80/90,CensusBlockGroup 70/80/90
+380,Sequence Number--Central,Sequence Number (pre-96 SEER)
+390,Date of Diagnosis,Date of Initial Diagnosis (CoC)
+400,Primary Site,IDC-O-2/3 Topography (CCCR)
+410,Laterality,Laterality at Diagnosis (SEER)
+420,Histology (92-00) ICD-O-2,Histology (CoC)
+420,Histology (92-00) ICD-O-2,ICD-O-2 Histology (CCCR)
+430,Behavior (92-00) ICD-O-2,ICD-O-2 Behaviour (CCCR)
+440,Grade,"Grade, Differentiation, or Cell Lineage Indicator (SEER/CCCR)"
+440,Grade,Grade/Differentiation (CoC)
+442,Ambiguous Terminology DX,Ambiguous Terminology
+442,Ambiguous Terminology DX,Ambiguous Terminology as Basis for Diagnosis
+443,Date Conclusive DX,Date of Conclusive DX
+443,Date Conclusive DX,Date of Conclusive Diagnosis
+443,Date Conclusive DX,Date of Conclusive Terminology
+444,Mult Tum Rpt as One Prim,Multiple Tumors Reported as Single Primary
+444,Mult Tum Rpt as One Prim,Type of Multiple Tumors Reported As One Primary
+445,Date of Mult Tumors,Date of Multiple Tumors
+1790,Follow-Up Source,Follow-Up Method (pre-96 CoC)
+1800,Next Follow-Up Source,Next Follow-Up Method (pre-96 CoC)
+1810,Addr Current--City,City/Town--Current (CoC)
+1820,Addr Current--State,State--Current (CoC)
+1830,Addr Current--Postal Code,Postal Code--Current (CoC)
+1860,Recurrence Date--1st,Date of First Recurrence (CoC)
+1880,Recurrence Type--1st,Type of First Recurrence (CoC)
+1910,Cause of Death,Underlying Cause of Death (ICD Code) (pre-96 CoC)
+1910,Cause of Death,Underlying Cause of Death (SEER)
+1920,ICD Revision Number,ICD Code Revision Used for Cause of Death (SEER)
+1960,Site (73-91) ICD-O-1,Primary Site (1973-91) (SEER)
+1981,Over-ride SS/NodesPos,Over-ride Summary Stage/Nodes Positive
+1982,Over-ride SS/TNM-N,Over-ride Summary Stage/TNM-N
+1983,Over-ride SS/TNM-M,Over-ride Summary Stage/TNM-M
+1985,Over-ride Acsn/Class/Seq,Over-ride Accession/Class of Case/Sequence
+1986,Over-ride HospSeq/DxConf,Over-ride Hospital Sequence/Diagnostic Confirmation
+1988,Over-ride HospSeq/Site,Over-ride Hospital Sequence/Site
+1990,Over-ride Age/Site/Morph,Age/Site/Histology Interfield Review (Interfield Edit 15) (SEER #3)
+2000,Over-ride SeqNo/DxConf,Sequence Number/Diagnostic Confirmation Interfield Review (Interfield Edit 23)
+2010,Over-ride Site/Lat/SeqNo,Site/Histology/Laterality/Sequence Number Interrecord Review (Interrecord Edit 09)
+2020,Over-ride Surg/DxConf,Surgery/Diagnostic Confirmation Interfield Review (Interfield Edit 46)
+2030,Over-ride Site/Type,Site/Type Interfield Review (Interfield Edit 25)
+2040,Over-ride Histology,Histology/Behavior Interfield Review (Field Item Edit Morph)
+2050,Over-ride Report Source,Type of Reporting Source/Sequence Number Interfield Review (Interfield Edit 04) (Seer #7)
+2060,Over-ride Ill-define Site,Sequence Number/Ill-defined Site Interfield Review (Interfield Edit 22)
+2070,"Over-ride Leuk, Lymphoma",Leukemia or Lymphoma/Diagnostic Confirmation Interfield Review (Interfield Edit 48)
+2071,Over-ride Site/Behavior,Over-ride Flag for Site/Behavior (IF39)
+2072,Over-ride Site/EOD/DX Dt,Over-ride Flag for Site/CS Extension/Diagnosis Date (IF176)
+2072,Over-ride Site/EOD/DX Dt,Over-ride Flag for Site/EOD/Diagnosis Date (IF40) (SEER #13)
+2073,Over-ride Site/Lat/EOD,Over-ride Flag for Site/Laterality/CS Extension (IF177)
+2073,Over-ride Site/Lat/EOD,Over-ride Flag for Site/Laterality/EOD (IF41)
+2074,Over-ride Site/Lat/Morph,Over-ride Flag for Site/Laterality/Morphology (IF42)
+2110,Date Case Report Exported,Date Case Transmitted (pre-98 NAACCR)
+2140,CoC Coding Sys--Current,Commission on Cancer Coding System-Current (CoC)
+522,Histologic Type ICD-O-3,ICD-O-3 Histology (CCCR)
+523,Behavior Code ICD-O-3,Behavior Code (CoC)
+523,Behavior Code ICD-O-3,ICD-O-3 Behaviour (CCCR)
+540,Reporting Facility,Facility Identification Number (CoC)
+540,Reporting Facility,Institution ID Number (CoC)
+540,Reporting Facility,Reporting Hospital
+550,Accession Number--Hosp,Accession Number (CoC)
+560,Sequence Number--Hospital,Sequence Number (CoC)
+580,Date of 1st Contact,Date of Adm/First Contact
+590,Date of Inpt Adm,Date of Inpatient Adm
+590,Date of Inpt Adm,Date of Inpatient Admission (CoC)
+600,Date of Inpt Disch,Date of Inpatient Disch
+600,Date of Inpt Disch,Date of Inpatient Discharge (CoC)
+630,Primary Payer at DX,Primary Payer at Diagnosis (CoC)
+670,RX Hosp--Surg Prim Site 03-2022,Cancer-Directed Surgery at This Facility (pre-96 CoC)
+670,RX Hosp--Surg Prim Site 03-2022,RX Hosp--CA Dir Surgery (pre-96 NAACCR)
+670,RX Hosp--Surg Prim Site 03-2022,RX Hosp--Surg Prim Site
+670,RX Hosp--Surg Prim Site 03-2022,Surgical Procedure of Primary Site
+671,RX Hosp--Surg Prim Site 2023,Surgery of Primary Site at this Facility
+672,RX Hosp--Scope Reg LN Sur,Scope of Regional Lymph Node Surgery at this Facility (CoC)
+674,RX Hosp--Surg Oth Reg/Dis,"Surgery of Other Regional Site(s), Distant Site(s), or Distant Lymph Node(s) at this Facility (CoC)"
+674,RX Hosp--Surg Oth Reg/Dis,Surgical Procedure/Other Site at this Facility
+676,RX Hosp--Reg LN Removed,Number of Regional Lymph Nodes Examined at This Facility (CoC)
+676,RX Hosp--Reg LN Removed,RX Hosp--Reg LN Examined
+690,RX Hosp--Radiation,Radiation at this Facility (CoC)
+700,RX Hosp--Chemo,Chemotherapy at this Facility (CoC)
+710,RX Hosp--Hormone,Hormone Therapy at this Facility (CoC)
+720,RX Hosp--BRM,Immunotherapy at this Facility (CoC)
+730,RX Hosp--Other,Other Treatment at this Facility (CoC)
+740,RX Hosp--DX/Stg Proc,Non Cancer-Directed Surgery at this Facility (CoC)
+740,RX Hosp--DX/Stg Proc,RX Hosp--DX/Stg/Pall Proc
+740,RX Hosp--DX/Stg Proc,Surgical Diagnostic & Staging Procedure at this Facility (1996-2002)
+746,RX Hosp--Surg Site 98-02,Cancer-Directed Surgery at this Facility (pre-96 CoC)
+746,RX Hosp--Surg Site 98-02,RX Hosp--CA Dir Surgery (pre-96 NAACCR)
+746,RX Hosp--Surg Site 98-02,Surgical Procedure of Primary Site
+747,RX Hosp--Scope Reg 98-02,Scope of Regional Lymph Node Surgery at this Facility (CoC)
+748,RX Hosp--Surg Oth 98-02,"Surgery of Other Regional Site(s), Distant Site(s), or Distant Lymph Node(s) at this Facility (CoC)"
+748,RX Hosp--Surg Oth 98-02,Surgical Procedure/Other Site at this Facility
+760,SEER Summary Stage 1977,General Summary Stage (SEER/CoC)
+762,Derived Summary Stage 2018,Derived SS2018
+764,Summary Stage 2018,Directly Assigned SS2018
+772,EOD Primary Tumor,SEER Primary Tumor
+774,EOD Regional Nodes,SEER Regional Nodes
+776,EOD Mets,SEER Mets
+780,EOD--Tumor Size,Size of Primary Tumor (SEER)
+780,EOD--Tumor Size,Size of Tumor (CoC)
+790,EOD--Extension,Extension (SEER EOD) (96 CoC)
+790,EOD--Extension,Extension (pre-96 SEER/CoC)
+810,EOD--Lymph Node Involv,Lymph Nodes (SEER EOD) (96 CoC)
+810,EOD--Lymph Node Involv,Lymph Nodes (pre 96-SEER/CoC)
+820,Regional Nodes Positive,Number of Positive Regional Lymph Nodes (SEER)
+820,Regional Nodes Positive,Pathologic Review of Regional Lymph Nodes (SEER)
+820,Regional Nodes Positive,Regional Lymph Nodes Positive
+830,Regional Nodes Examined,Number of Regional Lymph Nodes Examined (SEER)
+830,Regional Nodes Examined,Pathologic Review of Regional Lymph Nodes (SEER)
+830,Regional Nodes Examined,Regional Lymph Nodes Examined
+840,EOD--Old 13 Digit,13-Digit (Expanded) Site-Specific Extent of Disease (SEER)
+840,EOD--Old 13 Digit,SEER EEOD (SEER)
+850,EOD--Old 2 Digit,2-Digit Nonspecific and 2-Digit Site-Specific Extent of Disease (1973-1982 SEER)
+860,EOD--Old 4 Digit,4-Digit Extent of Disease (1983-1987 SEER)
+870,Coding System for EOD,Coding System for Extent of Disease (SEER)
+880,TNM Path T,Pathologic T (CoC)
+890,TNM Path N,Pathologic N (CoC)
+900,TNM Path M,Pathologic M (CoC)
+910,TNM Path Stage Group,Pathologic Stage Group (CoC)
+920,TNM Path Descriptor,Pathologic Stage (Prefix/Suffix) Descriptor (CoC)
+930,TNM Path Staged By,Staged By (Pathologic Stage) (CoC)
+940,TNM Clin T,Clinical T (CoC)
+950,TNM Clin N,Clinical N (CoC)
+960,TNM Clin M,Clinical M (CoC)
+970,TNM Clin Stage Group,Clinical Stage Group (CoC)
+3919,EOD Prostate Pathologic Extension,Prostate Pathological Extension
+3919,EOD Prostate Pathologic Extension,"Prostate, CS SSF# 3"
+3942,CA 19-9 PreTX Lab Value,Carbohydrate Antigen 19-9 Pretreatment Lab Value
+3957,LN Status Pelvic,Lymph Node Status: Pelvic
+3958,LN Status Para-Aortic,Lymph Node Status: Para-aortic
+3959,LN Status Femoral-Inguinal,Lymph Node Status: Femoral-Inguinal
+7010,Path Reporting Fac ID 1,BHS-4 Batch Sending Facility #0084
+7010,Path Reporting Fac ID 1,MSH-4 Sending Facility (Name) #00004 (HL7)
+7011,Path Reporting Fac ID 2,BHS-4 Batch Sending Facility #0084
+7011,Path Reporting Fac ID 2,MSH-4 Sending Facility (Name) #00004 (HL7)
+7012,Path Reporting Fac ID 3,BHS-4 Batch Sending Facility #0084
+7012,Path Reporting Fac ID 3,MSH-4 Sending Facility (Name) #00004 (HL7)
+7013,Path Reporting Fac ID 4,BHS-4 Batch Sending Facility #0084
+7013,Path Reporting Fac ID 4,MSH-4 Sending Facility (Name) #00004 (HL7)
+7014,Path Reporting Fac ID 5,BHS-4 Batch Sending Facility #0084
+7014,Path Reporting Fac ID 5,MSH-4 Sending Facility (Name) #00004 (HL7)
+7090,Path Report Number 1,OBR-3 Filler Order Number #00217 (HL7)
+7090,Path Report Number 1,Path Report Number
+7091,Path Report Number 2,OBR-3 Filler Order Number #00217 (HL7)
+7091,Path Report Number 2,Path Report Number
+7092,Path Report Number 3,OBR-3 Filler Order Number #00217 (HL7)
+7092,Path Report Number 3,Path Report Number
+7093,Path Report Number 4,OBR-3 Filler Order Number #00217 (HL7)
+7093,Path Report Number 4,Path Report Number
+7094,Path Report Number 5,OBR-3 Filler Order Number #00217 (HL7)
+7094,Path Report Number 5,Path Report Number
+7100,Path Order Phys Lic No 1,OBR-16 Ordering Provider (License Number) #00226
+7100,Path Order Phys Lic No 1,Path Ordering Client/Phys--Lic No.
+7101,Path Order Phys Lic No 2,OBR-16 Ordering Provider (License Number) #00226
+7101,Path Order Phys Lic No 2,Path Ordering Client/Phys--Lic No.
+7102,Path Order Phys Lic No 3,OBR-16 Ordering Provider (License Number) #00226
+7102,Path Order Phys Lic No 3,Path Ordering Client/Phys--Lic No.
+7103,Path Order Phys Lic No 4,OBR-16 Ordering Provider (License Number) #00226
+7103,Path Order Phys Lic No 4,Path Ordering Client/Phys--Lic No.
+7190,Path Ordering Fac No 1,ORC-21 Ordering Facility Name #01311 (HL7)
+7190,Path Ordering Fac No 1,Path Ordering Facility Number (AHA Number)
+7191,Path Ordering Fac No 2,ORC-21 Ordering Facility Name #01311 (HL7)
+7191,Path Ordering Fac No 2,Path Ordering Facility Number (AHA Number)
+7192,Path Ordering Fac No 3,ORC-21 Ordering Facility Name #01311 (HL7)
+7192,Path Ordering Fac No 3,Path Ordering Facility Number (AHA Number)
+7193,Path Ordering Fac No 4,ORC-21 Ordering Facility Name #01311 (HL7)
+7193,Path Ordering Fac No 4,Path Ordering Facility Number (AHA Number)
+7194,Path Ordering Fac No 5,ORC-21 Ordering Facility Name #01311 (HL7)
+7194,Path Ordering Fac No 5,Path Ordering Facility Number (AHA Number)
+7320,Path Date Spec Collect 1,OBR-7 Observation Date/Time #00241 (HL7)
+7320,Path Date Spec Collect 1,Path--Date Spec Collection
+7321,Path Date Spec Collect 2,OBR-7 Observation Date/Time #00241 (HL7)
+7321,Path Date Spec Collect 2,Path--Date Spec Collection
+2935,CS Version Input Original,CS Version 1ST
+2936,CS Version Derived,CS Version Latest
+2940,Derived AJCC-6 T,Derived AJCC T
+2940,Derived AJCC-6 T,Derived T
+2950,Derived AJCC-6 T Descript,Derived 6 T Descriptor Storage Code
+2950,Derived AJCC-6 T Descript,Derived AJCC T Descriptor
+2960,Derived AJCC-6 N,Derived 6 N Descriptor Storage Code
+2960,Derived AJCC-6 N,Derived AJCC N
+2970,Derived AJCC-6 N Descript,Derived  6 N Descriptor Storage Code
+2970,Derived AJCC-6 N Descript,Derived AJCC N Descriptor
+2980,Derived AJCC-6 M,Derived 6 M Storage Code
+2980,Derived AJCC-6 M,Derived AJCC M
+2990,Derived AJCC-6 M Descript,Derived  6 M Descriptor Storage Code
+2990,Derived AJCC-6 M Descript,Derived AJCC M Descriptor
+3000,Derived AJCC-6 Stage Grp,Derived 6 Stage Group Storage Code
+3000,Derived AJCC-6 Stage Grp,Derived AJCC Stage Group
+3010,Derived SS1977,Derived SEER Summary Stage 1977
+3020,Derived SS2000,Derived SEER Summary Stage 2000
+3030,Derived AJCC--Flag,AJCC Conversion Flag
+3040,Derived SS1977--Flag,SS1977 Conversion Flag
+3050,Derived SS2000--Flag,SS2000 Conversion Flag
+3110,Comorbid/Complication 1,Comorbidities and Complications #1
+3120,Comorbid/Complication 2,Comorbidities and Complications #2
+3130,Comorbid/Complication 3,Comorbidities and Complications #3
+3140,Comorbid/Complication 4,Comorbidities and Complications #4
+3150,Comorbid/Complication 5,Comorbidities and Complications #5
+3160,Comorbid/Complication 6,Comorbidities and Complications #6
+3161,Comorbid/Complication 7,Comorbidities and Complications #7
+3162,Comorbid/Complication 8,Comorbidities and Complications #8
+3163,Comorbid/Complication 9,Comorbidities and Complications #9
+3164,Comorbid/Complication 10,Comorbidities and Complications #10
+3165,ICD Revision Comorbid,ICD Revision Comorbidities
+3170,RX Date Mst Defn Srg,Date of Most Definitive Surgical Resection of the Primary Site
+3170,RX Date Mst Defn Srg,RX Date--Most Defin Surg
+3180,RX Date Surg Disch,Date of Surgical Discharge
+3180,RX Date Surg Disch,RX Date--Surgical Disch
+3190,Readm Same Hosp 30 Days,Readmission to the Same Hospital Within 30 Days of Surgical Discharge
+3220,RX Date Rad Ended,Date Radiation Ended
+3220,RX Date Rad Ended,RX Date--Radiation Ended
+3230,RX Date Systemic,Date Systemic Therapy Started
+3230,RX Date Systemic,RX Date--Systemic
+3250,RX Summ--Transplnt/Endocr,Hematologic Transplant and Endocrine Procedures
+3270,RX Summ--Palliative Proc,Palliative Care
+3270,RX Summ--Palliative Proc,Palliative Procedure
+3280,RX Hosp--Palliative Proc,Palliative Care at this Facility
+3280,RX Hosp--Palliative Proc,Palliative Procedure at this Facility
+3300,RuralUrban Continuum 1993,Beale Code
+3310,RuralUrban Continuum 2003,Beale Code
+3310,RuralUrban Continuum 2003,RuralUrban Continuum 2000
+3312,RuralUrban Continuum 2013,Beale Code
+3400,Derived AJCC-7 T,Derived 7 T Storage Code
+3402,Derived AJCC-7 T Descript,Derived 7 T Descript Storage Code
+3410,Derived AJCC-7 N,Derived 7 N Storage Code
+3412,Derived AJCC-7 N Descript,Derived 7 N Descript Storage Code
+3420,Derived AJCC-7 M,Derived 7 M Storage Code
+3422,Derived AJCC-7 M Descript,Derived 7 M Descript Storage Code
+3430,Derived AJCC-7 Stage Grp,Derived 7 Stage Grp Storage Code
+3622,Derived SEER Cmb T Src,Derived SEER Combined T Source
+3624,Derived SEER Cmb N Src,Derived SEER Combined N Source
+3626,Derived SEER Cmb M Src,Derived SEER Combined M Source
+980,TNM Clin Descriptor,Clinical Stage (Prefix/Suffix) Descriptor (CoC)
+990,TNM Clin Staged By,Staged By (Clinical Stage) (CoC)
+1130,Pediatric Staging System,Type of Staging System (Pediatric) (CoC)
+1140,Pediatric Staged By,Staged By (Pediatric Stage) (CoC)
+1150,Tumor Marker 1,Tumor Marker One (CoC)
+1160,Tumor Marker 2,Tumor Marker Two (CoC)
+1170,Tumor Marker 3,Tumor Marker Three (CoC)
+1182,Lymphovascular Invasion,Lymph-vascular Invasion
+1185,Intl Neuroblastoma Risk Grp Stag Sys (INRGSS),INRG
+1187,Intl Neuroblastoma Path Prog Class (INPC),International Neuroblastoma Pathology Prognostic Classification (INPC)
+1187,Intl Neuroblastoma Path Prog Class (INPC),Shimada Classification
+1187,Intl Neuroblastoma Path Prog Class (INPC),"Unfavorable histology, or Favorable histology"
+1193,FOXO1 Gene Rearrangements,FKHR-PAX3
+1193,FOXO1 Gene Rearrangements,FKHR-PAX7
+1200,RX Date Surgery,Date of Cancer-Directed Surgery (CoC)
+1200,RX Date Surgery,Date of First Surgical Procedure (CoC)
+1200,RX Date Surgery,Date of Surgery
+1200,RX Date Surgery,RX Date--Surgery
+1210,RX Date Radiation,Date Radiation Started (CoC)
+1210,RX Date Radiation,RX Date--Radiation
+1220,RX Date Chemo,Date Chemotherapy Started (CoC)
+1220,RX Date Chemo,RX Date--Chemo
+1230,RX Date Hormone,Date Hormone Therapy Started (CoC)
+1230,RX Date Hormone,RX Date--Hormone
+1240,RX Date BRM,Date Immunotherapy Started (CoC)
+1240,RX Date BRM,RX Date--BRM
+1250,RX Date Other,Date Other Treatment Started (CoC)
+1250,RX Date Other,RX Date--Other
+1260,Date Initial RX SEER,Date Started (SEER)
+1260,Date Initial RX SEER,Date Therapy Initiated (SEER)
+1260,Date Initial RX SEER,Date of Initial RX--SEER
+1270,Date 1st Crs RX CoC,Date Started (pre 96 CoC)
+1270,Date 1st Crs RX CoC,Date of 1st Crs RX--CoC
+1270,Date 1st Crs RX CoC,Date of First Course Treatment (CoC)
+1280,RX Date DX/Stg Proc,"Date of Diagnostic, Staging or Palliative Procedures (1996-2002)"
+1280,RX Date DX/Stg Proc,Date of Non Cancer-Directed Surgery ( CoC)
+1280,RX Date DX/Stg Proc,Date of Surgical Diagnostic and Staging Procedure (CoC)
+1280,RX Date DX/Stg Proc,RX Date--DX/Stg Proc
+1280,RX Date DX/Stg Proc,RX Date--DX/Stg/Pall Proc
+1290,RX Summ--Surg Prim Site 03-2022,Cancer-Directed Surgery (pre-96 CoC)
+1290,RX Summ--Surg Prim Site 03-2022,RX Summ--Surg Prim Site
+1290,RX Summ--Surg Prim Site 03-2022,Surgery of Primary Site (SEER/CoC)
+1291,RX Summ--Surg Prim Site 2023,Surgery of Primary Site
+1292,RX Summ--Scope Reg LN Sur,Scope of Regional Lymph Node Surgery (SEER/CoC)
+1294,RX Summ--Surg Oth Reg/Dis,"Surgery of Other Regional Site(s), Distant Site(s) or Distant Lymph Nodes (SEER/CoC)"
+1294,RX Summ--Surg Oth Reg/Dis,Surgical Procedure/Other Site
+1296,RX Summ--Reg LN Examined,Number of Regional Lymph Nodes Examined (SEER/CoC)
+1296,RX Summ--Reg LN Examined,Number of Regional Lymph Nodes Removed (CoC)
+1310,RX Summ--Surgical Approch,Surgical Approach (CoC)
+1320,RX Summ--Surgical Margins,Residual Primary Tumor Following Cancer-Directed Surgery (pre-96 CoC)
+1320,RX Summ--Surgical Margins,Surgical Margins (CoC)
+1330,RX Summ--Reconstruct 1st,Reconstruction--First Course (SEER)
+1330,RX Summ--Reconstruct 1st,Reconstruction/Restoration-First Course (CoC)
+1340,Reason for No Surgery,Reason for No CA Dir Surgery (CoC)
+1340,Reason for No Surgery,Reason for No Cancer-Directed Surgery (SEER)
+1340,Reason for No Surgery,Reason for No Surgery to Primary Site
+1350,RX Summ--DX/Stg Proc,Non Cancer-Directed Surgery (CoC)
+1350,RX Summ--DX/Stg Proc,RX Summ--DX/Stg/Pall Proc
+1350,RX Summ--DX/Stg Proc,Surgical Diagnostic and Staging Procedure (1996-2002)
+1360,RX Summ--Radiation,Radiation (SEER/CoC)
+1360,RX Summ--Radiation,Radiation Therapy (pre-96 CoC)
+1370,RX Summ--Rad to CNS,Radiation Therapy to CNS (CoC)
+1370,RX Summ--Rad to CNS,Radiation to the Brain and/or Central Nervous System (SEER)
+1380,RX Summ--Surg/Rad Seq,Radiation Sequence with Surgery (pre-96 SEER/CoC)
+1380,RX Summ--Surg/Rad Seq,Radiation/Surgery Sequence (CoC)
+1390,RX Summ--Chemo,Chemotherapy (SEER/CoC)
+1400,RX Summ--Hormone,Endocrine (Hormone/Steroid) Therapy (pre-96 SEER)
+1400,RX Summ--Hormone,Hormone Therapy (SEER/CoC)
+1410,RX Summ--BRM,Biological Response Modifiers (pre-96 SEER)
+1410,RX Summ--BRM,Immunotherapy (SEER/CoC)
+1420,RX Summ--Other,Other Cancer-Directed Therapy (SEER/pre-96 CoC)
+1420,RX Summ--Other,Other Treatment (CoC)
+1430,Reason for No Radiation,Reason for No Regional Radiation Therapy
+3769,Over-ride CS 20,Direct Summary Stage 2000 Flag
+3780,Secondary Diagnosis 1,Secondary Dx ICD-10 1
+3782,Secondary Diagnosis 2,Secondary Dx ICD10 2
+3784,Secondary Diagnosis 3,Secondary Dx ICD10 3
+3786,Secondary Diagnosis 4,Secondary Dx ICD10 4
+3788,Secondary Diagnosis 5,Secondary Dx ICD10 5
+3790,Secondary Diagnosis 6,Secondary Dx ICD10 6
+3792,Secondary Diagnosis 7,Secondary Dx ICD10 7
+3794,Secondary Diagnosis 8,Secondary Dx ICD10 8
+3796,Secondary Diagnosis 9,Secondary Dx ICD10 9
+3798,Secondary Diagnosis 10,Secondary Dx ICD10 10
+3804,Adenopathy,RAI Classification: Adenopathy
+3805,AFP Post-Orchiectomy Lab Value,Testis Serum Markers: AFP (Alpha Fetoprotein) Post-Orchiectomy Lab Value
+3806,AFP Post-Orchiectomy Range,Testis Serum Markers: AFP (Alpha Fetoprotein) Post-Orchiectomy Range
+3807,AFP Pre-Orchiectomy Lab Value,Testis Serum Markers: AFP (Alpha Fetoprotein) Pre-Orchiectomy Lab Value
+3808,AFP Pre-Orchiectomy Range,Testis Serum Markers: AFP (Alpha Fetoprotein) Pre-Orchiectomy Range
+3809,AFP Pretreatment Interpretation,AFP (Alpha Fetoprotein) Pretreatment Interpretation 
+3810,AFP Pretreatment Lab Value,AFP (Alpha Fetoprotein) Pretreatment Lab Value
+3811,Anemia,RAI Classification: Anemia
+3818,CA-125 Pretreatment Interpretation,: CA-125 (Carbohydrate Antigen 125) Pretreatment Interpretation
+2158,AJCC Cancer Surveillance DLL Version Current,AJCC Cancer Surveillance API Version Current
+2230,Name--Last,Last Name (CoC)
+2240,Name--First,First Name (CoC)
+2250,Name--Middle,Middle Initial (pre-96 CoC)
+2250,Name--Middle,Middle Name (CoC)
+2260,Name--Prefix,Name Prefix (CoC)
+2270,Name--Suffix,Name Suffix (CoC)
+2280,Name--Alias,Alias (CoC)
+2330,Addr at DX--No & Street,Number and Street (pre-96 CoC)
+2330,Addr at DX--No & Street,Patient Address (Number and Street) at Diagnosis (CoC)
+2335,Addr at DX--Supplementl,Patient Address (Number and Street) at Diagnosis--Supplemental (CoC)
+2350,Addr Current--No & Street,Patient Address (Number and Street)-Current (CoC)
+2355,Addr Current--Supplementl,Patient Address (Number and Street) Current--Supplemental (CoC)
+2410,Institution Referred From,Facility Referred From
+2420,Institution Referred To,Facility Referred To
+2460,Physician--Managing,Attending Physician (pre-96 CoC)
+2460,Physician--Managing,Managing Physician (CoC)
+2470,Physician--Follow-Up,Follow-Up Physician (pre-96 CoC)
+2470,Physician--Follow-Up,Following Physician (CoC)
+2480,Physician--Primary Surg,Primary Surgeon (CoC)
+2490,Physician 3,Other Physician (pre-96 CoC)
+2490,Physician 3,Physician #3 (CoC)
+2495,NPI--Physician 3,Radiation Oncologist (CoC)
+2500,Physician 4,Other Physician (pre-96 CoC)
+2500,Physician 4,Physician #4 (CoC)
+2505,NPI--Physician 4,Medical Oncologist (CoC)
+2690,Text--Place of Diagnosis,Place of Diagnosis
+2820,CS Tumor Size/Ext Eval,CS TS/Ext-Eval
+2820,CS Tumor Size/Ext Eval,CS Tumor Size/Extension Evaluation
+2830,CS Lymph Nodes,CS Lymph Nodes (SEER EOD)
+2840,CS Lymph Nodes Eval,CS Reg Nodes Eval
+2840,CS Lymph Nodes Eval,CS Regional Nodes Evaluation
+2850,CS Mets at DX,CS Metastasis at Diagnosis
+1550,Rad--Location of RX,Location of Radiation Treatment (CoC)
+1570,Rad--Regional RX Modality,Regional Treatment Modality (CoC)
+1639,RX Summ--Systemic/Sur Seq,Systemic/Surgery Sequence
+1640,RX Summ--Surgery Type,Site--Specific Surgery (pre-98 SEER)
+1646,RX Summ--Surg Site 98-02,Cancer-Directed Surgery (pre-96 CoC)
+1646,RX Summ--Surg Site 98-02,Surgery of Primary Site (SEER/CoC)
+1647,RX Summ--Scope Reg 98-02,Scope of Regional Lymph Node Surgery (SEER/CoC)
+1648,RX Summ--Surg Oth 98-02,"Surgery of Other Regional Site(s), Distant Site(s) or Distant Lymph Nodes (SEER/CoC)"
+1648,RX Summ--Surg Oth 98-02,Surgical Procedure/Other Site
+1660,Subsq RX 2nd Course Date,Second Course of Therapy-Date Started (pre-96 CoC)
+1750,Date of Last Contact,Date of Last Contact or Death (CoC)
+1750,Date of Last Contact,Date of Last Follow-Up or of Death (SEER)
+2860,CS Mets Eval,CS Metastasis Evaluation
+7322,Path Date Spec Collect 3,OBR-7 Observation Date/Time #00241 (HL7)
+7322,Path Date Spec Collect 3,Path--Date Spec Collection
+7323,Path Date Spec Collect 4,OBR-7 Observation Date/Time #00241 (HL7)
+7323,Path Date Spec Collect 4,Path--Date Spec Collection
+7324,Path Date Spec Collect 5,OBR-7 Observation Date/Time #00241 (HL7)
+7324,Path Date Spec Collect 5,Path--Date Spec Collection
+7480,Path Report Type 1,OBR-4 Universal Service ID #00238 (HL7)
+7480,Path Report Type 1,Path--Report Type
+7481,Path Report Type 2,OBR-4 Universal Service ID #00238 (HL7)
+7481,Path Report Type 2,Path--Report Type
+7482,Path Report Type 3,OBR-4 Universal Service ID #00238 (HL7)
+7482,Path Report Type 3,Path--Report Type
+7483,Path Report Type 4,OBR-4 Universal Service ID #00238 (HL7)
+7483,Path Report Type 4,Path--Report Type
+7484,Path Report Type 5,OBR-4 Universal Service ID #00238 (HL7)
+7484,Path Report Type 5,Path--Report Type

@@ -1,0 +1,4 @@
+[submodule "i2b2-data"]
+	path = SCRIPTS/DATA_INSTALLER/i2b2-data
+	url = https://github.com/Missouri-BMI/i2b2-data.git
+	branch = develop

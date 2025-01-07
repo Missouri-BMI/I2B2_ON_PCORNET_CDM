@@ -1,3 +1,0 @@
-#!/bin/bash
-set -e
-docker build --platform=linux/amd64 -t ont-loader --no-cache .
