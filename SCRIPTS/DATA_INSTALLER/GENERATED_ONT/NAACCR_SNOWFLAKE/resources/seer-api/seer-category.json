@@ -1,0 +1,362 @@
+[
+    {
+        "id": "head-and-neck",
+        "label": "Head and Neck",
+        "sites": [
+            {
+                "high": "C148",
+                "low": "C000"
+            },
+            {
+                "high": "C329",
+                "low": "C300"
+            }
+        ]
+    },
+    {
+        "id": "colon",
+        "label": "Colon",
+        "sites": [
+            {
+                "high": "C189",
+                "low": "C180"
+            }
+        ]
+    },
+    {
+        "id": "lung",
+        "label": "Lung",
+        "sites": [
+            {
+                "high": "C349",
+                "low": "C340"
+            },
+            {
+                "high": "C379",
+                "low": "C379"
+            },
+            {
+                "high": "C384",
+                "low": "C380"
+            },
+            {
+                "high": "C388",
+                "low": "C388"
+            }
+        ]
+    },
+    {
+        "id": "breast",
+        "label": "Breast",
+        "sites": [
+            {
+                "high": "C509",
+                "low": "C500"
+            }
+        ]
+    },
+    {
+        "id": "kidney",
+        "label": "Kidney",
+        "sites": [
+            {
+                "high": "C649",
+                "low": "C649"
+            }
+        ]
+    },
+    {
+        "id": "urinary",
+        "label": "Urinary",
+        "sites": [
+            {
+                "high": "C659",
+                "low": "C659"
+            },
+            {
+                "high": "C669",
+                "low": "C669"
+            },
+            {
+                "high": "C679",
+                "low": "C670"
+            },
+            {
+                "high": "C689",
+                "low": "C680"
+            }
+        ]
+    },
+    {
+        "id": "benign-brain",
+        "label": "Benign Brain",
+        "sites": [
+            {
+                "high": "C700",
+                "low": "C700"
+            },
+            {
+                "high": "C701",
+                "low": "C701"
+            },
+            {
+                "high": "C719",
+                "low": "C709"
+            },
+            {
+                "high": "C725",
+                "low": "C720"
+            },
+            {
+                "high": "C728",
+                "low": "C728"
+            },
+            {
+                "high": "C729",
+                "low": "C729"
+            },
+            {
+                "high": "C753",
+                "low": "C751"
+            }
+        ]
+    },
+    {
+        "id": "malignant-brain",
+        "label": "Malignant Brain",
+        "sites": [
+            {
+                "high": "C700",
+                "low": "C700"
+            },
+            {
+                "high": "C701",
+                "low": "C701"
+            },
+            {
+                "high": "C709",
+                "low": "C709"
+            },
+            {
+                "high": "C719",
+                "low": "C710"
+            },
+            {
+                "high": "C725",
+                "low": "C720"
+            },
+            {
+                "high": "C718",
+                "low": "C718"
+            },
+            {
+                "high": "C729",
+                "low": "C729"
+            },
+            {
+                "high": "C753",
+                "low": "C751"
+            }
+        ]
+    },
+    {
+        "id": "melanoma",
+        "label": "Melanoma",
+        "sites": [
+            {
+                "high": "C449",
+                "low": "C440"
+            }
+        ]
+    },
+    {
+        "id": "female-reproductive",
+        "label": "Female Reproductive Organs",
+        "sites": [
+            {
+                "high": "C512",
+                "low": "C510"
+            },
+            {
+                "high": "C519",
+                "low": "C518"
+            },
+            {
+                "high": "C529",
+                "low": "C529"
+            },
+            {
+                "high": "C531",
+                "low": "C530"
+            },
+            {
+                "high": "C539",
+                "low": "C538"
+            },
+            {
+                "high": "C543",
+                "low": "C540"
+            },
+            {
+                "high": "C549",
+                "low": "C548"
+            },
+            {
+                "high": "C559",
+                "low": "C559"
+            },
+            {
+                "high": "C569",
+                "low": "C569"
+            },
+            {
+                "high": "C574",
+                "low": "C570"
+            },
+            {
+                "high": "C577",
+                "low": "C577"
+            },
+            {
+                "high": "C579",
+                "low": "C579"
+            },
+            {
+                "high": "C589",
+                "low": "C589"
+            }
+        ]
+    },
+    {
+        "id": "male-genital",
+        "label": "Male Genital",
+        "sites": [
+            {
+                "high": "C602",
+                "low": "C600"
+            },
+            {
+                "high": "C609",
+                "low": "C608"
+            },
+            {
+                "high": "C619",
+                "low": "C619"
+            },
+            {
+                "high": "C621",
+                "low": "C620"
+            },
+            {
+                "high": "C629",
+                "low": "C629"
+            },
+            {
+                "high": "C632",
+                "low": "C630"
+            },
+            {
+                "high": "C639",
+                "low": "C637"
+            }
+        ]
+    },
+    {
+        "id": "thyroid",
+        "label": "Thyroid",
+        "sites": [
+            {
+                "high": "C739",
+                "low": "C739"
+            }
+        ]
+    },
+    {
+        "id": "soft-tissue-bone",
+        "label": "Soft Tissue/Bone",
+        "sites": [
+            {
+                "high": "C403",
+                "low": "C400"
+            },
+            {
+                "high": "C409",
+                "low": "C408"
+            },
+            {
+                "high": "C414",
+                "low": "C410"
+            },
+            {
+                "high": "C419",
+                "low": "C418"
+            },
+            {
+                "high": "C496",
+                "low": "C490"
+            },
+            {
+                "high": "C499",
+                "low": "C498"
+            }
+        ]
+    },
+    {
+        "id": "other-gastro",
+        "label": "Other Gastro-intestinal",
+        "sites": [
+            {
+                "high": "C155",
+                "low": "C150"
+            },
+            {
+                "high": "C159",
+                "low": "C158"
+            },
+            {
+                "high": "C166",
+                "low": "C160"
+            },
+            {
+                "high": "C169",
+                "low": "C168"
+            },
+            {
+                "high": "C173",
+                "low": "C170"
+            },
+            {
+                "high": "C179",
+                "low": "C178"
+            },
+            {
+                "high": "C221",
+                "low": "C220"
+            },
+            {
+                "high": "C239",
+                "low": "C239"
+            },
+            {
+                "high": "C241",
+                "low": "C240"
+            },
+            {
+                "high": "C249",
+                "low": "C248"
+            },
+            {
+                "high": "C254",
+                "low": "C250"
+            },
+            {
+                "high": "C259",
+                "low": "C257"
+            }
+        ]
+    },
+    {
+        "id": "other",
+        "label": "Other"
+    }
+]
