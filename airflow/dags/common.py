@@ -56,6 +56,10 @@ def read_sql_from_file(file_path: str, **kwargs) -> str:
     )
     return formatted_sql.format(**kwargs)
 
+@task(retries=0)  
+def add_schema_sql(schema, sql_text) -> str:
+    return f"use schema {schema};\n" + sql_text
+    
 # Task to execute SQL using SnowflakeOperator
 def execute_sql(conn_id, task_id, sql_query: str, trigger_rule=TriggerRule.ALL_SUCCESS, autocommit = True, retries = 0):
     return SnowflakeOperator(
