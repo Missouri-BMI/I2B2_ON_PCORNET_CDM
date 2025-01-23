@@ -1,0 +1,2 @@
+#!/bin/bash
+mariadb --host=shrine-db-washu.chmnhhv9fwkb.us-east-2.rds.amazonaws.com --port=3306 --user=shrineAdmin --password=2nzTEnhkbCMHJsUx9qr2 shrine_query_history < ./adapter/sql/shrine_query_history-update-mysql.sql

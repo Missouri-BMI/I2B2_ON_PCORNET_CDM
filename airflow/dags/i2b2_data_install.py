@@ -28,10 +28,10 @@ with DAG(
     tags=["i2b2_data_install"],
 ) as dag:
     
-    args = dotenv_values("/opt/airflow/env/dev/.env")
+    args = dotenv_values("/opt/airflow/env/sandbox/.env")
     
     project = args['PROJECT']
-    snowflake_conn_id = 'mu-dev-init'
+    snowflake_conn_id = 'mu-sandbox-init'
 
     BASE_PATH = '/opt/airflow/SCRIPTS/DATA_INSTALLER'
     DATA_INSTALLER_PATH = f"{BASE_PATH}/i2b2-data"

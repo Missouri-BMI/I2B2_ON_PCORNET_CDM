@@ -1,7 +1,7 @@
 create or replace view {target_schema}.SDOH_FACT as
 select
-    fact.ENCOUNTER_NUM                                                                              as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                                as PATIENT_NUM, 
+    ec.ENCOUNTER_NUM                                                                            as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                              as PATIENT_NUM, 
     case 
        when smoking = '04' then  'LOINC:LA18978-9'
        when smoking = '05' then  'LOINC:LA18979-7'
@@ -32,12 +32,16 @@ select
     CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,
     cast( null as VARCHAR(50))                                                                      as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
-from {source_schema}.V_DEID_VITAL fact 
-where ENCOUNTERID is not null
+from {source_schema}.V_DEID_VITAL fact
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU' 
+where fact.ENCOUNTERID is not null
 union all
 select
-    fact.ENCOUNTER_NUM, 
-    fact.PATIENT_NUM, 
+    dim.ENCOUNTER_NUM, 
+    dim.PATIENT_NUM, 
     CASE
           WHEN PAYER_TYPE_PRIMARY =  '1' THEN  'LOINC:LA15652-3'
           WHEN PAYER_TYPE_PRIMARY =  '2' THEN  'LOINC:LA17849-3'
@@ -67,6 +71,6 @@ select
     CURRENT_TIMESTAMP                                                                               as UPDATE_DATE,
     CURRENT_TIMESTAMP                                                                               as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,
-    cast( null as VARCHAR(50))                                                                     as SOURCESYSTEM_CD,                                                                    
+    cast( null as VARCHAR(50))                                                                      as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
-from  {target_schema}.VISIT_DIMENSION fact;
+from  {target_schema}.VISIT_DIMENSION dim;

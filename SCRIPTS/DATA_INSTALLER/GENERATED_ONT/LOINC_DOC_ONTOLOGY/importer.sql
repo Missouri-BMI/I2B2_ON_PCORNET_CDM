@@ -15,7 +15,7 @@ select
     , 'FA '
     , null
     , null
-    , 'concept_cd'
+    , 'obsgen_fact.concept_cd'
     , 'concept_dimension'
     , 'concept_path'
     , 'T'
@@ -41,7 +41,7 @@ select
     , NULL
     , NULL
     , NULL
-    , 'concept_cd'
+    , 'obsgen_fact.concept_cd'
     , 'concept_dimension'
     ,  'concept_path'
     , 'T'

@@ -1,7 +1,7 @@
 create or replace view  {target_schema}.LAB_FACT as
 select
-    fact.ENCOUNTER_NUM                                                                          as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                            as PATIENT_NUM, 
+    ec.ENCOUNTER_NUM                                                                            as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                              as PATIENT_NUM, 
     concat('LOINC:', LAB_LOINC)                                                                 as CONCEPT_CD,
     '@'                                                                                         as PROVIDER_ID, 
     LAB_ORDER_DATE  :: TIMESTAMP                                                                as START_DATE,  
@@ -28,11 +28,15 @@ select
     cast(null as VARCHAR(50))                                                                   as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from {source_schema}.V_DEID_LAB_RESULT_CM fact 
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU'
 where LAB_LOINC is not null and result_modifier <> 'TX'
 UNION all
 select
-    fact.ENCOUNTER_NUM                                                                          as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                            as PATIENT_NUM, 
+    ec.ENCOUNTER_NUM                                                                            as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                              as PATIENT_NUM, 
     concat('LOINC:', LAB_LOINC)                                                                 as CONCEPT_CD,
     '@'                                                                                         as PROVIDER_ID, 
     LAB_ORDER_DATE  :: TIMESTAMP                                                                as START_DATE,  
@@ -54,4 +58,9 @@ select
     cast(null as VARCHAR(50))                                                                   as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from {source_schema}.V_DEID_LAB_RESULT_CM fact 
-where LAB_LOINC is not null and result_modifier = 'TX';
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU'
+where LAB_LOINC is not null and result_modifier = 'TX'
+;

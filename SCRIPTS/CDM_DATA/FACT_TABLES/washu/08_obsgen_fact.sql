@@ -1,7 +1,7 @@
 create or replace view  {target_schema}.OBSGEN_FACT as
 select
-    fact.ENCOUNTER_NUM                                                                          as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                            as PATIENT_NUM, 
+    ec.ENCOUNTER_NUM                                                                            as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                              as PATIENT_NUM, 
     concat('LOINC:', OBSGEN_CODE)                                                               as CONCEPT_CD,
     '@'                                                                                         as PROVIDER_ID, 
     -- TO_TIMESTAMP(OBSGEN_START_DATE   :: DATE || ' ' || OBSGEN_START_TIME, 'YYYY-MM-DD HH24:MI:SS')     as START_DATE, 
@@ -25,5 +25,9 @@ select
     cast( null as VARCHAR(50))                                                                  as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from {source_schema}.V_DEID_OBS_GEN fact
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU'
 where OBSGEN_TYPE = 'LC' and ENCOUNTER_NUM is not null
 ;

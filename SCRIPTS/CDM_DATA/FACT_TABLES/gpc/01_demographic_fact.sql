@@ -2,7 +2,7 @@
 create or replace view {target_schema}.DEMOGRAPHIC_FACT as 
 -- demographic hispanic
 select
-    dim.ENCOUNTER_NUM, 
+    cast(-1 as NUMBER(38, 0))                                                       as ENCOUNTER_NUM, 
     dim.PATIENT_NUM, 
     concat('DEM|HISP:', COALESCE(dim.HISPANIC, 'NI'))                               as CONCEPT_CD,
     '@'                                                                             as PROVIDER_ID, 
@@ -28,7 +28,7 @@ from {target_schema}.PATIENT_DIMENSION as dim
 union all 
 -- demographic race
 select
-    dim.ENCOUNTER_NUM, 
+    cast(-1 as NUMBER(38, 0))                                                       as ENCOUNTER_NUM, 
     dim.PATIENT_NUM, 
     CASE
         WHEN dim.RACE_CD =  'American Indian or Alaska Native' THEN  concat('DEM|RACE:', 'NA')
@@ -66,7 +66,7 @@ from {target_schema}.PATIENT_DIMENSION as dim
 union all 
 --SEX
 select
-    dim.ENCOUNTER_NUM, 
+    cast(-1 as NUMBER(38, 0))                                                       as ENCOUNTER_NUM, 
     dim.PATIENT_NUM, 
     concat('DEM|SEX:', COALESCE(dim.SEX_CD, 'NI'))                                  as CONCEPT_CD,
     '@'                                                                             as PROVIDER_ID, 

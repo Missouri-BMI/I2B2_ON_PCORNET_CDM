@@ -26,7 +26,7 @@ with DAG(
     tags=["i2b2_custom_ontology"],
 ) as dag:
     snowflake_conn_id = 'mu-dev'
-    args = dotenv_values("/opt/airflow/env/sandbox/.env")
+    args = dotenv_values("/opt/airflow/env/dev/.env")
     project = args['PROJECT']
 
     BASE_PATH = '/opt/airflow/SCRIPTS/DATA_INSTALLER/GENERATED_ONT'
@@ -152,9 +152,35 @@ with DAG(
         TSV_FORMAT = 'TSV_FORMAT'
 
         stage_tsv_query = f"""
-            USE SCHEMA {metadata_schema};
-            PUT {LOCAL_STAGE}/*.tsv @{TSV_STAGE} {PUT_PARAMETERS};
+            PUT {LOCAL_STAGE}/*.tsv @{metadata_schema}.{TSV_STAGE} {PUT_PARAMETERS};
         """.format(**kwargs)
+
+        tsv_task_sql = f""" 
+            CREATE OR REPLACE FILE FORMAT {metadata_schema}.{TSV_FORMAT}
+                TYPE=CSV
+                FIELD_DELIMITER = '\t'
+                ESCAPE=NONE
+                NULL_IF = ('NULL')
+                COMPRESSION=AUTO
+                ESCAPE_UNENCLOSED_FIELD=NONE
+                FIELD_OPTIONALLY_ENCLOSED_BY=NONE
+                SKIP_HEADER=1;
+        """
+        tsv_task = execute_sql(
+            snowflake_conn_id, 
+            'create-tsv-format',
+            tsv_task_sql
+        )
+
+        format_task_sql = f"""
+            CREATE OR REPLACE STAGE {metadata_schema}.{TSV_STAGE} FILE_FORMAT = {TSV_FORMAT};        
+        """
+
+        format_task = execute_sql(
+            snowflake_conn_id, 
+            'create-tsv-stage',
+            format_task_sql
+        )
 
         stage_tsv_task = execute_sql(
             snowflake_conn_id, 
@@ -178,9 +204,10 @@ with DAG(
             task_id='site_stage_tasks_ends', 
             trigger_rule=TriggerRule.ALL_DONE
         )
-        stage_tsv_task >> load_sites_tasks >> stage_done
+
+        tsv_task >> format_task >> stage_tsv_task >> load_sites_tasks >> stage_done
 
 
-    create_conn_task >> sites >> facilityID >> facilityLocation >> adi >> medlist >> acs
+    create_conn_task >> facilityID >> facilityLocation >> medlist  >> sites >> adi >> acs
 
    

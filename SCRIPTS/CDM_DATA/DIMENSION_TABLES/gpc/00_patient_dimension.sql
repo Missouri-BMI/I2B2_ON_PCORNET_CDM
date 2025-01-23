@@ -37,7 +37,8 @@ select
     CURRENT_TIMESTAMP                                       as IMPORT_DATE,
     cast(null as VARCHAR(50))                               as SOURCESYSTEM_CD,
     cast(null	as INT)                                     as UPLOAD_ID,
-    dim.GPC_SITE
+    PCORNET_SITE_ID                                         as SITE_ID,
+    PCORNET_SITE_NAME                                       as SITE_NAME
 from {source_schema}.GPC_DEID_DEMOGRAPHIC as dim
 left join {source_schema}.GPC_DEID_DEATH as dead  
 using (patient_num);

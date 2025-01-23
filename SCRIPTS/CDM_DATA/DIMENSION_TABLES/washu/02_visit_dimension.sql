@@ -2,8 +2,8 @@
 create or replace view {target_schema}.VISIT_DIMENSION
 as  
 select
-    dim.ENCOUNTER_NUM                                                                               as ENCOUNTER_NUM, 
-    dim.PATIENT_NUM                                                                                 as PATIENT_NUM,
+    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                                  as PATIENT_NUM,
     cast(null as VARCHAR(50))                                                                       as ACTIVE_STATUS_CD,
     -- TO_TIMESTAMP(admit_date :: DATE || ' ' || admit_time, 'YYYY-MM-DD HH24:MI:SS')                  AS start_date,
     -- TO_TIMESTAMP(COALESCE(discharge_date, admit_date) :: DATE || ' ' || COALESCE(discharge_time, '00:00:00'), 'YYYY-MM-DD HH24:MI:SS')      AS end_date,
@@ -22,4 +22,9 @@ select
     PAYER_TYPE_PRIMARY,
     facilityid,
     facility_location
-from {source_schema}.V_DEID_ENCOUNTER as dim;
+from {source_schema}.V_DEID_ENCOUNTER as dim
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on dim.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on dim.patid = pc.patid and  pc.pcornet_site_name = 'C4WU'
+;

@@ -1,7 +1,7 @@
 -- create view
 create or replace view {target_schema}.PATIENT_DIMENSION as 
 select 
-    dim.PATIENT_NUM                                         as PATIENT_NUM,
+    pc.PATIENT_NUM                                          as PATIENT_NUM,
     CASE
         WHEN dead.DEATH_DATE is not null THEN 'Y'
         ELSE 'N'
@@ -37,7 +37,11 @@ select
     CURRENT_TIMESTAMP                                       as IMPORT_DATE,
     cast(null as VARCHAR(50))                               as SOURCESYSTEM_CD,
     cast(null	as INT)                                     as UPLOAD_ID,
-    'C4WU'                                                  as GPC_SITE
+    'C4WU'                                                  as SITE_ID,
+    'Washington Univ'                                       as SITE_NAME
 from {source_schema}.V_DEID_DEMOGRAPHIC as dim
 left join {source_schema}.V_DEID_DEATH as dead  
-using (patient_num);
+on dead.patid = dim.patid
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on pc.patid = dim.patid and pc.pcornet_site_name = 'C4WU'
+;

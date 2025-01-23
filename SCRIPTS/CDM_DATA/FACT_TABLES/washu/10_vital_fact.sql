@@ -1,8 +1,8 @@
 create or replace view  {target_schema}.VITAL_FACT as
 ---HT
 select
-    fact.ENCOUNTER_NUM                                                                              as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                                as PATIENT_NUM,
+    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 
     'LOINC:8302-2'                                                                                  as CONCEPT_CD,
     '@'                                                                                             as PROVIDER_ID, 
     MEASURE_DATE :: TIMESTAMP                                                                       as START_DATE,  
@@ -24,12 +24,16 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from {source_schema}.V_DEID_VITAL fact 
-where fact.ENCOUNTER_NUM is not null
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU' 
+where FACT.ENCOUNTERID is not null
 union all
 ----WT
 select
-    fact.ENCOUNTER_NUM                                                                              as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                                as PATIENT_NUM, 
+    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 
     'LOINC:3141-9'                                                                                  as CONCEPT_CD,
     '@'                                                                                             as PROVIDER_ID, 
     MEASURE_DATE :: TIMESTAMP                                                                       as START_DATE,  
@@ -51,12 +55,16 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from {source_schema}.V_DEID_VITAL fact 
-where fact.ENCOUNTER_NUM is not null
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU' 
+where FACT.ENCOUNTERID is not null
 union all
 ---DIASTOLIC
 select
-    fact.ENCOUNTER_NUM                                                                              as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                                as PATIENT_NUM,
+    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 
     'LOINC:8462-4'                                                                                  as CONCEPT_CD,
     '@'                                                                                             as PROVIDER_ID, 
     MEASURE_DATE :: TIMESTAMP                                                                       as START_DATE,  
@@ -78,12 +86,16 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from {source_schema}.V_DEID_VITAL fact 
-where fact.ENCOUNTER_NUM is not null
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU' 
+where FACT.ENCOUNTERID is not null
 union all
 ---SYSTOLIC
 select
-    fact.ENCOUNTER_NUM                                                                              as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                                as PATIENT_NUM, 
+    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 
     'LOINC:8480-6'                                                                                  as CONCEPT_CD,
     '@'                                                                                             as PROVIDER_ID, 
     MEASURE_DATE :: TIMESTAMP                                                                       as START_DATE,  
@@ -105,12 +117,16 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from {source_schema}.V_DEID_VITAL fact 
-where fact.ENCOUNTER_NUM is not null
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU' 
+where FACT.ENCOUNTERID is not null
 union all
 ---BMI
 select
-    fact.ENCOUNTER_NUM                                                                              as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                                as PATIENT_NUM, 
+    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 
     'LOINC:39156-5'                                                                                 as CONCEPT_CD,
     '@'                                                                                             as PROVIDER_ID, 
     MEASURE_DATE :: TIMESTAMP                                                                       as START_DATE,  
@@ -132,5 +148,9 @@ select
     cast(null as VARCHAR(50))                                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from {source_schema}.V_DEID_VITAL fact 
-where fact.ENCOUNTER_NUM is not null
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU' 
+where FACT.ENCOUNTERID is not null
 ;

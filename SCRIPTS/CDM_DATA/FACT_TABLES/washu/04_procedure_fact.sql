@@ -1,7 +1,7 @@
 create or replace view  {target_schema}.PROCEDURE_FACT as
 select
-    fact.ENCOUNTER_NUM                                                                          as ENCOUNTER_NUM, 
-    fact.PATIENT_NUM                                                                            as PATIENT_NUM, 
+    ec.ENCOUNTER_NUM                                                                            as ENCOUNTER_NUM, 
+    pc.PATIENT_NUM                                                                              as PATIENT_NUM, 
     case 
         when px_type = '10' then concat('ICD10PCS:',px)
         when px_type = '09' then concat('ICD9PROC:',px)
@@ -27,4 +27,9 @@ select
     CURRENT_TIMESTAMP                                                                           as IMPORT_DATE,
     cast(null as VARCHAR(50))                                                                   as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
-from {source_schema}.V_DEID_PROCEDURES fact;
+from {source_schema}.V_DEID_PROCEDURES fact
+left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
+on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
+left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
+on fact.patid = pc.patid and  pc.pcornet_site_name = 'C4WU'
+;
