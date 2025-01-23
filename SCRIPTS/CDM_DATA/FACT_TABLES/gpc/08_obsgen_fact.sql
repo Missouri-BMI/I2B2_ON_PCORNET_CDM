@@ -24,6 +24,6 @@ select
     CURRENT_TIMESTAMP                                                                           as IMPORT_DATE,
     cast( null as VARCHAR(50))                                                                  as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
-from {source_schema}.GPC_OBS_GEN fact
+from {source_schema}.GPC_DEID_OBS_GEN fact
 where OBSGEN_TYPE = 'LC' and ENCOUNTER_NUM is not null
 ;

@@ -12,4 +12,4 @@ select
     CURRENT_TIMESTAMP                                       as IMPORT_DATE,
     cast(null 	as VARCHAR(50))                             as SOURCESYSTEM_CD,
     cast(null	as INT)                                     as UPLOAD_ID
-from {source_schema}.GPC_PROVIDER as dim;
+from {source_schema}.GPC_DEID_PROVIDER as dim;
