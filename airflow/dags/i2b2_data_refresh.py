@@ -71,29 +71,8 @@ with DAG(
         python_callable=create_snowflake_connection,
         op_args=[snowflake_conn_id, args]
     )
-
-
-    with TaskGroup('crosswalk') as group_1:
-        with TaskGroup('crosswalk-execute') as crosswalk: 
-            sql_query = read_sql_from_file(
-                CROSS_WALK_PATH, 
-                **kwargs
-            )
-            crosswalk_tasks = execute_sql(
-                snowflake_conn_id, 
-                get_task_id(CROSS_WALK_PATH), 
-                sql_query
-                
-            )       
-            sql_query >> crosswalk_tasks
-
-        success = EmptyOperator(
-            task_id='crosswalk_tasks_ends', 
-            trigger_rule=TriggerRule.ALL_DONE
-        )
-        crosswalk >> success
-    
-    with TaskGroup('dimension_tables') as group_2:
+   
+    with TaskGroup('dimension_tables') as dimension_tables:
         execute_sql_directory(
             snowflake_conn_id, 
             DIMENSION_PATH, 
@@ -101,7 +80,7 @@ with DAG(
             **kwargs
         )
 
-    with TaskGroup('fact_tables') as group_3:
+    with TaskGroup('fact_tables') as fact_tables:
         execute_sql_directory(
             snowflake_conn_id, 
             FACT_PATH, 
@@ -109,7 +88,7 @@ with DAG(
             **kwargs
         )
 
-    with TaskGroup('count_sql_task') as group_4:
+    with TaskGroup('count_sql_task') as run_count_sql:
         sql_query = read_sql_from_file(
             GEN_COUNT_PATH, 
             **kwargs
@@ -122,7 +101,7 @@ with DAG(
         )
         sql_query >> count_sql_task
     
-    with TaskGroup('missing_obs_tasks') as group_5:
+    with TaskGroup('missing_obs_tasks') as find_missing_obs:
         execute_sql_directory(
             snowflake_conn_id, 
             MISSING_OBS_PATH, 
@@ -131,7 +110,7 @@ with DAG(
         )
 
 
-    with TaskGroup('finalize') as group_6:
+    with TaskGroup('finalize') as project_config:
         read_sql = read_sql_from_file(
             PROJECT_CONFIG_PATH, 
             **kwargs
@@ -143,6 +122,6 @@ with DAG(
         )
         read_sql >> count_sql_task
         
-    create_conn_task  >> group_1 >> group_2 >> group_3 >> group_4 >> group_5 >> group_6
+    create_conn_task  >> dimension_tables >> fact_tables  >> project_config >> run_count_sql >> find_missing_obs
 
    

@@ -1,8 +1,8 @@
 create or replace view {target_schema}.VISIT_FACT as
 -- visit type
 select
-    ENCOUNTER_NUM, 
-    PATIENT_NUM, 
+    dim.PATIENT_NUM, 
+    dim.ENCOUNTER_NUM, 
     CASE
         WHEN inout_cd =  'IS' THEN  concat('VISIT|TYPE:', 'NA')
         WHEN inout_cd =  'OS' THEN  concat('VISIT|TYPE:', 'OB')
@@ -40,8 +40,8 @@ from {target_schema}.VISIT_DIMENSION as dim
 union all 
 -- Length of stay
 select
-    ENCOUNTER_NUM, 
-    PATIENT_NUM, 
+    dim.PATIENT_NUM, 
+    dim.ENCOUNTER_NUM, 
     CASE
         WHEN LENGTH_OF_STAY =  0 THEN  concat('VISIT|LENGTH:', '0')
         WHEN LENGTH_OF_STAY =  1 THEN  concat('VISIT|LENGTH:', '1')

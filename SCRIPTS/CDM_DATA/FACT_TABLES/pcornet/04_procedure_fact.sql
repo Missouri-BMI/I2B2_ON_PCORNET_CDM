@@ -1,7 +1,7 @@
 create or replace view  {target_schema}.PROCEDURE_FACT as
 select
-    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
-    pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 
+    fact.ENCOUNTER_NUM                                                                          as ENCOUNTER_NUM, 
+    fact.PATIENT_NUM                                                                            as PATIENT_NUM, 
     case 
         when px_type = '10' then concat('ICD10PCS:',px)
         when px_type = '09' then concat('ICD9PROC:',px)
@@ -27,8 +27,4 @@ select
     CURRENT_TIMESTAMP                                                                           as IMPORT_DATE,
     cast(null as VARCHAR(50))                                                                   as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
-from {source_schema}.PCORNET_DEID_PROCEDURES fact
-inner join {target_schema}.patient_crosswalk as pc
-using (patid)
-inner join {target_schema}.encounter_crosswalk as ec
-using (ENCOUNTERID);  
+from {source_schema}.PCORNET_DEID_PROCEDURES fact;

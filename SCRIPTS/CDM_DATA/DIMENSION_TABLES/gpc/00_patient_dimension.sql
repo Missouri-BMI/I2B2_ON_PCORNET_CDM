@@ -1,7 +1,7 @@
 -- create view
 create or replace view {target_schema}.PATIENT_DIMENSION as 
 select 
-    pc.PATIENT_NUM                                          as PATIENT_NUM,
+    dim.PATIENT_NUM                                         as PATIENT_NUM,
     CASE
         WHEN dead.DEATH_DATE is not null THEN 'Y'
         ELSE 'N'
@@ -35,11 +35,9 @@ select
     CURRENT_TIMESTAMP                                       as UPDATE_DATE,
     CURRENT_TIMESTAMP                                       as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                       as IMPORT_DATE,
-    cast(null as VARCHAR(50))                           as SOURCESYSTEM_CD,
+    cast(null as VARCHAR(50))                               as SOURCESYSTEM_CD,
     cast(null	as INT)                                     as UPLOAD_ID,
-                                                            GPC_SITE
+    dim.GPC_SITE
 from {source_schema}.GPC_DEID_DEMOGRAPHIC as dim
-inner join {target_schema}.patient_crosswalk as pc
-using(patid)
 left join {source_schema}.GPC_DEID_DEATH as dead  
-using (patid);
+using (patient_num);

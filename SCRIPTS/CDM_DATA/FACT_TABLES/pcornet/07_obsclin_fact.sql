@@ -1,7 +1,7 @@
 create or replace view  {target_schema}.OBSCLIN_FACT as
 select
-    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
-    pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 
+    fact.ENCOUNTER_NUM                                                                            as ENCOUNTER_NUM, 
+    fact.PATIENT_NUM                                                                              as PATIENT_NUM, 
     CASE 
         when obsclin_type = 'LC' then concat('LOINC:', obsclin_code)
         when obsclin_type = 'SM' then concat('SNOMED:', obsclin_code)
@@ -34,15 +34,11 @@ select
     cast(null as VARCHAR(50))                                                           as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from {source_schema}.GPC_OBS_CLIN fact 
-inner join  {target_schema}.patient_crosswalk as pc
-using (patid)
-inner join  {target_schema}.encounter_crosswalk as ec
-using (ENCOUNTERID)  
-where obsclin_result_modifier <> 'TX' and ENCOUNTERID is not null
+where obsclin_result_modifier <> 'TX' and ENCOUNTER_NUM is not null
 UNION all
 select
-    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
-    pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 
+    fact.ENCOUNTER_NUM                                                                            as ENCOUNTER_NUM, 
+    fact.PATIENT_NUM                                                                              as PATIENT_NUM, 
     CASE 
         when obsclin_type = 'LC' then concat('LOINC:', obsclin_code)
         when obsclin_type = 'SM' then concat('SNOMED:', obsclin_code)
@@ -70,9 +66,5 @@ select
     cast(null as VARCHAR(50))                                                                  as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                      as UPLOAD_ID
 from {source_schema}.GPC_OBS_CLIN fact 
-inner join  {target_schema}.patient_crosswalk as pc
-using (patid)
-inner join  {target_schema}.encounter_crosswalk as ec
-using (ENCOUNTERID)  
-where obsclin_result_modifier = 'TX' and ENCOUNTERID is not null
+where obsclin_result_modifier = 'TX' and ENCOUNTER_NUM is not null
 ;

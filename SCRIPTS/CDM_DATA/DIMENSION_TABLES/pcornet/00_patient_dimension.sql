@@ -1,7 +1,7 @@
 -- create view
 create or replace view {target_schema}.PATIENT_DIMENSION as 
 select 
-    pc.PATIENT_NUM                                          as PATIENT_NUM,
+    dim.PATIENT_NUM                                         as PATIENT_NUM,
     CASE
         WHEN dead.DEATH_DATE is not null THEN 'Y'
         ELSE 'N'
@@ -41,7 +41,5 @@ select
                                                             PCORNET_SITE_NAME
 
 from {source_schema}.PCORNET_DEID_DEMOGRAPHIC as dim
-inner join {target_schema}.patient_crosswalk as pc
-using(patid)
 left join {source_schema}.PCORNET_DEID_DEATH as dead  
-using (patid);
+using (patient_num);
