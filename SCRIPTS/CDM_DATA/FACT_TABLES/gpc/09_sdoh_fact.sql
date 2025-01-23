@@ -1,7 +1,7 @@
 create or replace view {target_schema}.SDOH_FACT as
 select
-    ec.ENCOUNTER_NUM                                                                                as ENCOUNTER_NUM, 
-    pc.PATIENT_NUM                                                                                  as PATIENT_NUM, 
+    fact.ENCOUNTER_NUM                                                                              as ENCOUNTER_NUM, 
+    fact.PATIENT_NUM                                                                                as PATIENT_NUM, 
     case 
        when smoking = '04' then  'LOINC:LA18978-9'
        when smoking = '05' then  'LOINC:LA18979-7'
@@ -33,15 +33,11 @@ select
     cast( null as VARCHAR(50))                                                                      as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from {source_schema}.GPC_DEID_VITAL fact 
-inner join {target_schema}.patient_crosswalk as pc
-using (patid)
-inner join {target_schema}.encounter_crosswalk as ec
-using (ENCOUNTERID)
-where ENCOUNTERID is not null
+where ENCOUNTER_NUM is not null
 union all
 select
-    ENCOUNTER_NUM, 
-    PATIENT_NUM, 
+    fact.ENCOUNTER_NUM, 
+    fact.PATIENT_NUM, 
     CASE
           WHEN PAYER_TYPE_PRIMARY =  '1' THEN  'LOINC:LA15652-3'
           WHEN PAYER_TYPE_PRIMARY =  '2' THEN  'LOINC:LA17849-3'
@@ -71,6 +67,6 @@ select
     CURRENT_TIMESTAMP                                                                               as UPDATE_DATE,
     CURRENT_TIMESTAMP                                                                               as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                                                               as IMPORT_DATE,
-    cast( null as VARCHAR(50))                                                                     as SOURCESYSTEM_CD,                                                                    
+    cast( null as VARCHAR(50))                                                                      as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                                          as UPLOAD_ID
 from  {target_schema}.VISIT_DIMENSION fact;

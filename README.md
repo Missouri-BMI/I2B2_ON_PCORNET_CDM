@@ -14,15 +14,22 @@ Initialize and run Apache Airflow to manage the data workflows:
 
 The following DAGs (Directed Acyclic Graphs) are available to perform specific tasks:
 
+### snowflake_i2b2
+**Purpose**:
+- Stage and transform i2b2 ENACT data in Snowflake.
+- Modify Postgresql SQL queries to be compatible with Snowflake.
+- Create zip files and export them to the i2b2-data repository.
+
 ### i2b2_data_install
 **Purpose**:
- - Creates the i2b2 schema, tables, and common data using i2b2-data.
+ - Creates the i2b2 schema, tables, and common data conifugrations using i2b2-data repository.
 
 ### i2b2_data_refresh
 **Purpose**:
 - Creates PCORnet fact views.
 - Executes total count scripts.
 - Generates analysis results.
+- Update i2b2 project data per refresh.
 
 ### i2b2_generated_ont
 **Purpose**:
@@ -100,6 +107,7 @@ WORKDATA_SCHEMA=
 
 # JDBC Configuration
 # JDBC_URL: The JDBC connection string for Snowflake.
-# Example: jdbc:snowflake://<ACCOUNT>.snowflakecomputing.com/?db=<TARGET_DB>&schema=<METADATA_SCHEMA>&warehouse=<WAREHOUSE>&role=<ROLE>&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true
-JDBC_URL=jdbc:snowflake://$ACCOUNT.snowflakecomputing.com/?db=$TARGET_DB&schema=$METADATA_SCHEMA&warehouse=$WAREHOUSE&role=$ROLE&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true
+# Example: jdbc:snowflake://<ACCOUNT>.snowflakecomputing.com/?db=<TARGET_DB>&schema=<METADATA_SCHEMA>&warehouse=<WAREHOUSE>&role=<ROLE>&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true&JDBC_QUERY_RESULT_FORMAT=JSON
+
+JDBC_URL=jdbc:snowflake://$ACCOUNT.snowflakecomputing.com/?db=$TARGET_DB&schema=$METADATA_SCHEMA&warehouse=$WAREHOUSE&role=$ROLE&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true&JDBC_QUERY_RESULT_FORMAT=JSON
 ```

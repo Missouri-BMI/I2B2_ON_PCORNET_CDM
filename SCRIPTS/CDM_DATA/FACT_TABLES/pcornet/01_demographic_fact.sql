@@ -2,8 +2,8 @@
 create or replace view {target_schema}.DEMOGRAPHIC_FACT as 
 -- demographic hispanic
 select
-    cast(-1 as NUMBER(38, 0))                                                       as ENCOUNTER_NUM, 
-    PATIENT_NUM, 
+    dim.ENCOUNTER_NUM, 
+    dim.PATIENT_NUM, 
     concat('DEM|HISP:', COALESCE(dim.HISPANIC, 'NI'))                               as CONCEPT_CD,
     '@'                                                                             as PROVIDER_ID, 
     CURRENT_TIMESTAMP                                                               as START_DATE,  
@@ -22,14 +22,14 @@ select
     CURRENT_TIMESTAMP                                                               as UPDATE_DATE,
     CURRENT_TIMESTAMP                                                               as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                                               as IMPORT_DATE,
-    cast(null as VARCHAR(50))                                               as SOURCESYSTEM_CD,                                                                    
+    cast(null as VARCHAR(50))                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                          as UPLOAD_ID
 from {target_schema}.PATIENT_DIMENSION as dim
 union all 
 -- demographic race
 select
-    cast(-1 as NUMBER(38, 0))                                                       as ENCOUNTER_NUM, 
-    PATIENT_NUM, 
+    dim.ENCOUNTER_NUM, 
+    dim.PATIENT_NUM, 
     CASE
         WHEN dim.RACE_CD =  'American Indian or Alaska Native' THEN  concat('DEM|RACE:', 'NA')
         WHEN dim.RACE_CD =  'Asian' THEN  concat('DEM|RACE:', 'AS')
@@ -60,14 +60,14 @@ select
     CURRENT_TIMESTAMP                                                               as UPDATE_DATE,
     CURRENT_TIMESTAMP                                                               as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                                               as IMPORT_DATE,
-    cast(null as VARCHAR(50))                                               as SOURCESYSTEM_CD,                                                                    
+    cast(null as VARCHAR(50))                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                          as UPLOAD_ID
 from {target_schema}.PATIENT_DIMENSION as dim
 union all 
 --SEX
 select
-    cast(-1 as NUMBER(38, 0))                                                       as ENCOUNTER_NUM, 
-    PATIENT_NUM, 
+    dim.ENCOUNTER_NUM, 
+    dim.PATIENT_NUM, 
     concat('DEM|SEX:', COALESCE(dim.SEX_CD, 'NI'))                                  as CONCEPT_CD,
     '@'                                                                             as PROVIDER_ID, 
     CURRENT_TIMESTAMP                                                               as START_DATE,  
@@ -86,14 +86,14 @@ select
     CURRENT_TIMESTAMP                                                               as UPDATE_DATE,
     CURRENT_TIMESTAMP                                                               as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                                               as IMPORT_DATE,
-    cast(null as VARCHAR(50))                                               as SOURCESYSTEM_CD,                                                                    
+    cast(null as VARCHAR(50))                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                          as UPLOAD_ID
 from {target_schema}.PATIENT_DIMENSION as dim
 union all 
 --VITAL STATUS
 select
-    cast(-1 as NUMBER(38, 0))                                                       as ENCOUNTER_NUM, 
-    PATIENT_NUM, 
+    dim.ENCOUNTER_NUM, 
+    dim.PATIENT_NUM, 
      CASE
         WHEN VITAL_STATUS_CD = 'Y' THEN 'DEM|VITAL STATUS:D'
         ELSE '@'
@@ -115,6 +115,6 @@ select
     CURRENT_TIMESTAMP                                                               as UPDATE_DATE,
     CURRENT_TIMESTAMP                                                               as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                                               as IMPORT_DATE,
-    cast(null as VARCHAR(50))                                               as SOURCESYSTEM_CD,                                                                    
+    cast(null as VARCHAR(50))                                                       as SOURCESYSTEM_CD,                                                                    
     cast(null as  integer)                                                          as UPLOAD_ID
 from {target_schema}.PATIENT_DIMENSION as dim;

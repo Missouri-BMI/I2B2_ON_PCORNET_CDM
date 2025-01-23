@@ -1,8 +1,8 @@
 create or replace view {target_schema}.VISIT_FACT as
 -- visit type
 select
-    ENCOUNTER_NUM, 
-    PATIENT_NUM, 
+    dim.ENCOUNTER_NUM, 
+    dim.PATIENT_NUM, 
     CASE
         WHEN inout_cd =  'IS' THEN  concat('VISIT|TYPE:', 'NA')
         WHEN inout_cd =  'OS' THEN  concat('VISIT|TYPE:', 'OB')
@@ -18,7 +18,7 @@ select
         ELSE concat('VISIT|TYPE:', 'N')
     END                                                                                         as CONCEPT_CD,
     '@'                                                                                         as PROVIDER_ID,
-    coalesce(START_DATE, CURRENT_TIMESTAMP)                                                     as START_DATE,  
+    coalesce(dim.START_DATE, CURRENT_TIMESTAMP)                                                 as START_DATE,  
     '@'                                                                                         as MODIFIER_CD,
     1                                                                                           as INSTANCE_NUM, 
     ''                                                                                          as VALTYPE_CD,
@@ -27,7 +27,7 @@ select
     ''                                                                                          as VALUEFLAG_CD,
     cast(null as  integer)                                                                      as QUANTITY_NUM, 
     '@'                                                                                         as UNITS_CD, 
-    coalesce(END_DATE, null :: TIMESTAMP)                                                       as END_DATE, 
+    coalesce(dim.END_DATE, null :: TIMESTAMP)                                                   as END_DATE, 
     '@'                                                                                         as LOCATION_CD, 
     cast(null as  text)                                                                         as OBSERVATION_BLOB, 
     cast(null as  integer)                                                                      as CONFIDENCE_NUM, 
@@ -40,8 +40,8 @@ from {target_schema}.VISIT_DIMENSION as dim
 union all 
 -- Length of stay
 select
-    ENCOUNTER_NUM, 
-    PATIENT_NUM, 
+    dim.ENCOUNTER_NUM, 
+    dim.PATIENT_NUM, 
     CASE
         WHEN LENGTH_OF_STAY =  0 THEN  concat('VISIT|LENGTH:', '0')
         WHEN LENGTH_OF_STAY =  1 THEN  concat('VISIT|LENGTH:', '1')
@@ -58,7 +58,7 @@ select
         ELSE concat('VISIT|LENGTH:', '0')
     END                                                                                        as CONCEPT_CD,
     '@'                                                                                        as PROVIDER_ID, 
-    coalesce(START_DATE, CURRENT_TIMESTAMP)                                                    as START_DATE,  
+    coalesce(dim.START_DATE, CURRENT_TIMESTAMP)                                                as START_DATE,  
     '@'                                                                                        as MODIFIER_CD,
     1                                                                                          as INSTANCE_NUM, 
     ''                                                                                         as VALTYPE_CD,
@@ -67,13 +67,13 @@ select
     ''                                                                                         as VALUEFLAG_CD,
     cast(null as  integer)                                                                     as QUANTITY_NUM, 
     '@'                                                                                        as UNITS_CD, 
-    coalesce(END_DATE, null :: TIMESTAMP)                                                      as END_DATE, 
+    coalesce(dim.END_DATE, null :: TIMESTAMP)                                                  as END_DATE, 
     '@'                                                                                        as LOCATION_CD, 
     cast(null as  text)                                                                        as OBSERVATION_BLOB, 
     cast(null as  integer)                                                                     as CONFIDENCE_NUM, 
     CURRENT_TIMESTAMP                                                                          as UPDATE_DATE,
     CURRENT_TIMESTAMP                                                                          as DOWNLOAD_DATE,
     CURRENT_TIMESTAMP                                                                          as IMPORT_DATE,
-    cast( null as VARCHAR(50))                                                                as SOURCESYSTEM_CD,
+    cast( null as VARCHAR(50))                                                                 as SOURCESYSTEM_CD,
     cast(null as  integer)                                                                     as UPLOAD_ID
 from {target_schema}.VISIT_DIMENSION as dim;
