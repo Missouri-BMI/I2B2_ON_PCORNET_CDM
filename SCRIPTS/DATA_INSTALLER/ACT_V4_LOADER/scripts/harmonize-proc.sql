@@ -1,4 +1,4 @@
-USE SCHEMA {metadata_schema};
+USE SCHEMA {stage_schema};
 
 CREATE OR REPLACE PROCEDURE handle_age_at_visit(tableName varchar)
 RETURNS INTEGER NULL
@@ -59,7 +59,7 @@ begin
         , c_dimcode = c_fullname
     where c_fullname like '%\\ACT\\Visit Details\\Visit type\\%';
     -- also need to populate in the concept dimension 
-    insert into {crc_schema}.concept_dimension ( concept_path, concept_cd, name_char, concept_blob, update_date, download_date, import_date, sourcesystem_cd, upload_id)
+    insert into concept_dimension ( concept_path, concept_cd, name_char, concept_blob, update_date, download_date, import_date, sourcesystem_cd, upload_id)
         select
             c_dimcode
             , c_basecode
@@ -85,7 +85,7 @@ begin
         , c_dimcode = c_fullname
     where c_fullname like '%\\ACT\\Visit Details\\Length of stay\\%';
 
-    insert into {crc_schema}.concept_dimension ( concept_path, concept_cd, name_char, concept_blob, update_date, download_date, import_date, sourcesystem_cd, upload_id)
+    insert into concept_dimension ( concept_path, concept_cd, name_char, concept_blob, update_date, download_date, import_date, sourcesystem_cd, upload_id)
     select 
         c_fullname
         , c_basecode
@@ -132,7 +132,7 @@ begin
     where c_columnname = 'patient_num';
 
     --also populate in the concept_dimension
-    insert into {crc_schema}.concept_dimension ( concept_path, concept_cd, name_char, concept_blob, update_date, download_date, import_date, sourcesystem_cd, upload_id)
+    insert into concept_dimension ( concept_path, concept_cd, name_char, concept_blob, update_date, download_date, import_date, sourcesystem_cd, upload_id)
         select
             c_dimcode
             , c_basecode
