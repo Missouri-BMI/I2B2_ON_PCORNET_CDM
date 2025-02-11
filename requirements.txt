@@ -4,6 +4,8 @@ apache-airflow-providers-snowflake
 python-dotenv
 sqlparse
 jupyterlab
-snowflake-connector-python
+snowflake-connector-python[secure-local-storage,pandas]
 openpyxl
 xlrd
+pandas
+bcrypt

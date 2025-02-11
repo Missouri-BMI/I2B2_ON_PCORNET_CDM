@@ -13,3 +13,7 @@ airflow/logs/
 airflow/plugins/
 env/*
 **/.env
+
+**/shrine-data/load-scripts/*
+**/shrine-data/project-scripts/*
+**/shrine-data/shrine-setup-*/*
