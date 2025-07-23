@@ -1,4 +1,4 @@
-create or replace view  {target_schema}.OBSGEN_FACT as
+create or replace view  {target_schema}.ACS_FACT as
 select
     cast(COALESCE(ENCOUNTERID, -1) as NUMBER(38, 0))                                            as ENCOUNTER_NUM, 
     cast(PATID as NUMBER(38, 0))                                                                as PATIENT_NUM, 
