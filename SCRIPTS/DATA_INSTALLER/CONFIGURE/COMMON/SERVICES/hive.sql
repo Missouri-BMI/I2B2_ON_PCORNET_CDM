@@ -1,5 +1,3 @@
-USE SCHEMA {hive_schema};
-
 update hive_cell_params
 set value = '11'
 where param_name_cd = 'edu.harvard.i2b2.crc.setfinderquery.obfuscation.minimum.value';
