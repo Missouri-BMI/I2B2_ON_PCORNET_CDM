@@ -6,8 +6,8 @@ This repository contains tools and workflows to facilitate data operations withi
 
 Initialize and run Apache Airflow to manage the data workflows:
 ```
-./airflow-init
-./airflow-run
+make build
+make deploy
 ```
 
 ## Airflow DAGs
