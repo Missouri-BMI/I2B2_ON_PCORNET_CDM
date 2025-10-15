@@ -1,15 +1,15 @@
-{% if project == 'mu' %}
+{% if site == 'mu' %}
 -- MU
 select 1;
 
-{% elif project == 'washu' %}
+{% elif site == 'washu' %}
 -- washu
 select 1;
 
-{% elif project == 'gpc' %}
+{% elif site == 'gpc' %}
 -- gpc
 select 1;
-{% elif project == 'pcornet' %}
+{% elif site == 'pcornet' %}
 -- pcornet
 select 1;
 {% endif %}

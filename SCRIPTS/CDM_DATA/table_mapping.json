@@ -1,0 +1,64 @@
+{
+    "tables": {
+        "harvest_table": {
+            "mu": "harvest",
+            "gpc": "gpc_deid_harvest",
+            "washu": "gpc_deid_harvest"
+        },
+        "demographic_table": {
+            "mu": "DEID_DEMOGRAPHIC",
+            "gpc": "GPC_DEID_DEMOGRAPHIC",
+            "washu": "GPC_DEID_DEMOGRAPHIC"
+        }, 
+        "provider_table": {
+            "mu": "deid_provider",
+            "gpc": "gpc_deid_provider",
+            "washu": "gpc_deid_provider"
+        },
+        "death_table": {
+            "mu": "DEID_DEATH",
+            "gpc": "GPC_DEID_DEATH",
+            "washu": "GPC_DEID_DEATH"
+        },
+        "encounter_table": {
+            "mu": "DEID_ENCOUNTER",
+            "gpc": "GPC_DEID_ENCOUNTER",
+            "washu": "GPC_DEID_ENCOUNTER"
+        },
+        "diagnosis_table": {
+            "mu": "DEID_DIAGNOSIS",
+            "gpc": "GPC_DEID_DIAGNOSIS",
+            "washu": "GPC_DEID_DIAGNOSIS"
+        },
+        "procedure_table": {
+            "mu": "deid_procedures",
+            "gpc": "gpc_deid_procedures",
+            "washu": "gpc_deid_procedures"
+        },
+        "prescribing_table": {
+            "mu": "DEID_PRESCRIBING",
+            "gpc": "GPC_DEID_PRESCRIBING",
+            "washu": "GPC_DEID_PRESCRIBING"
+        },
+        "lab_results_table": {
+            "mu": "deid_lab_result_cm",
+            "gpc": "gpc_deid_lab_result_cm",
+            "washu": "gpc_deid_lab_result_cm"
+        },
+        "obs_clin_table": {
+            "mu": "DEID_OBS_CLIN",
+            "gpc": "GPC_DEID_OBS_CLIN",
+            "washu": "GPC_DEID_OBS_CLIN"
+        },
+        "obs_gen_table": {
+            "mu": "DEID_OBS_GEN",
+            "gpc": "GPC_DEID_OBS_GEN",
+            "washu": "GPC_DEID_OBS_GEN"
+        },
+        "vital_table": {
+            "mu": "DEID_VITAL",
+            "gpc": "GPC_DEID_VITAL",
+            "washu": "GPC_DEID_VITAL"
+        }
+    }
+}

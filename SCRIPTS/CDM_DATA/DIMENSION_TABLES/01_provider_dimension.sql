@@ -11,14 +11,5 @@ select
     CURRENT_TIMESTAMP                                       as IMPORT_DATE,
     cast(null as VARCHAR(50))                               as SOURCESYSTEM_CD,
     cast(null as INT)                                       as UPLOAD_ID
-from
-    {%- if project == 'mu' %}
-        {{ source_schema }}.DEID_PROVIDER as dim
-    {%- elif project == 'washu' %}
-        {{ source_schema }}.V_DEID_PROVIDER as dim
-    {%- elif project == 'gpc' %}
-        {{ source_schema }}.GPC_DEID_PROVIDER as dim
-    {%- elif project == 'pcornet' %}
-        {{ source_schema }}.PCORNET_DEID_PROVIDER as dim
-    {%- endif %}
+from {{ source_schema }}.{{ provider_table }} as dim
 ;

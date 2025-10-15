@@ -1,4 +1,4 @@
-{% if project == 'mu' %}
+{% if site == 'mu' %}
 update pm_project_data
 set project_name =  'NextGen Data Lake De-Identified' || ' (' || (
     select TO_CHAR(MAX(REFRESH_ENCOUNTER_DATE), 'MMMM YYYY') from {source_schema}.HARVEST
@@ -6,7 +6,7 @@ set project_name =  'NextGen Data Lake De-Identified' || ' (' || (
 ) || ')'
 where project_id = 'ACT';
 
-{% elif project == 'washu' %}
+{% elif site == 'washu' %}
 update pm_project_data
 set project_name =  'WashU De-Identified' || ' (' || (
     select TO_CHAR(MAX(REFRESH_ENCOUNTER_DATE), 'MMMM YYYY') from {source_schema}.V_DEID_HARVEST
@@ -14,7 +14,7 @@ set project_name =  'WashU De-Identified' || ' (' || (
 ) || ')'
 where project_id = 'ACT';
 
-{% elif project == 'gpc' %}
+{% elif site == 'gpc' %}
 
 update pm_project_data
 set project_name =  'GPC Data Lake' || ' (' || (
@@ -24,7 +24,7 @@ set project_name =  'GPC Data Lake' || ' (' || (
 where project_id = 'SANDBOX-GPC';
 
 
-{% elif project == 'pcornet' %}
+{% elif site == 'pcornet' %}
 
 update pm_project_data
 set project_name =  'PCORNet Deid datalake' || ' (' || (

@@ -1,41 +1,20 @@
-from airflow.utils.session import provide_session
-from airflow.models import connection
-from sqlalchemy.orm import Session
-from airflow.models import Connection
 from pathlib import Path
-from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
-import os
-import sqlparse
-from airflow.decorators import task
-from airflow.utils.trigger_rule import TriggerRule
+from datetime import datetime, timedelta
+import json, os, logging
+from jinja2 import Template
+from typing import Dict, List, Optional
+from airflow.models.dag import DAG
 from airflow.utils.task_group import TaskGroup
+from airflow.utils.trigger_rule import TriggerRule
+from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator
+from airflow.operators.bash import BashOperator
 
+logger = logging.getLogger(__name__)
 
-@provide_session
-def create_snowflake_connection(conn_id, conn_params, session: Session =None):
-    # Check if the connection already exists
-    existing_conn = session.query(Connection).filter(Connection.conn_id == conn_id).first()
-    if existing_conn:
-        print(f"Connection '{conn_id}' already exists.")
-    else:
-        con = connection.Connection(
-            conn_id=conn_id,
-            conn_type='snowflake',
-            login=conn_params['USERNAME'],
-            password=conn_params['PASSWORD'],
-            schema=conn_params['METADATA_SCHEMA'],
-            extra=f"""{{
-                "account": "{conn_params['ACCOUNT']}",
-                "database": "{conn_params['TARGET_DB']}",
-                "warehouse": "{conn_params['WAREHOUSE']}",
-                "role": "{conn_params['ROLE']}"
-            }}"""    
-        )
-        session.add(con)
-        session.commit()
-        print(f"Connection '{conn_id}' created successfully.")
+def get_task_id(file_path):
+    filename = Path(file_path).stem
+    return f'execute_{filename.split(".")[0]}'   
 
-@task(retries=0)
 def read_sql_from_file(file_path: str, **kwargs) -> str:
     # Read SQL file from the specified directory
     sql_path = Path(file_path)
@@ -48,49 +27,87 @@ def read_sql_from_file(file_path: str, **kwargs) -> str:
 
     if not sql_content.strip():
         raise ValueError(f"SQL file {file_path} is empty")
-        
-    # Format the SQL query and handle any dynamic content if necessary
-    formatted_sql = sqlparse.format(
-        sql_content, 
-        reindent=False
-    )
-    return formatted_sql.format(**kwargs)
 
-@task(retries=0)  
-def add_schema_sql(schema, sql_text) -> str:
-    return f"use schema {schema};\n" + sql_text
+    # Apply Jinja2 templating
+    template = Template(sql_content)
+    rendered_sql = template.render(**kwargs)
+    return rendered_sql
+
+def resolve_site(account: str, site: str) -> str:
+    """
+    Resolve the effective site identifier used everywhere (SQL context + table_mapping.json key).
+
+    Rules:
+      - deidentified -> mu, gpc, shrine-washu (no suffix)
+    """
+    if account == "deidentified" and site.startswith("shrine-"):
+        return site.split("-")[1]
+    return site
+
+
+def extract_table_mapping_from_file(filename, project_key):
+    with open(filename, 'r') as f:
+        data = json.load(f)
     
-# Task to execute SQL using SnowflakeOperator
-def execute_sql(conn_id, task_id, sql_query: str, trigger_rule=TriggerRule.ALL_SUCCESS, autocommit = True, retries = 0):
-    return SnowflakeOperator(
+    return {
+        table: values.get(project_key)
+        for table, values in data.get("tables", {}).items()
+        if project_key in values
+    }
+
+def sf_sql_task(
+    task_id: str,
+    conn_id: str,
+    sql_path: str,
+    render_kwargs: Dict[str, str],
+) -> SnowflakeSqlApiOperator:
+    rendered = read_sql_from_file(sql_path, **render_kwargs)
+    return SnowflakeSqlApiOperator(
         task_id=task_id,
         snowflake_conn_id=conn_id,
-        sql=sql_query,
-        trigger_rule=trigger_rule,
-        autocommit=autocommit,
-        retries=retries
+        sql=rendered,
+        trigger_rule=TriggerRule.ALL_SUCCESS,
+        autocommit=True,
+        retries=0,
     )
 
 
+def make_sql_chain_in_dir(
+    group_id: str,
+    sql_dir: str,
+    snowflake_conn_id: str,
+    render_kwargs: Dict[str, str],
+) -> TaskGroup:
+    """
+    Build sequential SnowflakeSqlApiOperator tasks for all SQL files in a directory.
+    """
+    tg = TaskGroup(group_id)
+    with tg:
+        prev = None
+        for filename in _list_sql_files(sql_dir):
+            path = os.path.join(sql_dir, filename)
+            rendered = read_sql_from_file(path, **render_kwargs)
 
-def get_task_id(file_path):
-    filename = Path(file_path).stem
-    return f'execute_{filename.split(".")[0]}'   
+            task = SnowflakeSqlApiOperator(
+                task_id=get_task_id(path),
+                snowflake_conn_id=snowflake_conn_id,
+                sql=rendered,
+                trigger_rule=TriggerRule.ALL_SUCCESS,
+                autocommit=True,
+                retries=0,
+            )
+            if prev:
+                prev >> task
+            prev = task
 
-def execute_sql_directory(conn_id, sql_directory: str, sequentially: bool, **kwargs) -> str:
-    tasks = []
-    for filename in sorted(os.listdir(sql_directory)):
-        ##TODO: revert it back
-        if filename.endswith('.sql') and not filename.startswith('12_acs_fact'):
-            with TaskGroup(Path(filename).stem) as sub_group:
-                sql_file_path = os.path.join(sql_directory, filename)
-                read_sql = read_sql_from_file(sql_file_path, **kwargs)
-                sql_task = execute_sql(conn_id, get_task_id(sql_file_path), read_sql)
-                read_sql >> sql_task
-            
-            tasks.append(sub_group)
+    return tg
 
-    if sequentially:
-        for i in range(len(tasks) - 1):
-            tasks[i] >> tasks[i + 1]
-
+def _list_sql_files(sql_dir: str) -> List[str]:
+    """Return filenames (*.sql) sorted. If directory missing/empty, return empty (don't fail at parse time)."""
+    if not os.path.isdir(sql_dir):
+        logger.warning("SQL directory does not exist: %s", sql_dir)
+        return []
+    files = [f for f in sorted(os.listdir(sql_dir)) if f.endswith(".sql")]
+    if not files:
+        logger.warning("No .sql files found in directory: %s", sql_dir)
+    return files

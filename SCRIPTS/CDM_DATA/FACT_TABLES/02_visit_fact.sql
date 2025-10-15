@@ -18,7 +18,7 @@ select
         ELSE concat('VISIT|TYPE:', 'N')
     END as CONCEPT_CD,
     '@' as PROVIDER_ID,
-    coalesce(dim.START_DATE, CURRENT_TIMESTAMP) as START_DATE,
+    dim.START_DATE :: DATE as START_DATE,
     '@' as MODIFIER_CD,
     1 as INSTANCE_NUM,
     '' as VALTYPE_CD,
@@ -58,7 +58,7 @@ select
         ELSE concat('VISIT|LENGTH:', '0')
     END as CONCEPT_CD,
     '@' as PROVIDER_ID,
-    coalesce(dim.START_DATE, CURRENT_TIMESTAMP) as START_DATE,
+    dim.START_DATE :: DATE as START_DATE,
     '@' as MODIFIER_CD,
     1 as INSTANCE_NUM,
     '' as VALTYPE_CD,

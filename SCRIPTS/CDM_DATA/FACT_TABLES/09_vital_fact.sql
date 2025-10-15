@@ -2,19 +2,16 @@ create or replace view {{ target_schema }}.VITAL_FACT as
 
 -- Height (HT)
 select
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {% elif project == 'washu' %}
-        ec.ENCOUNTER_NUM as ENCOUNTER_NUM,
-        pc.PATIENT_NUM as PATIENT_NUM,
     {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
     {% endif %}
     'LOINC:8302-2' as CONCEPT_CD,
     '@' as PROVIDER_ID,
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         TO_TIMESTAMP(MEASURE_DATE :: DATE || ' ' || MEASURE_TIME, 'YYYY-MM-DD HH24:MI:SS') as START_DATE,
     {% else %}
         MEASURE_DATE :: TIMESTAMP as START_DATE,
@@ -23,11 +20,7 @@ select
     1 as INSTANCE_NUM,
     cast('N' as VARCHAR(50)) as VALTYPE_CD,
     'E' as TVAL_CHAR,
-    {% if project == 'mu' or project == 'washu' %}
-        COALESCE(cast(fact.HT as DECIMAL(18, 5)), null) as NVAL_NUM,
-    {% else %}
-        COALESCE(cast(fact.HT as DECIMAL(18, 5)), null) as NVAL_NUM,
-    {% endif %}
+    COALESCE(cast(fact.HT as DECIMAL(18, 5)), null) as NVAL_NUM,
     '' as VALUEFLAG_CD,
     cast(null as integer) as QUANTITY_NUM,
     cast('inches' as VARCHAR(50)) as UNITS_CD,
@@ -40,23 +33,10 @@ select
     CURRENT_TIMESTAMP as IMPORT_DATE,
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as integer) as UPLOAD_ID
-from
-    {% if project == 'mu' %}
-        {{ source_schema }}.DEID_VITAL fact
-    {% elif project == 'washu' %}
-        {{ source_schema }}.V_DEID_VITAL fact
-        left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
-        left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc on fact.patid = pc.patid and pc.pcornet_site_name = 'C4WU'
-    {% elif project == 'gpc' %}
-        {{ source_schema }}.GPC_DEID_VITAL fact
-    {% elif project == 'pcornet' %}
-        {{ source_schema }}.PCORNET_DEID_VITAL fact
-    {% endif %}
+from {{ source_schema }}.{{ vital_table }} fact
 where
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         ENCOUNTERID is not null
-    {% elif project == 'washu' %}
-        fact.ENCOUNTERID is not null
     {% else %}
         fact.ENCOUNTER_NUM is not null
     {% endif %}
@@ -65,19 +45,16 @@ union all
 
 -- Weight (WT)
 select
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {% elif project == 'washu' %}
-        ec.ENCOUNTER_NUM as ENCOUNTER_NUM,
-        pc.PATIENT_NUM as PATIENT_NUM,
     {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
     {% endif %}
     'LOINC:3141-9' as CONCEPT_CD,
     '@' as PROVIDER_ID,
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         TO_TIMESTAMP(MEASURE_DATE :: DATE || ' ' || MEASURE_TIME, 'YYYY-MM-DD HH24:MI:SS') as START_DATE,
     {% else %}
         MEASURE_DATE :: TIMESTAMP as START_DATE,
@@ -99,23 +76,10 @@ select
     CURRENT_TIMESTAMP as IMPORT_DATE,
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as integer) as UPLOAD_ID
-from
-    {% if project == 'mu' %}
-        {{ source_schema }}.DEID_VITAL fact
-    {% elif project == 'washu' %}
-        {{ source_schema }}.V_DEID_VITAL fact
-        left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
-        left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc on fact.patid = pc.patid and pc.pcornet_site_name = 'C4WU'
-    {% elif project == 'gpc' %}
-        {{ source_schema }}.GPC_DEID_VITAL fact
-    {% elif project == 'pcornet' %}
-        {{ source_schema }}.PCORNET_DEID_VITAL fact
-    {% endif %}
+from {{ source_schema }}.{{ vital_table }} fact
 where
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         ENCOUNTERID is not null
-    {% elif project == 'washu' %}
-        fact.ENCOUNTERID is not null
     {% else %}
         fact.ENCOUNTER_NUM is not null
     {% endif %}
@@ -124,19 +88,16 @@ union all
 
 -- Diastolic BP
 select
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {% elif project == 'washu' %}
-        ec.ENCOUNTER_NUM as ENCOUNTER_NUM,
-        pc.PATIENT_NUM as PATIENT_NUM,
     {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
     {% endif %}
     'LOINC:8462-4' as CONCEPT_CD,
     '@' as PROVIDER_ID,
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         TO_TIMESTAMP(MEASURE_DATE :: DATE || ' ' || MEASURE_TIME, 'YYYY-MM-DD HH24:MI:SS') as START_DATE,
     {% else %}
         MEASURE_DATE :: TIMESTAMP as START_DATE,
@@ -158,23 +119,10 @@ select
     CURRENT_TIMESTAMP as IMPORT_DATE,
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as integer) as UPLOAD_ID
-from
-    {% if project == 'mu' %}
-        {{ source_schema }}.DEID_VITAL fact
-    {% elif project == 'washu' %}
-        {{ source_schema }}.V_DEID_VITAL fact
-        left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
-        left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc on fact.patid = pc.patid and pc.pcornet_site_name = 'C4WU'
-    {% elif project == 'gpc' %}
-        {{ source_schema }}.GPC_DEID_VITAL fact
-    {% elif project == 'pcornet' %}
-        {{ source_schema }}.PCORNET_DEID_VITAL fact
-    {% endif %}
+from {{ source_schema }}.{{ vital_table }} fact
 where
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         ENCOUNTERID is not null
-    {% elif project == 'washu' %}
-        fact.ENCOUNTERID is not null
     {% else %}
         fact.ENCOUNTER_NUM is not null
     {% endif %}
@@ -183,19 +131,16 @@ union all
 
 -- Systolic BP
 select
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {% elif project == 'washu' %}
-        ec.ENCOUNTER_NUM as ENCOUNTER_NUM,
-        pc.PATIENT_NUM as PATIENT_NUM,
     {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
     {% endif %}
     'LOINC:8480-6' as CONCEPT_CD,
     '@' as PROVIDER_ID,
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         TO_TIMESTAMP(MEASURE_DATE :: DATE || ' ' || MEASURE_TIME, 'YYYY-MM-DD HH24:MI:SS') as START_DATE,
     {% else %}
         MEASURE_DATE :: TIMESTAMP as START_DATE,
@@ -217,23 +162,10 @@ select
     CURRENT_TIMESTAMP as IMPORT_DATE,
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as integer) as UPLOAD_ID
-from
-    {% if project == 'mu' %}
-        {{ source_schema }}.DEID_VITAL fact
-    {% elif project == 'washu' %}
-        {{ source_schema }}.V_DEID_VITAL fact
-        left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
-        left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc on fact.patid = pc.patid and pc.pcornet_site_name = 'C4WU'
-    {% elif project == 'gpc' %}
-        {{ source_schema }}.GPC_DEID_VITAL fact
-    {% elif project == 'pcornet' %}
-        {{ source_schema }}.PCORNET_DEID_VITAL fact
-    {% endif %}
+from  {{ source_schema }}.{{ vital_table }} fact
 where
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         ENCOUNTERID is not null
-    {% elif project == 'washu' %}
-        fact.ENCOUNTERID is not null
     {% else %}
         fact.ENCOUNTER_NUM is not null
     {% endif %}
@@ -242,19 +174,16 @@ union all
 
 -- BMI
 select
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {% elif project == 'washu' %}
-        ec.ENCOUNTER_NUM as ENCOUNTER_NUM,
-        pc.PATIENT_NUM as PATIENT_NUM,
     {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
     {% endif %}
     'LOINC:39156-5' as CONCEPT_CD,
     '@' as PROVIDER_ID,
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         TO_TIMESTAMP(MEASURE_DATE :: DATE || ' ' || MEASURE_TIME, 'YYYY-MM-DD HH24:MI:SS') as START_DATE,
     {% else %}
         MEASURE_DATE :: TIMESTAMP as START_DATE,
@@ -276,23 +205,10 @@ select
     CURRENT_TIMESTAMP as IMPORT_DATE,
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as integer) as UPLOAD_ID
-from
-    {% if project == 'mu' %}
-        {{ source_schema }}.DEID_VITAL fact
-    {% elif project == 'washu' %}
-        {{ source_schema }}.V_DEID_VITAL fact
-        left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
-        left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc on fact.patid = pc.patid and pc.pcornet_site_name = 'C4WU'
-    {% elif project == 'gpc' %}
-        {{ source_schema }}.GPC_DEID_VITAL fact
-    {% elif project == 'pcornet' %}
-        {{ source_schema }}.PCORNET_DEID_VITAL fact
-    {% endif %}
+from {{ source_schema }}.{{ vital_table }} fact
 where
-    {% if project == 'mu' %}
+    {% if site == 'mu' %}
         ENCOUNTERID is not null
-    {% elif project == 'washu' %}
-        fact.ENCOUNTERID is not null
     {% else %}
         fact.ENCOUNTER_NUM is not null
     {% endif %}

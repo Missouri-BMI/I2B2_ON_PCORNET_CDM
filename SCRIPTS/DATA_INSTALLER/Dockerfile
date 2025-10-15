@@ -11,7 +11,7 @@ ENV PATH=$JAVA_HOME/bin:$PATH
 
 WORKDIR /tmp
 
-COPY i2b2-data ./i2b2-data
+COPY i2b2-data/edu.harvard.i2b2.data ./i2b2-data/edu.harvard.i2b2.data
 COPY install_postgresql.sh ./install_postgresql.sh
 
 RUN chmod +x ./install_postgresql.sh

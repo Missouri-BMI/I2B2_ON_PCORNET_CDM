@@ -5,7 +5,7 @@ select
     dim.PATIENT_NUM,
     concat('DEM|HISP:', COALESCE(dim.HISPANIC, 'NI')) as CONCEPT_CD,
     '@' as PROVIDER_ID,
-    CURRENT_TIMESTAMP as START_DATE,
+    CURRENT_TIMESTAMP as START_DATE, -- demographic facts use current timestamp as start date
     '@' as MODIFIER_CD,
     1 as INSTANCE_NUM,
     '' as VALTYPE_CD,

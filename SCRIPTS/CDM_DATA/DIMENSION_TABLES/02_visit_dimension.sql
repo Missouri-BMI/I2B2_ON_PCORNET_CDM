@@ -1,11 +1,8 @@
 create or replace view {{ target_schema }}.VISIT_DIMENSION as
 select
-    {%- if project == 'mu' %}
+    {%- if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {%- elif project == 'washu' %}
-        ec.ENCOUNTER_NUM as ENCOUNTER_NUM,
-        pc.PATIENT_NUM as PATIENT_NUM,
     {%- else %}
         dim.ENCOUNTER_NUM as ENCOUNTER_NUM,
         dim.PATIENT_NUM as PATIENT_NUM,
@@ -13,7 +10,7 @@ select
 
     cast(null as VARCHAR(50)) as ACTIVE_STATUS_CD,
 
-    {%- if project == 'mu' %}
+    {%- if site == 'mu' %}
         TO_TIMESTAMP(admit_date :: DATE || ' ' || admit_time, 'YYYY-MM-DD HH24:MI:SS') as start_date,
         TO_TIMESTAMP(COALESCE(discharge_date, admit_date) :: DATE || ' ' || COALESCE(discharge_time, '00:00:00'), 'YYYY-MM-DD HH24:MI:SS') as end_date,
     {%- else %}
@@ -35,18 +32,5 @@ select
     facilityid,
     facility_location
 
-from
-    {%- if project == 'mu' %}
-        {{ source_schema }}.DEID_ENCOUNTER as dim
-    {%- elif project == 'washu' %}
-        {{ source_schema }}.V_DEID_ENCOUNTER as dim
-        left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
-        on dim.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
-        left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
-        on dim.patid = pc.patid and  pc.pcornet_site_name = 'C4WU'
-    {%- elif project == 'gpc' %}
-        {{ source_schema }}.GPC_DEID_ENCOUNTER as dim
-    {%- elif project == 'pcornet' %}
-        {{ source_schema }}.PCORNET_DEID_ENCOUNTER as dim
-    {%- endif %}
+from {{ source_schema }}.{{ encounter_table }} as dim
 ;

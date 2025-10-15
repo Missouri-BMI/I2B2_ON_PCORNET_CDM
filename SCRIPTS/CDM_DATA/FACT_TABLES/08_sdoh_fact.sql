@@ -2,7 +2,7 @@ create or replace view {{ target_schema }}.SDOH_FACT as
 
 -- Smoking status block
 select
-    {%- if project == 'mu' %}
+    {%- if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
         case 
@@ -19,22 +19,6 @@ select
         end as CONCEPT_CD,
         '@' as PROVIDER_ID,
         TO_TIMESTAMP(fact.obsclin_start_date :: DATE || ' ' || fact.obsclin_start_time, 'YYYY-MM-DD HH24:MI:SS') as START_DATE,
-    {%- elif project == 'washu' %}
-        ec.ENCOUNTER_NUM as ENCOUNTER_NUM,
-        pc.PATIENT_NUM as PATIENT_NUM,
-        case 
-            when smoking = '04' then 'LOINC:LA18978-9'
-            when smoking = '05' then 'LOINC:LA18979-7'
-            when smoking = '03' then 'LOINC:LA15920-4'
-            when smoking = '01' then 'LOINC:LA18976-3'
-            when smoking = '06' then 'LOINC:LA18980-5'
-            when smoking = '02' then 'LOINC:LA18977-1'
-            when smoking = '07' then 'LOINC:LA18981-3'
-            when smoking = '08' then 'LOINC:LA18982-1'
-            else 'LOINC:LA18980-5'
-        end as CONCEPT_CD,
-        '@' as PROVIDER_ID,
-        MEASURE_DATE :: TIMESTAMP as START_DATE,
     {%- else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
@@ -60,7 +44,7 @@ select
     '' as VALUEFLAG_CD,
     cast(null as integer) as QUANTITY_NUM,
     cast('@' as VARCHAR(50)) as UNITS_CD,
-    {%- if project == 'mu' %}
+    {%- if site == 'mu' %}
         TO_TIMESTAMP(COALESCE(fact.obsclin_stop_date, fact.obsclin_start_date) :: DATE || ' ' || COALESCE(fact.obsclin_stop_time, '00:00:00'), 'YYYY-MM-DD HH24:MI:SS') as END_DATE,
     {%- else %}
         cast(null as TIMESTAMP) as END_DATE,
@@ -74,24 +58,14 @@ select
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as integer) as UPLOAD_ID
 from
-    {%- if project == 'mu' %}
-        {{ source_schema }}.DEID_OBS_CLIN fact
-    {%- elif project == 'washu' %}
-        {{ source_schema }}.V_DEID_VITAL fact
-        left join CDM_DATALAKE.GPC.ENCOUNTER_CROSSWALK as ec
-            on fact.encounterid = ec.encounterid and ec.pcornet_site_name = 'C4WU'
-        left join CDM_DATALAKE.GPC.PATIENT_CROSSWALK as pc
-            on fact.patid = pc.patid and pc.pcornet_site_name = 'C4WU'
-    {%- elif project == 'gpc' %}
-        {{ source_schema }}.GPC_DEID_VITAL fact
-    {%- elif project == 'pcornet' %}
-        {{ source_schema }}.PCORNET_DEID_VITAL fact
+    {%- if site == 'mu' %}
+        {{ source_schema }}.{{ obs_clin_table }} fact
+    {%- elif site == 'gpc' or site == 'washu' %}
+        {{ source_schema }}.{{ vital_table }} fact
     {%- endif %}
 where
-    {%- if project == 'mu' %}
+    {%- if site == 'mu' %}
         OBSCLIN_CODE = 'C29719' and ENCOUNTERID is not null
-    {%- elif project == 'washu' %}
-        fact.ENCOUNTERID is not null
     {%- else %}
         ENCOUNTER_NUM is not null
     {%- endif %}
@@ -100,12 +74,9 @@ union all
 
 -- Payer block
 select
-    {%- if project == 'mu' %}
+    {%- if site == 'mu' %}
         ENCOUNTER_NUM,
         PATIENT_NUM,
-    {%- elif project == 'washu' %}
-        dim.ENCOUNTER_NUM,
-        dim.PATIENT_NUM,
     {%- else %}
         fact.ENCOUNTER_NUM,
         fact.PATIENT_NUM,
@@ -123,7 +94,7 @@ select
         ELSE 'LOINC:LA22079-0'
     END as CONCEPT_CD,
     '@' as PROVIDER_ID,
-    coalesce(START_DATE, CURRENT_TIMESTAMP) as START_DATE,
+    fact.START_DATE :: DATE as START_DATE,
     '@' as MODIFIER_CD,
     1 as INSTANCE_NUM,
     cast('' as VARCHAR(50)) as VALTYPE_CD,
@@ -132,7 +103,7 @@ select
     '' as VALUEFLAG_CD,
     cast(null as integer) as QUANTITY_NUM,
     cast('@' as VARCHAR(50)) as UNITS_CD,
-    cast(null as TIMESTAMP) as END_DATE,
+    fact.end_date :: DATE as END_DATE,
     '@' as LOCATION_CD,
     cast(null as text) as OBSERVATION_BLOB,
     cast(null as integer) as CONFIDENCE_NUM,
@@ -141,16 +112,5 @@ select
     CURRENT_TIMESTAMP as IMPORT_DATE,
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as integer) as UPLOAD_ID
-from
-    {%- if project == 'mu' %}
-        {{ target_schema }}.VISIT_DIMENSION fact
-    {%- elif project == 'washu' %}
-        {{ target_schema }}.VISIT_DIMENSION dim
-    {%- elif project == 'gpc' or project == 'pcornet' %}
-        {%- if project == 'gpc' %}
-            {{ source_schema }}.GPC_DEID_VITAL fact
-        {%- else %}
-            {{ source_schema }}.PCORNET_DEID_VITAL fact
-        {%- endif %}
-    {%- endif %}
+from {{ target_schema }}.VISIT_DIMENSION fact
 ;

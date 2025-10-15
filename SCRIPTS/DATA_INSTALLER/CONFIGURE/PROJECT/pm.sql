@@ -1,4 +1,4 @@
-{% if project == 'mu' %}
+{% if site == 'mu' %}
 -- MU
 
 UPDATE pm_hive_data SET DOMAIN_NAME = 'nextgenbmi.umsystem.edu' WHERE DOMAIN_NAME = 'i2b2demo';
@@ -34,7 +34,7 @@ VALUES('ACT', 'mhmcb@umsystem.edu', 'DATA_LDS', 'A');
 INSERT INTO PM_PROJECT_USER_ROLES (PROJECT_ID, USER_ID, USER_ROLE_CD, STATUS_CD)
 VALUES('ACT', 'mhmcb@umsystem.edu', 'DATA_PROT', 'A');
 
-{% elif project == 'washu' %}
+{% elif site == 'washu' %}
 -- washu
 
 UPDATE pm_hive_data SET DOMAIN_NAME = 'wustl.edu' WHERE DOMAIN_NAME = 'i2b2demo';
@@ -71,7 +71,7 @@ INSERT INTO PM_PROJECT_USER_ROLES (PROJECT_ID, USER_ID, USER_ROLE_CD, STATUS_CD)
 VALUES('ACT', 'mhmcb@umsystem.edu', 'DATA_PROT', 'A');
 
 
-{% elif project == 'gpc' %}
+{% elif site == 'gpc' %}
 
 INSERT INTO PM_PROJECT_DATA (PROJECT_ID, PROJECT_NAME, PROJECT_WIKI, PROJECT_PATH, STATUS_CD)
 VALUES('ACT-GPC', 'GPC Deid datalake', 'http://www.i2b2.org', '/ACT-GPC', 'A');
@@ -113,7 +113,7 @@ INSERT INTO PM_PROJECT_USER_ROLES (PROJECT_ID, USER_ID, USER_ROLE_CD, STATUS_CD)
 VALUES('ACT-GPC', 'mhmcb@umsystem.edu', 'DATA_PROT', 'A');
 
 
-{% elif project == 'pcornet' %}
+{% elif site == 'pcornet' %}
 
 INSERT INTO PM_PROJECT_DATA (PROJECT_ID, PROJECT_NAME, PROJECT_WIKI, PROJECT_PATH, STATUS_CD)
 VALUES('ACT-PCORNET', 'PCORNet Deid datalake', 'http://www.i2b2.org', '/ACT-PCORNET', 'A');
