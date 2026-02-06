@@ -1,127 +1,226 @@
-from datetime import datetime, timedelta
+import logging
+import os
+from dataclasses import dataclass
+from typing import Dict, List, Optional
+
+import pendulum
 from airflow.models.dag import DAG
-from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
-from airflow.operators.empty import EmptyOperator
 from airflow.utils.trigger_rule import TriggerRule
+from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator
+from airflow.operators.bash import BashOperator
 from dotenv import dotenv_values
+
 from common import *
 
-with DAG(
-    "i2b2_data_refresh",
-    # These args will get passed on to each operator
-    # You can override them on a per-task basis during operator initialization
-    default_args={
-        "depends_on_past": False,
-        "email": ["mhmcb@missouri.edu"],
-        "email_on_failure": False,
-        "email_on_retry": False,
-        "retries": 1,
-        "retry_delay": timedelta(minutes=5),
-    },
-    description="pcornet to i2b2 data harmonization process",
-    schedule=None,
-    start_date=datetime(2021, 1, 1),
-    catchup=False,
-    tags=["i2b2_data_refresh"],
-) as dag:
-    snowflake_conn_id = 'mu-dev'
-    args = dotenv_values("/opt/airflow/env/dev/.env")
-    project = args['PROJECT']
+logger = logging.getLogger(__name__)
 
-    BASE_PATH = '/opt/airflow/SCRIPTS/CDM_DATA'
-    CROSS_WALK_PATH = f"{BASE_PATH}/CONFIGURE/{project}/crosswalk.sql"  
-    DIMENSION_PATH = f"{BASE_PATH}/DIMENSION_TABLES/{project}"
-    FACT_PATH = f"{BASE_PATH}/FACT_TABLES/{project}"
-    GEN_COUNT_PATH = f"{BASE_PATH}/CDM_COUNT/generate_count.sql"
-    MISSING_OBS_PATH = f"{BASE_PATH}/MISSING_OBS"
-    PROJECT_CONFIG_PATH = f"{BASE_PATH}/CONFIGURE/{project}/project_config.sql"
+# --------- constants / defaults ---------
+BASE_ENV_DIR = os.getenv("I2B2_ENV_BASE_DIR", "/opt/airflow/env")
+DEFAULT_SCHEDULE = os.getenv("I2B2_DATA_REFRESH_SCHEDULE", None)
+DEFAULT_START_DATE = pendulum.datetime(2021, 1, 1, tz="UTC")
 
-    soruce_db=args['SOURCE_DB']
-    source_schema = soruce_db + '.' + args['SOURCE_SCHEMA']
+BASE_PATH = os.getenv("I2B2_REFRESH_BASE_PATH", "/opt/airflow/SCRIPTS/CDM_DATA")
+MAPPING_PATH = os.path.join(BASE_PATH, "table_mapping.json")
 
-    target_db= args['TARGET_DB']
-    target_schema = target_db + '.' + args['TARGET_SCHEMA']
+# Available in Environment
+FILTER_ACCOUNTS = set(x.strip() for x in os.getenv("I2B2_FILTER_ACCOUNTS", "deidentified").split(",") if x.strip())
+FILTER_ENVS = set(x.strip() for x in os.getenv("I2B2_FILTER_ENVS", "dev, prod, sandbox").split(",") if x.strip())
+FILTER_SITES = set(x.strip() for x in os.getenv("I2B2_FILTER_SITES", "mu, gpc, shrine-mu, shrine-washu").split(",") if x.strip())
 
-    project_db=args['PROJECT_DB']
+REQUIRED_KEYS = [
+    "CONNECTION_ID",
+    "PROJECT_DB",
+    "SOURCE_DB", "SOURCE_SCHEMA",
+    "TARGET_DB", "TARGET_SCHEMA",
+    "CRC_SCHEMA", "HIVE_SCHEMA", "PM_SCHEMA", "METADATA_SCHEMA", "WORKDATA_SCHEMA",
+]
 
-    crc_schema = target_db + '.' + args['CRC_SCHEMA']
-    hive_schema = target_db + '.' + args['HIVE_SCHEMA']
-    pm_schema= target_db + '.' + args['PM_SCHEMA']
-    metadata_schema= target_db + '.' + args['METADATA_SCHEMA'] 
-    wd_schema = target_db + '.' + args['WORKDATA_SCHEMA']
 
-    project_pm = project_db + '.' + args['PM_SCHEMA']
-    project_hive =  project_db + '.' + args['HIVE_SCHEMA']
-   
+@dataclass(frozen=True)
+class RunConfig:
+    account: str          # identified|deidentified
+    environment: str      # sandbox|dev|prod
+    site: str             # mu, gpc, ...
+    env_path: str
+    values: Dict[str, str]
+
+
+def _should_include(account: str, environment: str, site: str) -> bool:
+    if FILTER_ACCOUNTS and account not in FILTER_ACCOUNTS:
+        return False
+    if FILTER_ENVS and environment not in FILTER_ENVS:
+        return False
+    if FILTER_SITES and site not in FILTER_SITES:
+        return False
+    return True
+
+
+def discover_configs(base_env_dir: str) -> List[RunConfig]:
+    """
+    Discover env files in:
+      {base_env_dir}/{account}/{environment}/{site}.env
+    """
+    configs: List[RunConfig] = []
+
+    for account in ("identified", "deidentified"):
+        account_dir = os.path.join(base_env_dir, account)
+        if not os.path.isdir(account_dir):
+            continue
+
+        for environment in ("sandbox", "dev", "prod"):
+            env_dir = os.path.join(account_dir, environment)
+            if not os.path.isdir(env_dir):
+                continue
+
+            for fname in sorted(os.listdir(env_dir)):
+                if not fname.endswith(".env"):
+                    continue
+
+                site = fname[:-4]
+                if not _should_include(account, environment, site):
+                    continue
+
+                env_path = os.path.join(env_dir, fname)
+                raw = dotenv_values(env_path)
+                values = {k: str(v) for k, v in raw.items() if v is not None}
+
+                missing = [k for k in REQUIRED_KEYS if not values.get(k)]
+                if missing:
+                    logger.error("Skipping %s (missing keys: %s)", env_path, missing)
+                    continue
+
+                configs.append(RunConfig(account, environment, site, env_path, values))
+
+    return configs
+
+
+def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
+    a = cfg.values
+    effective_site = resolve_site(cfg.account, cfg.site)
+
+    source_schema = f"{a['SOURCE_DB']}.{a['SOURCE_SCHEMA']}"
+    target_db = a["TARGET_DB"]
+    target_schema = f"{target_db}.{a['TARGET_SCHEMA']}"
+    project_db = a["PROJECT_DB"]
+
+    crc_schema = f"{target_db}.{a['CRC_SCHEMA']}"
+    hive_schema = f"{target_db}.{a['HIVE_SCHEMA']}"
+    pm_schema = f"{target_db}.{a['PM_SCHEMA']}"
+    metadata_schema = f"{target_db}.{a['METADATA_SCHEMA']}"
+    wd_schema = f"{target_db}.{a['WORKDATA_SCHEMA']}"
+
+    project_pm = f"{project_db}.{a['PM_SCHEMA']}"
+    project_hive = f"{project_db}.{a['HIVE_SCHEMA']}"
+
     kwargs = {
-        'metadata_schema': metadata_schema,
-        'crc_schema': crc_schema,
-        'source_schema': source_schema,
-        'target_schema': target_schema,
-        'pm_schema': pm_schema,
-        'hive_schema': hive_schema,
-        'project_pm': project_pm,
-        'project_hive': project_hive
+        "crc_schema": crc_schema,
+        "hive_schema": hive_schema,
+        "metadata_schema": metadata_schema,
+        "pm_schema": pm_schema,
+        "wd_schema": wd_schema,
+        "source_schema": source_schema,
+        "target_schema": target_schema,
+        "target_db": target_db,
+        "project_pm": project_pm,
+        "project_hive": project_hive,
+        "site": effective_site
     }
-    
+    mapping = extract_table_mapping_from_file(MAPPING_PATH, effective_site)
+    if mapping:
+        kwargs.update(mapping)
 
-    create_conn_task = PythonOperator(
-        task_id='connect',
-        python_callable=create_snowflake_connection,
-        op_args=[snowflake_conn_id, args]
-    )
-   
-    with TaskGroup('dimension_tables') as dimension_tables:
-        execute_sql_directory(
-            snowflake_conn_id, 
-            DIMENSION_PATH, 
-            False, 
-            **kwargs
-        )
+    return kwargs
 
-    with TaskGroup('fact_tables') as fact_tables:
-        execute_sql_directory(
-            snowflake_conn_id, 
-            FACT_PATH, 
-            True,
-            **kwargs
-        )
+def build_dag(cfg: RunConfig) -> Optional[DAG]:
+    """
+    Build one DAG per config for i2b2 refresh.
+    """
+    try:
+        a = cfg.values
+        snowflake_conn_id = a["CONNECTION_ID"]
 
-    with TaskGroup('count_sql_task') as run_count_sql:
-        sql_query = read_sql_from_file(
-            GEN_COUNT_PATH, 
-            **kwargs
-        )
-        count_sql_task = execute_sql(
-            snowflake_conn_id, 
-            get_task_id(GEN_COUNT_PATH), 
-            sql_query,
-            autocommit=True
-        )
-        sql_query >> count_sql_task
-    
-    with TaskGroup('missing_obs_tasks') as find_missing_obs:
-        execute_sql_directory(
-            snowflake_conn_id, 
-            MISSING_OBS_PATH, 
-            True,
-            **kwargs
+        dag_id = f"i2b2_data_refresh__{cfg.account}__{cfg.environment}__{cfg.site}"
+        schedule = a.get("SCHEDULE", DEFAULT_SCHEDULE)
+
+        dag = DAG(
+            dag_id=dag_id,
+            description=f"pcornet → i2b2 harmonization ({cfg.account}/{cfg.environment}/{cfg.site})",
+            schedule=schedule,
+            start_date=DEFAULT_START_DATE,
+            catchup=False,
+            max_active_runs=1,
+            tags=["i2b2_data_refresh", cfg.account, cfg.environment, cfg.site],
+            default_args={
+                "depends_on_past": False,
+                "email_on_failure": False,
+                "email_on_retry": False,
+                "retries": 0,
+            },
         )
 
+        kwargs = _build_kwargs(cfg)
 
-    with TaskGroup('finalize') as project_config:
-        read_sql = read_sql_from_file(
-            PROJECT_CONFIG_PATH, 
-            **kwargs
-        )
-        count_sql_task = execute_sql(
-            snowflake_conn_id, 
-            get_task_id(PROJECT_CONFIG_PATH), 
-            read_sql
-        )
-        read_sql >> count_sql_task
+        dim_path = f"{BASE_PATH}/DIMENSION_TABLES"
+        fact_path = f"{BASE_PATH}/FACT_TABLES"
+        gen_count_path = f"{BASE_PATH}/CDM_COUNT/generate_count.sql"
+        missing_obs_path = f"{BASE_PATH}/MISSING_OBS"
+        project_config_path = f"{BASE_PATH}/CONFIGURE/project_config.sql"
+
+        with dag:
+            dimension_tables = make_sql_chain_in_dir(
+                group_id="dimension_tables",
+                sql_dir=dim_path,
+                snowflake_conn_id=snowflake_conn_id,
+                render_kwargs=kwargs,
+            )
+
+            fact_tables =  make_sql_chain_in_dir(
+                group_id="fact_tables",
+                sql_dir=fact_path,
+                snowflake_conn_id=snowflake_conn_id,
+                render_kwargs=kwargs,
+            )
+
+           
+            project_config = sf_sql_task(
+                task_id="finalize_project_config_task",
+                conn_id=snowflake_conn_id,
+                sql_path=project_config_path,    
+                render_kwargs=kwargs
+            )
+
         
-    create_conn_task  >> dimension_tables >> fact_tables  >> project_config >> run_count_sql >> find_missing_obs
+            run_count_sql =  sf_sql_task(
+                    task_id="run_count_sql_task",
+                    conn_id=snowflake_conn_id,
+                    sql_path=gen_count_path,    
+                    render_kwargs=kwargs
+                )
 
-   
+            missing_obs_tasks = make_sql_chain_in_dir(
+                group_id="missing_obs_tasks",
+                sql_dir=missing_obs_path,
+                snowflake_conn_id=snowflake_conn_id,
+                render_kwargs=kwargs,
+            )
+          
+
+            dimension_tables >> fact_tables >> project_config >> run_count_sql >> missing_obs_tasks
+
+        return dag
+
+    except Exception:
+        logger.exception("Failed to build refresh DAG for config: %s", cfg.env_path)
+        return None
+
+
+# --------- register DAGs ---------
+_configs = discover_configs(BASE_ENV_DIR)
+if not _configs:
+    logger.warning("No refresh env configs found under %s", BASE_ENV_DIR)
+
+for _cfg in _configs:
+    _dag = build_dag(_cfg)
+    if _dag:
+        globals()[_dag.dag_id] = _dag

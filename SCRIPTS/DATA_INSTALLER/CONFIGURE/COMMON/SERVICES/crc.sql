@@ -1,4 +1,3 @@
-USE SCHEMA {crc_schema};
 DROP TABLE IF EXISTS patient_dimension;
 DROP TABLE IF EXISTS visit_dimension;
 DROP TABLE IF EXISTS provider_dimension;

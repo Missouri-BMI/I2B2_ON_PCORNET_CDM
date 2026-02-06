@@ -1,5 +1,4 @@
-apache-airflow[celery]==2.10.0
---constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.12.txt
+apache-airflow==3.1.6
 apache-airflow-providers-snowflake
 python-dotenv
 sqlparse
@@ -7,3 +6,5 @@ jupyterlab
 snowflake-connector-python
 openpyxl
 xlrd
+pandas
+bcrypt

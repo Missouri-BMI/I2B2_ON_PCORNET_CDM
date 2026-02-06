@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE {metadata_schema}.ACS (
+CREATE OR REPLACE TABLE ACS (
         C_HLEVEL                                INT    NOT NULL,
         C_FULLNAME                              VARCHAR(700)   NOT NULL,
         C_NAME                                  VARCHAR(2000)  NOT NULL,
@@ -26,11 +26,11 @@ CREATE OR REPLACE TABLE {metadata_schema}.ACS (
         C_SYMBOL                                VARCHAR(50)    NULL
 );
 
-insert into {metadata_schema}.ACS (C_HLEVEL, C_FULLNAME, C_NAME, C_SYNONYM_CD, C_VISUALATTRIBUTES, C_TOTALNUM, C_BASECODE,
+insert into ACS (C_HLEVEL, C_FULLNAME, C_NAME, C_SYNONYM_CD, C_VISUALATTRIBUTES, C_TOTALNUM, C_BASECODE,
         C_METADATAXML, C_FACTTABLECOLUMN, C_TABLENAME, C_COLUMNNAME, C_COLUMNDATATYPE, C_OPERATOR, C_DIMCODE, C_COMMENT, C_TOOLTIP,
         M_APPLIED_PATH, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, VALUETYPE_CD, M_EXCLUSION_CD, C_PATH, C_SYMBOL)
 with distinct_trim_universe as (
-   select  distinct RAW_OBSGEN_TYPE, RAW_OBSGEN_NAME,  trim(split_part(universe, 'Universe:', 2)) as universe, subject_area, DESC_1, DESC_2 from {source_schema}.DEID_OBS_GEN_SDOH_ACS
+   select  distinct RAW_OBSGEN_TYPE, RAW_OBSGEN_NAME,  trim(split_part(universe, 'Universe:', 2)) as universe, subject_area, DESC_1, DESC_2 from DEIDENTIFIED_PCORNET_CDM.CDM.DEID_OBS_GEN_SDOH_ACS
    order by universe,subject_area, DESC_1, DESC_2
 )
 select 
@@ -173,12 +173,59 @@ select distinct
     from  distinct_trim_universe order by c_hlevel;
 
 
-update {metadata_schema}.acs
+update acs
 set c_fullname = replace(c_fullname, '\'', '');
 
-update {metadata_schema}.acs
+update acs
 set c_dimcode = replace(c_dimcode,'\'', '');
 
+
+DELETE FROM TABLE_ACCESS
+WHERE C_TABLE_CD = 'ACS';
+
+Insert into TABLE_ACCESS (C_TABLE_CD,C_TABLE_NAME,C_PROTECTED_ACCESS,C_HLEVEL,C_FULLNAME,C_NAME,C_SYNONYM_CD,
+    C_VISUALATTRIBUTES,C_TOTALNUM,C_BASECODE,C_FACTTABLECOLUMN,C_DIMTABLENAME,C_COLUMNNAME,C_COLUMNDATATYPE,C_OPERATOR,C_DIMCODE,
+    C_TOOLTIP,C_ENTRY_DATE,C_CHANGE_DATE,C_STATUS_CD,VALUETYPE_CD)
+select
+    'ACS'
+    , 'ACS'
+    , 'N'
+    , 1
+    , '\\SDOH\\ACS\\'
+    , 'ACS'
+    , 'N'
+    , 'FA '
+    , null
+    , null
+    , 'acs_fact.concept_cd'
+    , 'concept_dimension'
+    , 'concept_path'
+    , 'T'
+    , 'LIKE'
+    , '\\SDOH\\ACS\\'
+    , 'ACS'
+    , null
+    , null
+    , null
+    , null
+;
+
+delete from i2b2data.concept_dimension
+where concept_path like '%\\SDOH\\ACS\\%';
+
+insert intoi2b2data.concept_dimension (CONCEPT_PATH, CONCEPT_CD, NAME_CHAR, CONCEPT_BLOB, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, UPLOAD_ID)
+select 
+    c_fullname
+    , C_BASECODE
+    , C_NAME
+    , NULL
+    , CURRENT_DATE
+    , CURRENT_DATE
+    , CURRENT_DATE
+    , 'MU'
+    , NULL
+FROM ACS
+where c_basecode is  not null;
 
 DELETE FROM {metadata_schema}.TABLE_ACCESS
 WHERE C_TABLE_CD = 'ACS';

@@ -13,3 +13,10 @@ airflow/logs/
 airflow/plugins/
 env/*
 **/.env
+
+**/shrine-data/load-scripts/*
+**/shrine-data/project-scripts/*
+**/shrine-data/shrine-setup-*/*
+
+snowflake-postgresql.env
+**/rsa_key.p8

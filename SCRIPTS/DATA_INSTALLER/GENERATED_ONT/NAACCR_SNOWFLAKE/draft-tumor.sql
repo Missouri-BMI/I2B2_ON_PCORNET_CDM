@@ -56,5 +56,3 @@ insert into i2b2data.concept_dimension (CONCEPT_PATH, CONCEPT_CD, NAME_CHAR, CON
     FROM i2b2metadata.NAACCR_ONTOLOGY
     WHERE C_BASECODE IS NOT NULL;
     
-call i2b2metadata.RUNTOTALNUM('TUMOR_FACT', 'I2B2DATA', 'NAACCR_ONTOLOGY');
-
