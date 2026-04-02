@@ -1,22 +1,22 @@
 create or replace view {{ target_schema }}.VISIT_DIMENSION as
 select
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {%- else %}
+    {% else %}
         dim.ENCOUNTER_NUM as ENCOUNTER_NUM,
         dim.PATIENT_NUM as PATIENT_NUM,
-    {%- endif %}
+    {% endif %}
 
     cast(null as VARCHAR(50)) as ACTIVE_STATUS_CD,
 
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         TO_TIMESTAMP(admit_date :: DATE || ' ' || admit_time, 'YYYY-MM-DD HH24:MI:SS') as start_date,
         TO_TIMESTAMP(COALESCE(discharge_date, admit_date) :: DATE || ' ' || COALESCE(discharge_time, '00:00:00'), 'YYYY-MM-DD HH24:MI:SS') as end_date,
-    {%- else %}
+    {% else %}
         admit_date :: TIMESTAMP as start_date,
         discharge_date :: TIMESTAMP as end_date,
-    {%- endif %}
+    {% endif %}
 
     ENC_TYPE as INOUT_CD,
     cast(null as VARCHAR(50)) as LOCATION_CD,

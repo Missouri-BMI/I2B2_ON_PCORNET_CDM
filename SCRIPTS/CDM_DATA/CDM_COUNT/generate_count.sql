@@ -1,1 +1,1 @@
-call {metadata_schema}.run_on_all_fact();
+CALL {{ metadata_schema }}.run_on_all_fact();

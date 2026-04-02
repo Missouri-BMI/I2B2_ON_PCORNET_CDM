@@ -1,10 +1,10 @@
 create or replace view {{ target_schema }}.PATIENT_DIMENSION as
 select
-    {%- if site == 'mu' -%}
+    {% if site == 'mu' %}
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {%- else -%}
+    {% else %}
         dim.PATIENT_NUM as PATIENT_NUM,
-    {%- endif %}
+    {% endif %}
     CASE WHEN dead.DEATH_DATE is not null THEN 'Y' ELSE 'N' END as VITAL_STATUS_CD,
     dim.birth_date :: TIMESTAMP as BIRTH_DATE,
     cast(null as TIMESTAMP) as DEATH_DATE,
@@ -38,11 +38,16 @@ select
     CURRENT_TIMESTAMP as IMPORT_DATE,
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as INT) as UPLOAD_ID
-    {%- if site == 'gpc'%}
+    {% if site == 'gpc' %}
         , PCORNET_SITE_ID as SITE_ID
         , PCORNET_SITE_NAME as SITE_NAME
-    {%- endif %}
+    {% endif %}
 from {{ source_schema }}.{{ demographic_table }} as dim
 left join {{ source_schema }}.{{ death_table }} as dead
-using (patient_num)
+{% if site == 'mu' %}
+    using (patid)
+{% else %}
+    using (patient_num)
+{% endif %}
+
 ;

@@ -1,19 +1,19 @@
 create or replace view {{ target_schema }}.PROCEDURE_FACT as
 select
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {%- else %}
+    {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
-    {%- endif %}
+    {% endif %}
     case
         when px_type = '10' then concat('ICD10PCS:', px)
         when px_type = '09' then concat('ICD9PROC:', px)
         when px_type = 'CH'
-            {%- if site == 'mu' %} then concat(raw_px_type, ':', px)
-            {%- else %} then concat('CPT4', ':', px)
-            {%- endif %}
+            {% if site == 'mu' %} then concat(raw_px_type, ':', px)
+            {% else %} then concat('CPT4', ':', px)
+            {% endif %}
         else concat(px_type, ':', px)
     end as CONCEPT_CD,
     COALESCE(fact.PROVIDERID, '@') as PROVIDER_ID,

@@ -1,3 +1,4 @@
+from fileinput import filename
 import logging
 import os
 from dataclasses import dataclass
@@ -6,28 +7,34 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 import pendulum
-from airflow.models.dag import DAG
-from airflow.operators.python import PythonOperator
-from airflow.utils.task_group import TaskGroup
-from airflow.operators.bash import BashOperator
-from airflow.utils.trigger_rule import TriggerRule
+from airflow.models import DAG
+from airflow.sdk import TaskGroup
+from airflow.sdk import TriggerRule
 from dotenv import dotenv_values
 
-from common import *
+from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.python import PythonOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
+
+from common import read_sql_from_file, sf_sql_task
 
 logger = logging.getLogger(__name__)
 
-# ---------------- defaults / knobs ----------------
+# ────────────────────────── defaults / knobs ──────────────────────────
 BASE_ENV_DIR = os.getenv("I2B2_ENV_BASE_DIR", "/opt/airflow/env")
 
 DEFAULT_SCHEDULE = os.getenv("I2B2_SNOWFLAKE_I2B2_SCHEDULE", None)
 DEFAULT_START_DATE = pendulum.datetime(2021, 1, 1, tz="UTC")
 
-BASE_PATH = os.getenv("I2B2_DATA_INSTALLER_BASE_PATH", "/opt/airflow/SCRIPTS/DATA_INSTALLER")
-ENACT_PATH = os.getenv("I2B2_ENACT_PATH", f"{BASE_PATH}/ACT_V4_LOADER")
-ENACT_DATA = os.getenv("I2B2_ENACT_DATA", f"{ENACT_PATH}/ENACT_V41_POSTGRES_I2B2_TSV")
+BASE_PATH = os.getenv(
+    "I2B2_DATA_INSTALLER_BASE_PATH", "/opt/airflow/SCRIPTS/DATA_INSTALLER"
+)
+ENACT_PATH = os.getenv("I2B2_ENACT_PATH", f"{BASE_PATH}/ACT_V42_LOADER")
+ENACT_DATA = os.getenv("I2B2_ENACT_DATA", f"{ENACT_PATH}/tsv")
 
-# file format / stage names (can be overridden per .env)
+# File format / stage names (can be overridden per .env)
 DEFAULT_TSV_FORMAT = os.getenv("I2B2_TSV_FORMAT", "TSV_FORMAT")
 DEFAULT_TSV_STAGE = os.getenv("I2B2_TSV_STAGE", "i2b2_ont_import_tsv")
 DEFAULT_DSV_FORMAT = os.getenv("I2B2_DSV_FORMAT", "DSV_FORMAT")
@@ -38,24 +45,41 @@ PUT_PARAMETERS = os.getenv(
     "PARALLEL=4 AUTO_COMPRESS=TRUE SOURCE_COMPRESSION=AUTO_DETECT OVERWRITE=TRUE",
 )
 
-# Only for sandbox using
-FILTER_ACCOUNTS = set(x.strip() for x in os.getenv("I2B2_FILTER_ACCOUNTS", "deidentified").split(",") if x.strip())
-FILTER_ENVS = set(x.strip() for x in os.getenv("I2B2_FILTER_ENVS", "sandbox").split(",") if x.strip())
-FILTER_SITES = set(x.strip() for x in os.getenv("I2B2_FILTER_SITES", "mu").split(",") if x.strip())
+# Filter to specific account/env/site combos (comma-separated)
+FILTER_ACCOUNTS = set(
+    x.strip()
+    for x in os.getenv("I2B2_FILTER_ACCOUNTS", "deidentified").split(",")
+    if x.strip()
+)
+FILTER_ENVS = set(
+    x.strip()
+    for x in os.getenv("I2B2_FILTER_ENVS", "sandbox").split(",")
+    if x.strip()
+)
+FILTER_SITES = set(
+    x.strip()
+    for x in os.getenv("I2B2_FILTER_SITES", "mu").split(",")
+    if x.strip()
+)
 
 REQUIRED_KEYS = [
     "CONNECTION_ID",
-    "TARGET_DB", "TARGET_SCHEMA",
-    "CRC_SCHEMA", "HIVE_SCHEMA", "PM_SCHEMA", "METADATA_SCHEMA", "WORKDATA_SCHEMA",
+    "TARGET_DB",
+    "TARGET_SCHEMA",
+    "CRC_SCHEMA",
+    "HIVE_SCHEMA",
+    "PM_SCHEMA",
+    "METADATA_SCHEMA",
+    "WORKDATA_SCHEMA",
 ]
 
 
-# ---------------- config model ----------------
+# ────────────────────────── config model ──────────────────────────
 @dataclass(frozen=True)
 class RunConfig:
-    account: str          # identified|deidentified
-    environment: str      # sandbox|dev|prod
-    site: str             # mu, gpc, ...
+    account: str  # identified | deidentified
+    environment: str  # sandbox | dev | prod
+    site: str  # mu, gpc, washu, pcornet …
     env_path: str
     values: Dict[str, str]
 
@@ -72,12 +96,8 @@ def _should_include(account: str, environment: str, site: str) -> bool:
 
 def discover_configs(base_env_dir: str) -> List[RunConfig]:
     """
-    Discover env files in:
-      {base_env_dir}/{account}/{environment}/{site}.env
-
-    Example:
-      /opt/airflow/env/identified/dev/mu.env
-      /opt/airflow/env/deidentified/prod/gpc.env
+    Walk {base_env_dir}/{account}/{environment}/{site}.env and return
+    one RunConfig per valid .env file that passes the filter.
     """
     configs: List[RunConfig] = []
 
@@ -105,17 +125,26 @@ def discover_configs(base_env_dir: str) -> List[RunConfig]:
 
                 missing = [k for k in REQUIRED_KEYS if not values.get(k)]
                 if missing:
-                    logger.error("Skipping %s (missing keys: %s)", env_path, missing)
+                    logger.error(
+                        "Skipping %s (missing keys: %s)", env_path, missing
+                    )
                     continue
 
-                configs.append(RunConfig(account, environment, site, env_path, values))
+                configs.append(
+                    RunConfig(account, environment, site, env_path, values)
+                )
 
     return configs
 
-def _add_schema_sql(schema, sql_text) -> str:
-    return f"use schema {schema};\n" + sql_text
+
+def _add_schema_sql(schema: str, sql_text: str) -> str:
+    return f"USE SCHEMA {schema};\n{sql_text}"
+
 
 def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
+    """
+    Build the full Jinja / f-string rendering context from a RunConfig.
+    """
     a = cfg.values
 
     target_db = a["TARGET_DB"]
@@ -127,9 +156,11 @@ def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
     metadata_schema = f"{target_db}.{a['METADATA_SCHEMA']}"
     wd_schema = f"{target_db}.{a['WORKDATA_SCHEMA']}"
 
-    # stage schema (can override)
     stage_schema_name = a.get("STAGE_SCHEMA", "enact_stage")
     stage_schema = f"{target_db}.{stage_schema_name}"
+
+    # Source schema used by site-specific Jinja templates (HARVEST queries, etc.)
+    source_schema = a.get("SOURCE_SCHEMA", target_schema)
 
     tsv_format = a.get("TSV_FORMAT", DEFAULT_TSV_FORMAT)
     tsv_stage = a.get("TSV_STAGE", DEFAULT_TSV_STAGE)
@@ -140,6 +171,9 @@ def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
     local_stage = f"file://{enact_data_dir}"
 
     return {
+        # site identifier — used by {% if site == 'mu' %} etc.
+        "site": cfg.site,
+        # schemas
         "crc_schema": crc_schema,
         "hive_schema": hive_schema,
         "metadata_schema": metadata_schema,
@@ -147,34 +181,50 @@ def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
         "wd_schema": wd_schema,
         "target_schema": target_schema,
         "stage_schema": stage_schema,
+        "source_schema": source_schema,
         "target_db": target_db,
+        # file format / stage names
         "TSV_FORMAT": tsv_format,
         "TSV_STAGE": tsv_stage,
         "DSV_FORMAT": dsv_format,
         "DSV_STAGE": dsv_stage,
+        # file upload
         "LOCAL_STAGE": local_stage,
         "PUT_PARAMETERS": PUT_PARAMETERS,
     }
 
-
+# ────────────────────────── DAG builder ──────────────────────────
 def build_dag(cfg: RunConfig) -> Optional[DAG]:
     """
-    Build one DAG per config for the i2b2 enact ontology load + i2b2-data export workflow.
+    Build an Airflow DAG that:
+      1. Provisions a Snowflake scratch schema with internal stages
+      2. Uploads ACT/ENACT ontology TSV files and loads them into tables
+      3. Harmonises the ontology data via a stored procedure
+      4. Exports the result as i2b2-data artifacts (CSV → ZIP)
     """
     try:
         a = cfg.values
         snowflake_conn_id = a["CONNECTION_ID"]
 
-        dag_id = f"i2b2_snowflake__{cfg.account}__{cfg.environment}__{cfg.site}"
+        dag_id = f"i2b2_enact_ontology__{cfg.account}__{cfg.environment}__{cfg.site}"
         schedule = a.get("SCHEDULE", DEFAULT_SCHEDULE)
 
         dag = DAG(
             dag_id=dag_id,
-            description=f"Export Snowflake enact ontology to i2b2-data ({cfg.account}/{cfg.environment}/{cfg.site})",
+            description=(
+                f"Load ACT/ENACT ontology into Snowflake and export "
+                f"i2b2-data artifacts ({cfg.account}/{cfg.environment}/{cfg.site})"
+            ),
             schedule=schedule,
             start_date=DEFAULT_START_DATE,
             catchup=False,
-            tags=["i2b2_snowflake", cfg.account, cfg.environment, cfg.site],
+            tags=[
+                "i2b2",
+                "enact-ontology",
+                cfg.account,
+                cfg.environment,
+                cfg.site,
+            ],
             max_active_runs=1,
             default_args={
                 "depends_on_past": False,
@@ -186,119 +236,168 @@ def build_dag(cfg: RunConfig) -> Optional[DAG]:
 
         kwargs = _build_kwargs(cfg)
 
-        # Resolve data/paths (can override per env)
+        # Resolve paths (overridable per .env)
         enact_data_dir = a.get("ENACT_DATA_DIR", ENACT_DATA)
         enact_path = a.get("ENACT_PATH", ENACT_PATH)
         base_path = a.get("BASE_PATH", BASE_PATH)
 
-        # i2b2-data export destinations (override if your repo layout differs per env)
         crc_concept_path = a.get(
             "CRC_CONCEPT_PATH",
-            f"{base_path}/i2b2-data/edu.harvard.i2b2.data/Release_1-8/NewInstall/Crcdata/act/scripts/snowflake",
+            f"{base_path}/i2b2-data/edu.harvard.i2b2.data/"
+            f"Release_1-8/NewInstall/Crcdata/act/scripts/snowflake",
         )
         ont_path = a.get(
             "ONT_PATH",
-            f"{base_path}/i2b2-data/edu.harvard.i2b2.data/Release_1-8/NewInstall/Metadata/act/scripts/snowflake",
+            f"{base_path}/i2b2-data/edu.harvard.i2b2.data/"
+            f"Release_1-8/NewInstall/Metadata/act/scripts/snowflake",
         )
 
         with dag:
-            # 1) ensure stage schema exists
-            create_stage = SnowflakeSqlApiOperator(
-                    task_id="create-i2b2-data-stage-schema",
+
+            # ── 1. Provision scratch schema ──────────────────────────
+            init_stage_schema = SnowflakeSqlApiOperator(
+                task_id="init_stage_schema",
+                snowflake_conn_id=snowflake_conn_id,
+                sql=f"CREATE OR REPLACE SCHEMA {kwargs['stage_schema']};",
+                autocommit=True,
+            )
+            # ── 2a. Create file formats + internal stages (SQL API) ──
+            stage_ddl_sql = f"""
+                CREATE OR REPLACE FILE FORMAT {kwargs['stage_schema']}.{kwargs['TSV_FORMAT']}
+                    TYPE = CSV
+                    FIELD_DELIMITER = '\\t'
+                    ESCAPE = NONE
+                    NULL_IF = ('NULL')
+                    COMPRESSION = AUTO
+                    DATE_FORMAT = 'yyyy-MM-dd'
+                    ESCAPE_UNENCLOSED_FIELD = NONE
+                    FIELD_OPTIONALLY_ENCLOSED_BY = NONE
+                    SKIP_HEADER = 1;
+
+                CREATE OR REPLACE FILE FORMAT {kwargs['stage_schema']}.{kwargs['TSV_FORMAT']}_2
+                    TYPE = CSV
+                    FIELD_DELIMITER = '\\t'
+                    ESCAPE = NONE
+                    NULL_IF = ('NULL')
+                    COMPRESSION = AUTO
+                    DATE_FORMAT = 'yyyy/MM/dd'
+                    TIMESTAMP_FORMAT = 'YYYY/MM/DD'
+                    ESCAPE_UNENCLOSED_FIELD = NONE
+                    FIELD_OPTIONALLY_ENCLOSED_BY = NONE
+                    SKIP_HEADER = 1;
+
+                CREATE OR REPLACE STAGE {kwargs['stage_schema']}.{kwargs['TSV_STAGE']}
+                    FILE_FORMAT = {kwargs['stage_schema']}.{kwargs['TSV_FORMAT']};
+
+            """.strip()
+
+            create_formats_and_stages = SnowflakeSqlApiOperator(
+                task_id="create_file_formats_and_stages",
+                snowflake_conn_id=snowflake_conn_id,
+                sql=stage_ddl_sql,
+                autocommit=True,
+            )
+
+            # ── 2b. Upload files (PUT needs Python connector) ────────
+            upload_tsv = SQLExecuteQueryOperator(
+                task_id="put_tsv_files",
+                conn_id=snowflake_conn_id,
+                sql=(
+                    f"PUT {kwargs['LOCAL_STAGE']}/*.tsv "
+                    f"@{kwargs['stage_schema']}.{kwargs['TSV_STAGE']} "
+                    f"{kwargs['PUT_PARAMETERS']};"
+                ),
+                autocommit=True,
+            )
+
+            # ── 2c. DDL + COPY INTO ─────────────────────────────────
+            with TaskGroup("load_staged_data") as load_staged_data:
+
+                # DDL — create ACT metadata tables
+                enact_ddl = f"{enact_data_dir}/AA_CREATE_METADATA_TABLES_V42_SNOWFLAKE.sql"
+                ddl_read = read_sql_from_file(enact_ddl, **kwargs)
+                final_sql = _add_schema_sql(kwargs["stage_schema"], ddl_read)
+
+                execute_act_ddl = SnowflakeSqlApiOperator(
+                    task_id="execute_act_ddl",
                     snowflake_conn_id=snowflake_conn_id,
-                    sql= f"CREATE OR REPLACE SCHEMA {kwargs['stage_schema']};",
-                    trigger_rule=TriggerRule.ALL_SUCCESS,
+                    sql=final_sql,
                     autocommit=True,
-                    retries=0,
                 )
+                
+                with TaskGroup("load_act_data") as load_act_data:
+                    tasks = []
+                    start = EmptyOperator(task_id="start_load_act_data")
+                    end = EmptyOperator(task_id="all_load_act_data_sql_finished")
+                    
+                    FILE_TABLE_MAP = {
+                        "ACT_COVID_V41.tsv":                "ACT_COVID_V41",
+                        "ACT_CPT4_PX_V42.tsv":              "ACT_CPT4_PX_V42",
+                        "ACT_DEM_POSTGRES_V42.tsv":         "ACT_DEM_V42",
+                        "ACT_HCPCS_PX_V42.tsv":             "ACT_HCPCS_PX_V42",
+                        "ACT_ICD9CM_DX_V4.tsv":             "ACT_ICD9CM_DX_V4",
+                        "ACT_ICD9CM_PX_V4.tsv":             "ACT_ICD9CM_PX_V4",
+                        "ACT_ICD10CM_DX_V42.tsv":           "ACT_ICD10CM_DX_V42",
+                        "ACT_ICD10PCS_PX_V42.tsv":          "ACT_ICD10PCS_PX_V42",
+                        "ACT_ICD10_ICD9_DX_V4.tsv":         "ACT_ICD10_ICD9_DX_V4",
+                        "ACT_LOINC_LAB_PROV_V42.tsv":       "ACT_LOINC_LAB_PROV_V42",
+                        "ACT_LOINC_LAB_V42.tsv":            "ACT_LOINC_LAB_V42",
+                        "ACT_MED_ALPHA_V42.tsv":            "ACT_MED_ALPHA_V42",
+                        "ACT_MED_VA_V42.tsv":               "ACT_MED_VA_V42",
+                        "ACT_RESEARCH_V42A_POSTGRES.tsv":        "ACT_RESEARCH_V42",
+                        "ACT_SDOH_V42.tsv":                     "ACT_SDOH_V42",
+                        "ACT_VAX_V42.tsv":                      "ACT_VAX_V42",
+                        "ACT_VISIT_DETAILS_V41_POSTGRES.tsv": "ACT_VISIT_DETAILS_V41",
+                        "ACT_VITAL_SIGNS_V4.tsv":           "ACT_VITAL_SIGNS_V4",
+                        "ACT_ZIPCODE_V41.tsv":              "ACT_ZIPCODE_V41",
+                    }
 
-
-
-            # 2) ENACT (pcornet) load pipeline
-            with TaskGroup("enact-pcornet") as enact_pcornet:
-                # create file formats / stages / upload base files
-                with TaskGroup("extract") as Extract:
-                    stage_act_path = f"{base_path}/CONFIGURE/COMMON/stage_act.sql"
-                    sf_sql_task(
-                        task_id="stage-act-in-snowflake",
-                        conn_id=snowflake_conn_id,
-                        sql_path=stage_act_path,
-                        render_kwargs=kwargs,
-                    )
-
-                # load staged enact data in the stage schema
-                with TaskGroup("load") as Load:
-                    # DDL
-                    with TaskGroup("ACT_DDL") as ACT_DDL:
-                        enact_ddl = f"{enact_data_dir}/AA_CREATE_METADATA_TABLES_V41_POSTGRES.sql"
-                        ddl_read = read_sql_from_file(enact_ddl, **kwargs)
-                        final_sql = _add_schema_sql(kwargs["stage_schema"], ddl_read)
-
-                        create_tables_task = SnowflakeSqlApiOperator(
-                            task_id="ACT_DDL_METADATA",
-                            snowflake_conn_id=snowflake_conn_id,
-                            sql=final_sql,
-                            trigger_rule=TriggerRule.ALL_SUCCESS,
-                            autocommit=True,
-                            retries=0,
+                    for filename, table_name in FILE_TABLE_MAP.items():
+                        if table_name in ("ACT_RESEARCH_V42", "ACT_VISIT_DETAILS_V41"): #yyyy/MM/dd date format for CD_ files
+                            copy_sql = (
+                            f"COPY INTO {kwargs['stage_schema']}.{table_name} "
+                            f"FROM @{kwargs['stage_schema']}.{kwargs['TSV_STAGE']}/{filename} "
+                            f"FILE_FORMAT={kwargs['stage_schema']}.{kwargs['TSV_FORMAT']}_2;"
                         )
+                        else:
+                            copy_sql = (
+                            f"COPY INTO {kwargs['stage_schema']}.{table_name} " #yyyy-MM-dd date format for CD_ files
+                            f"FROM @{kwargs['stage_schema']}.{kwargs['TSV_STAGE']}/{filename} "
+                            f"FILE_FORMAT={kwargs['stage_schema']}.{kwargs['TSV_FORMAT']};"
+                        )
+                            
+                        t = SnowflakeSqlApiOperator(
+                            task_id=f"copy_{table_name.lower()}",
+                            snowflake_conn_id=snowflake_conn_id,
+                            sql=copy_sql,
+                            autocommit=True,
+                        )
+                        tasks.append(t)
+                    start >> tasks >> end
 
-                    # ACT_*.tsv loads
-                    with TaskGroup("ACT_LOAD") as ACT_LOAD:
-                        for file in sorted(os.listdir(enact_data_dir)):
-                            filename = Path(file).name
-                            stem = Path(file).stem
-                            # Keep your original filters
-                            if not filename.startswith("ACT"):
-                                continue
-                            if stem.endswith("PRECALC"):
-                                continue
-
-                            table_name = stem
-                            if table_name.endswith("_POSTGRES"):
-                                table_name = table_name.removesuffix("_POSTGRES")
-
-                            copy_sql = f"""
-                                COPY INTO {kwargs['stage_schema']}.{table_name}
-                                FROM @{kwargs['stage_schema']}.{kwargs['TSV_STAGE']}/{filename}
-                                FILE_FORMAT={kwargs['stage_schema']}.{kwargs['TSV_FORMAT']};
-                            """.strip()
-
-                            SnowflakeSqlApiOperator(
-                                task_id=f"load-{table_name}",
-                                snowflake_conn_id=snowflake_conn_id,
-                                sql=copy_sql,
-                                trigger_rule=TriggerRule.ALL_SUCCESS,
-                                autocommit=True,
-                                retries=0,
-                            )
-
-                    # SCHEMES
-                    load_schemes_sql = f"""
-                        CREATE TABLE {kwargs['stage_schema']}.SCHEMES
-                        (
+                # SCHEMES
+                load_schemes = SnowflakeSqlApiOperator(
+                    task_id="load_schemes",
+                    snowflake_conn_id=snowflake_conn_id,
+                    sql=f"""
+                        CREATE TABLE IF NOT EXISTS {kwargs['stage_schema']}.SCHEMES (
                             C_KEY VARCHAR(50) NOT NULL,
                             C_NAME VARCHAR(50) NOT NULL,
                             C_DESCRIPTION VARCHAR(100) NULL
                         );
-
                         COPY INTO {kwargs['stage_schema']}.SCHEMES
-                        FROM @{kwargs['stage_schema']}.{kwargs['DSV_STAGE']}/SCHEMES_V41.dsv
-                        FILE_FORMAT={kwargs['stage_schema']}.{kwargs['DSV_FORMAT']};
-                    """.strip()
-                    load_schemes_tasks = SnowflakeSqlApiOperator(
-                                task_id="load-schemes",
-                                snowflake_conn_id=snowflake_conn_id,
-                                sql=load_schemes_sql,
-                                trigger_rule=TriggerRule.ALL_SUCCESS,
-                                autocommit=True,
-                                retries=0,
-                            )
+                        FROM @{kwargs['stage_schema']}.{kwargs['TSV_STAGE']}/SCHEMES_V42.tsv
+                        FILE_FORMAT={kwargs['stage_schema']}.{kwargs['TSV_FORMAT']};
+                    """.strip(),
+                    autocommit=True,
+                )
 
-                    # TABLE_ACCESS
-                    load_ta_sql = f"""
-                        CREATE TABLE {kwargs['stage_schema']}.TABLE_ACCESS
-                        (
+                # TABLE_ACCESS (column reorder via SELECT transform)
+                load_table_access = SnowflakeSqlApiOperator(
+                    task_id="load_table_access",
+                    snowflake_conn_id=snowflake_conn_id,
+                    sql=f"""
+                        CREATE TABLE IF NOT EXISTS {kwargs['stage_schema']}.TABLE_ACCESS (
                             C_TABLE_CD VARCHAR(50) NOT NULL,
                             C_TABLE_NAME VARCHAR(50) NOT NULL,
                             C_PROTECTED_ACCESS CHAR(1) NULL,
@@ -319,163 +418,165 @@ def build_dag(cfg: RunConfig) -> Optional[DAG]:
                             C_DIMCODE VARCHAR(700) NOT NULL,
                             C_COMMENT TEXT NULL,
                             C_TOOLTIP VARCHAR(900) NULL,
-                            C_ENTRY_DATE TIMESTAMP NULL,
-                            C_CHANGE_DATE TIMESTAMP NULL,
+                            C_ENTRY_DATE TIMESTAMP_NTZ NULL,
+                            C_CHANGE_DATE TIMESTAMP_NTZ NULL,
                             C_STATUS_CD CHAR(1) NULL,
                             VALUETYPE_CD VARCHAR(50) NULL
                         );
-
                         COPY INTO {kwargs['stage_schema']}.TABLE_ACCESS
                         FROM (
                             SELECT
-                                $1, $2, $3, $24, $4, $5, $6, $7, $8, $9, $10, $11,
-                                $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
-                            FROM @{kwargs['stage_schema']}.{kwargs['DSV_STAGE']}/TABLE_ACCESS_V41.dsv
+                                $1, $2, $3, $22, $4, $5, $6, $7, $8, $9, $10, NULL, $11,
+                                $12, $13, $14, $15, $16, NULL, $17, $18, $19, $20, $21
+                            FROM @{kwargs['stage_schema']}.{kwargs['TSV_STAGE']}/TABLE_ACCESS.tsv
                         )
-                        FILE_FORMAT = {kwargs['stage_schema']}.{kwargs['DSV_FORMAT']};
-                    """.strip()
-                    load_ta_tasks = SnowflakeSqlApiOperator(
-                        task_id="load-table-access",
-                        snowflake_conn_id=snowflake_conn_id,
-                        sql=load_ta_sql,
-                        trigger_rule=TriggerRule.ALL_SUCCESS,
-                        autocommit=True,
-                        retries=0,
-                    )
+                        FILE_FORMAT = {kwargs['stage_schema']}.{kwargs['TSV_FORMAT']};
+                    """.strip(),
+                    autocommit=True,
+                )
 
-                    # CONCEPT_DIMENSION
-                    load_concept_sql = f"""
-                        CREATE TABLE {kwargs['stage_schema']}.CONCEPT_DIMENSION
-                        (
+                # CONCEPT_DIMENSION (pattern-match all CD_*.tsv files)
+                load_concept_dimension = SnowflakeSqlApiOperator(
+                    task_id="load_concept_dimension",
+                    snowflake_conn_id=snowflake_conn_id,
+                    sql=f"""
+                        CREATE TABLE IF NOT EXISTS {kwargs['stage_schema']}.CONCEPT_DIMENSION (
                             CONCEPT_PATH VARCHAR(700) NOT NULL,
                             CONCEPT_CD VARCHAR(50) NULL,
                             NAME_CHAR VARCHAR(2000) NULL,
                             CONCEPT_BLOB TEXT NULL,
-                            UPDATE_DATE TIMESTAMP NULL,
-                            DOWNLOAD_DATE TIMESTAMP NULL,
-                            IMPORT_DATE TIMESTAMP NULL,
+                            UPDATE_DATE TIMESTAMP_NTZ NULL,
+                            DOWNLOAD_DATE TIMESTAMP_NTZ NULL,
+                            IMPORT_DATE TIMESTAMP_NTZ NULL,
                             SOURCESYSTEM_CD VARCHAR(50) NULL,
                             UPLOAD_ID INT NULL
                         );
 
                         COPY INTO {kwargs['stage_schema']}.CONCEPT_DIMENSION
-                        FROM @{kwargs['stage_schema']}.{kwargs['TSV_STAGE']}/CONCEPT_DIMENSION_V41.tsv
-                        FILE_FORMAT={kwargs['stage_schema']}.{kwargs['TSV_FORMAT']};
-                    """.strip()
+                        FROM (
+                            SELECT $1, $2, $3, NULL, $4, $5, $6, $7, $8
+                            FROM @{kwargs['stage_schema']}.{kwargs['TSV_STAGE']}    
+                        )
+                        PATTERN='.*\\/CD_.*[.]tsv[.]gz'
+                        FILE_FORMAT = {kwargs['stage_schema']}.{kwargs['TSV_FORMAT']}_2;--yyyy/MM/dd date format for CD_ files
+                    """.strip(),
+                    autocommit=True,
+                )
 
-                    load_concept_tasks = SnowflakeSqlApiOperator(
-                        task_id="load-concepts",
-                        snowflake_conn_id=snowflake_conn_id,
-                        sql=load_concept_sql,
-                        trigger_rule=TriggerRule.ALL_SUCCESS,
-                        autocommit=True,
-                        retries=0,
-                    )
-
-                    ACT_DDL >> ACT_LOAD >> [load_schemes_tasks, load_ta_tasks, load_concept_tasks]
-
-                # transform
-                with TaskGroup("transform") as Transform:
-                    harmonize_path = a.get("HARMONIZE_PATH", f"{enact_path}/scripts/harmonize-proc.sql")
-                    harmonize_proc = sf_sql_task(
-                        task_id="act_harmonize_proc",
-                        conn_id=snowflake_conn_id,
-                        sql_path=harmonize_path,
-                        render_kwargs=kwargs,
-                    )
-
-                    harmonize_task = SnowflakeSqlApiOperator(
-                        task_id="act_harmonize",
-                        snowflake_conn_id=snowflake_conn_id,
-                        sql=f"USE SCHEMA {kwargs['stage_schema']}; call harmonize_proc();",
-                        trigger_rule=TriggerRule.ALL_SUCCESS,
-                        autocommit=True,
-                        retries=0,
-                    )
+                # Internal wiring: DDL → COPY tasks → reference loads
+                execute_act_ddl >> load_act_data >> [
+                    load_schemes,
+                    load_table_access,
+                    load_concept_dimension,
+                ]
                 
-                    harmonize_proc >> harmonize_task
+           
 
-                Extract >> Load >> Transform
+            # ── 2d. Harmonize ────────────────────────────────────────
+            harmonize_path = a.get(
+                "HARMONIZE_PATH",
+                f"{enact_path}/scripts/harmonize-proc.sql",
+            )
+            create_harmonize_proc = sf_sql_task(
+                task_id="create_harmonize_procedure",
+                conn_id=snowflake_conn_id,
+                sql_path=harmonize_path,
+                render_kwargs=kwargs,
+            )
 
-            # 3) i2b2-data export
-            with TaskGroup("i2b2-data-export") as i2b2_data_export_task:
-                with TaskGroup("stage-table") as stage_table_task:
-                    sql_file = f"{base_path}/CONFIGURE/COMMON/extract_concept.sql"
-                    create_tables_task = sf_sql_task(
-                        task_id="concept-dimension-export",
-                        conn_id=snowflake_conn_id,
-                        sql_path=sql_file,
-                        render_kwargs=kwargs,
-                    )
+            run_harmonize_proc = SnowflakeSqlApiOperator(
+                task_id="run_harmonize_procedure",
+                snowflake_conn_id=snowflake_conn_id,
+                sql=(
+                    f"USE SCHEMA {kwargs['stage_schema']}; "
+                    f"CALL harmonize_proc();"
+                ),
+                autocommit=True,
+            )
 
+            # ── 3a. Prepare export staging tables ────────────────────
+            sql_file = f"{base_path}/CONFIGURE/COMMON/extract_concept.sql"
+            create_concept_export = sf_sql_task(
+                task_id="create_concept_export_table",
+                conn_id=snowflake_conn_id,
+                sql_path=sql_file,
+                render_kwargs=kwargs,
+            )
 
-                with TaskGroup("export-concepts") as export_concepts_task:
-                    concept_export_path = f"file://{crc_concept_path}"
-                    download_concept = SnowflakeSqlApiOperator(
-                        task_id="download-concept-dimension",
-                        snowflake_conn_id=snowflake_conn_id,
-                        sql=f"GET @{kwargs['stage_schema']}.CSV_STAGE/CONCEPT_DIMENSION.csv {concept_export_path} OVERWRITE=TRUE",
-                        trigger_rule=TriggerRule.ALL_SUCCESS,
-                        autocommit=True,
-                        retries=0,
-                    )
-                    
-                    zip_concept = BashOperator(
-                        task_id="zip_concept_files",
-                        bash_command=f"""
-                        i=1;
-                        for file in {crc_concept_path}/*.csv.gz; do
-                            zip -j {crc_concept_path}/crcdata${{i}}.zip "$file";
-                            rm "$file";
-                            i=$((i+1));
-                        done
-                        """,
-                        retries=0,
-                    )
-                    download_concept >> zip_concept
-
-                with TaskGroup("export-metadata") as export_metadata_task:
-                    ont_export_path = f"file://{ont_path}"
-                    download_ont = SnowflakeSqlApiOperator(
-                        task_id="download-act-metadata",
-                        snowflake_conn_id=snowflake_conn_id,
-                        sql=f"GET @{kwargs['stage_schema']}.CSV_STAGE {ont_export_path} PATTERN='.*\\.csv.gz' OVERWRITE=TRUE",
-                        trigger_rule=TriggerRule.ALL_SUCCESS,
-                        autocommit=True,
-                        retries=0,
-                    )
-                
-                    zip_meta = BashOperator(
-                        task_id="zip_metadata_files",
-                        bash_command=f"""
-                        i=1;
-                        for file in {ont_path}/*.csv.gz; do
-                            if [[ "$(basename "$file")" == CONCEPT_DIMENSION* ]]; then
-                                rm "$file";
-                            else
-                                zip -j {ont_path}/metadata${{i}}.zip "$file";
-                                rm "$file";
-                                i=$((i+1));
-                            fi
-                        done
-                        """,
-                        retries=0,
-                    )
-                    download_ont >> zip_meta
-
-                stage_table_task >> export_concepts_task >> export_metadata_task
-
-            # order
-            create_stage >> enact_pcornet >> i2b2_data_export_task
+            # ── 3b. Download + zip concept dimension ──
+            concept_export_path = f"file://{crc_concept_path}"
+            download_concepts = SQLExecuteQueryOperator(
+                task_id="get_concept_parquet_from_stage",
+                conn_id=snowflake_conn_id,
+                sql=(
+                    f"GET @{kwargs['stage_schema']}.PARQUET_STAGE_CONCEPT/"
+                    f" {concept_export_path} OVERWRITE=TRUE"
+                ),
+                autocommit=True,
+            )
+            zip_concepts = BashOperator(
+            task_id="zip_concept_parquet_files",
+            bash_command=(
+                f'cd {crc_concept_path} && {{ '
+                f'i=1; size=0; MAX=52428800; '
+                f'table="CONCEPT_DIMENSION"; '
+                f'for file in CONCEPT_DIMENSION*.snappy.parquet; do '
+                f'  fsize=$(stat -c%s "$file"); '
+                f'  if [ $size -gt 0 ] && [ $((size + fsize)) -gt $MAX ]; then '
+                f'    i=$((i+1)); size=0; '
+                f'  fi; '
+                f'  zip -j crcdata_${{table}}_${{i}}.zip "$file"; '
+                f'  rm "$file"; '
+                f'  size=$((size + fsize)); '
+                f'done; }}'
+                ),
+            )
+            # ── 3c. Download + zip ontology metadata ──
+            ont_export_path = f"file://{ont_path}"
+            download_metadata = SQLExecuteQueryOperator(
+                task_id="get_metadata_parquet_from_stage",
+                conn_id=snowflake_conn_id,
+                sql=(
+                    f"GET @{kwargs['stage_schema']}.PARQUET_STAGE_ONT/"
+                    f" {ont_export_path} OVERWRITE=TRUE"
+                ),
+                autocommit=True,
+            )
+            zip_metadata = BashOperator(
+                task_id="zip_metadata_parquet_files",
+                bash_command=(
+                    f'cd {ont_path} && {{ '
+                    f'i=1; size=0; MAX=52428800; '
+                    f'prev_table=""; '
+                    f'for file in *.snappy.parquet; do '
+                    f'  table=$(echo "$file" | sed "s/\\.parquet_.*//"); '
+                    f'  fsize=$(stat -c%s "$file"); '
+                    f'  if [ "$table" != "$prev_table" ] && [ -n "$prev_table" ]; then '
+                    f'    i=1; size=0; '
+                    f'  elif [ $size -gt 0 ] && [ $((size + fsize)) -gt $MAX ]; then '
+                    f'    i=$((i+1)); size=0; '
+                    f'  fi; '
+                    f'  zip -j metadata_${{table}}_${{i}}.zip "$file"; '
+                    f'  rm "$file"; '
+                    f'  size=$((size + fsize)); '
+                    f'  prev_table="$table"; '
+                    f'done; }}'
+                ),
+            )
+            init_stage_schema >> create_formats_and_stages >> upload_tsv >> load_staged_data >> create_harmonize_proc >> run_harmonize_proc >> create_concept_export >> download_concepts >> download_metadata >> zip_concepts >> zip_metadata
+        # init_stage_schema >> create_formats_and_stages >> [upload_tsv, upload_dsv] >> load_staged_data >> create_harmonize_proc >> run_harmonize_proc >> create_concept_export >> [download_concepts, download_metadata] >> [zip_concepts, zip_metadata]
 
         return dag
 
     except Exception:
-        logger.exception("Failed to build snowflake_i2b2 DAG for config: %s", cfg.env_path)
+        logger.exception(
+            "Failed to build i2b2 enact ontology DAG for config: %s",
+            cfg.env_path,
+        )
         return None
 
 
-# ---------------- register DAGs ----------------
+# ────────────────────────── register DAGs ──────────────────────────
 _configs = discover_configs(BASE_ENV_DIR)
 if not _configs:
     logger.warning("No env configs found under %s", BASE_ENV_DIR)

@@ -1,13 +1,13 @@
 create or replace view {{ target_schema }}.LAB_FACT as
 -- Numeric results
 select
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {%- else %}
+    {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
-    {%- endif %}
+    {% endif %}
     concat('LOINC:', LAB_LOINC) as CONCEPT_CD,
     '@' as PROVIDER_ID,
     LAB_ORDER_DATE :: TIMESTAMP as START_DATE,
@@ -38,13 +38,13 @@ where LAB_LOINC is not null and result_modifier <> 'TX'
 union all
 -- Qualitative results (text)
 select
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {%- else %}
+    {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
-    {%- endif %}
+    {% endif %}
     concat('LOINC:', LAB_LOINC) as CONCEPT_CD,
     '@' as PROVIDER_ID,
     LAB_ORDER_DATE :: TIMESTAMP as START_DATE,

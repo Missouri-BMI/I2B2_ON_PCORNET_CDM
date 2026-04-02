@@ -1,19 +1,19 @@
 create or replace view {{ target_schema }}.MEDICATION_FACT as
 select
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {%- else %}
+    {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
-    {%- endif %}
+    {% endif %}
     concat('RXNORM:', RXNORM_CUI) as CONCEPT_CD,
     COALESCE(fact.RX_PROVIDERID, '@') as PROVIDER_ID,
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         TO_TIMESTAMP(RX_ORDER_DATE :: DATE || ' ' || RX_ORDER_TIME, 'YYYY-MM-DD HH24:MI:SS') as START_DATE,
-    {%- else %}
+    {% else %}
         RX_ORDER_DATE :: TIMESTAMP as START_DATE,
-    {%- endif %}
+    {% endif %}
     '@' as MODIFIER_CD,
     1 as INSTANCE_NUM,
     cast('' as VARCHAR(50)) as VALTYPE_CD,

@@ -5,8 +5,8 @@ from typing import Dict, List, Optional
 
 import pendulum
 from airflow.models.dag import DAG
-from airflow.utils.task_group import TaskGroup
-from airflow.utils.trigger_rule import TriggerRule
+from airflow.sdk import TaskGroup
+from airflow.sdk import TriggerRule
 from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator
 from dotenv import dotenv_values
 

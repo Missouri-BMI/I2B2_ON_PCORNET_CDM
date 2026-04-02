@@ -1,3 +1,4 @@
+use schema {{ metadata_schema }};
 {% if site == 'mu' %}
 -- MU
 select 1;

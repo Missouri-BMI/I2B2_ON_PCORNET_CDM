@@ -1,12 +1,12 @@
 create or replace view {{ target_schema }}.DIAGNOSIS_FACT as
 select
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
-    {%- else %}
+    {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
-    {%- endif %}
+    {% endif %}
 
     case
         when dx_type = '10' then concat('ICD10CM:', dx)
@@ -37,5 +37,5 @@ select
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as integer) as UPLOAD_ID
 
-from {{ source_schema }}.{{ diagnosis_table}} fact
+from {{ source_schema }}.{{ diagnosis_table }} fact
 ;
