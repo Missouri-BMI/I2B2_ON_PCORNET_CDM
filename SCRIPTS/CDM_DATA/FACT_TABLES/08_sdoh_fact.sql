@@ -2,7 +2,7 @@ create or replace view {{ target_schema }}.SDOH_FACT as
 
 -- Smoking status block
 select
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,
         case 
@@ -19,7 +19,7 @@ select
         end as CONCEPT_CD,
         '@' as PROVIDER_ID,
         TO_TIMESTAMP(fact.obsclin_start_date :: DATE || ' ' || fact.obsclin_start_time, 'YYYY-MM-DD HH24:MI:SS') as START_DATE,
-    {%- else %}
+    {% else %}
         fact.ENCOUNTER_NUM as ENCOUNTER_NUM,
         fact.PATIENT_NUM as PATIENT_NUM,
         case 
@@ -35,7 +35,7 @@ select
         end as CONCEPT_CD,
         '@' as PROVIDER_ID,
         MEASURE_DATE :: TIMESTAMP as START_DATE,
-    {%- endif %}
+    {% endif %}
     '@' as MODIFIER_CD,
     1 as INSTANCE_NUM,
     cast('' as VARCHAR(50)) as VALTYPE_CD,
@@ -44,11 +44,11 @@ select
     '' as VALUEFLAG_CD,
     cast(null as integer) as QUANTITY_NUM,
     cast('@' as VARCHAR(50)) as UNITS_CD,
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         TO_TIMESTAMP(COALESCE(fact.obsclin_stop_date, fact.obsclin_start_date) :: DATE || ' ' || COALESCE(fact.obsclin_stop_time, '00:00:00'), 'YYYY-MM-DD HH24:MI:SS') as END_DATE,
-    {%- else %}
+    {% else %}
         cast(null as TIMESTAMP) as END_DATE,
-    {%- endif %}
+    {% endif %}
     '@' as LOCATION_CD,
     cast(null as text) as OBSERVATION_BLOB,
     cast(null as integer) as CONFIDENCE_NUM,
@@ -58,29 +58,29 @@ select
     cast(null as VARCHAR(50)) as SOURCESYSTEM_CD,
     cast(null as integer) as UPLOAD_ID
 from
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         {{ source_schema }}.{{ obs_clin_table }} fact
-    {%- elif site == 'gpc' or site == 'washu' %}
+    {% else %}
         {{ source_schema }}.{{ vital_table }} fact
-    {%- endif %}
+    {% endif %}
 where
-    {%- if site == 'mu' %}
-        OBSCLIN_CODE = 'C29719' and ENCOUNTERID is not null
-    {%- else %}
+    {% if site == 'mu' %}
+        OBSCLIN_CODE = '72166-2' and ENCOUNTERID is not null
+    {% else %}
         ENCOUNTER_NUM is not null
-    {%- endif %}
+    {% endif %}
 
 union all
 
 -- Payer block
 select
-    {%- if site == 'mu' %}
+    {% if site == 'mu' %}
         ENCOUNTER_NUM,
         PATIENT_NUM,
-    {%- else %}
+    {% else %}
         fact.ENCOUNTER_NUM,
         fact.PATIENT_NUM,
-    {%- endif %}
+    {% endif %}
     CASE
         WHEN PAYER_TYPE_PRIMARY = '1' THEN 'LOINC:LA15652-3'
         WHEN PAYER_TYPE_PRIMARY = '2' THEN 'LOINC:LA17849-3'

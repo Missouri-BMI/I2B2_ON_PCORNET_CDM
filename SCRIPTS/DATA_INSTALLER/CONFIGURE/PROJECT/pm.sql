@@ -1,3 +1,5 @@
+use schema {{ pm_schema }};
+
 {% if site == 'mu' %}
 -- MU
 
