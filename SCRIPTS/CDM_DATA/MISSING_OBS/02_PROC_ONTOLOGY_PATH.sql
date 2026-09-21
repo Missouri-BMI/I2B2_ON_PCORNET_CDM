@@ -6,7 +6,7 @@ LANGUAGE SQL
 AS
 $$
 DECLARE
-    ont_tables RESULTSET DEFAULT (select c_table_name from i2b2metadata.table_access where c_visualattributes like '%A%');
+    ont_tables RESULTSET DEFAULT (select c_table_name from {{ metadata_schema }}.table_access where c_visualattributes like '%A%');
     v_sqlStr TEXT DEFAULT '';
     ont_cur CURSOR for ont_tables;
 
@@ -16,7 +16,7 @@ BEGIN
          if (v_sqlStr != '') then
             v_sqlStr := v_sqlStr || '\nunion\n';
          end if;
-         v_sqlStr := v_sqlStr || 'SELECT C_FULLNAME, C_FACTTABLECOLUMN FROM i2b2metadata.' || r.c_table_name || '\n where lower(C_FACTTABLECOLUMN) like ''%concept_cd%'' and                     lower(C_COLUMNNAME) = ''concept_path''';
+         v_sqlStr := v_sqlStr || 'SELECT C_FULLNAME, C_FACTTABLECOLUMN FROM {{ metadata_schema }}.' || r.c_table_name || '\n where lower(C_FACTTABLECOLUMN) like ''%concept_cd%'' and                     lower(C_COLUMNNAME) = ''concept_path''';
     END FOR;
     
     -- create concepts with paths

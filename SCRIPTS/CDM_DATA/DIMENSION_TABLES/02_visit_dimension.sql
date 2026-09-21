@@ -1,4 +1,4 @@
-create or replace view {{ target_schema }}.VISIT_DIMENSION as
+create or replace table {{ target_schema }}.VISIT_DIMENSION as
 select
     {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,

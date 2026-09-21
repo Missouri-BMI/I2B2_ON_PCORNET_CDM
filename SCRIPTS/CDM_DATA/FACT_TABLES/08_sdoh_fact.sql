@@ -1,4 +1,4 @@
-create or replace view {{ target_schema }}.SDOH_FACT as
+create or replace table {{ target_schema }}.SDOH_FACT as
 
 -- Smoking status block
 select

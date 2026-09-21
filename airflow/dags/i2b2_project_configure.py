@@ -6,7 +6,6 @@ from typing import Dict, List, Optional
 import pendulum
 from airflow.sdk import DAG, TaskGroup, TriggerRule
 from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator
-from airflow.providers.standard.operators.bash import BashOperator
 from dotenv import dotenv_values
 
 from common import *
@@ -15,13 +14,13 @@ logger = logging.getLogger(__name__)
 
 # --------- constants / defaults ---------
 BASE_ENV_DIR = os.getenv("I2B2_ENV_BASE_DIR", "/opt/airflow/env")
-DEFAULT_SCHEDULE = os.getenv("I2B2_DATA_REFRESH_SCHEDULE", None)
-DEFAULT_START_DATE = pendulum.datetime(2021, 1, 1, tz="UTC")
+BASE_PATH = os.getenv("I2B2_BASE_PATH", "/opt/airflow/SCRIPTS/DATA_INSTALLER")
 
-BASE_PATH = os.getenv("I2B2_REFRESH_BASE_PATH", "/opt/airflow/SCRIPTS/CDM_DATA")
-MAPPING_PATH = os.path.join(BASE_PATH, "table_mapping.json")
+DEFAULT_SCHEDULE = os.getenv("I2B2_PROJECT_CONFIGURE_SCHEDULE", None)
+DEFAULT_START_DATE = pendulum.datetime(2025, 1, 1, tz="UTC")
 
-# Available in Environment
+# Available in all Environment. Project configuration is applied per project/env,
+# so — unlike the sandbox-only data install — it defaults to every environment.
 FILTER_ACCOUNTS = set(x.strip() for x in os.getenv("I2B2_FILTER_ACCOUNTS", "deidentified").split(",") if x.strip())
 FILTER_ENVS = set(x.strip() for x in os.getenv("I2B2_FILTER_ENVS", "dev, prod, sandbox").split(",") if x.strip())
 FILTER_SITES = set(x.strip() for x in os.getenv("I2B2_FILTER_SITES", "mu, gpc, shrine-mu, shrine-washu").split(",") if x.strip())
@@ -100,7 +99,6 @@ def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
     source_schema = f"{a['SOURCE_DB']}.{a['SOURCE_SCHEMA']}"
     target_db = a["TARGET_DB"]
     target_schema = f"{target_db}.{a['TARGET_SCHEMA']}"
-    project_db = a["PROJECT_DB"]
 
     crc_schema = f"{target_db}.{a['CRC_SCHEMA']}"
     hive_schema = f"{target_db}.{a['HIVE_SCHEMA']}"
@@ -108,8 +106,11 @@ def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
     metadata_schema = f"{target_db}.{a['METADATA_SCHEMA']}"
     wd_schema = f"{target_db}.{a['WORKDATA_SCHEMA']}"
 
+    project_db = a["PROJECT_DB"]
     project_pm = f"{project_db}.{a['PM_SCHEMA']}"
     project_hive = f"{project_db}.{a['HIVE_SCHEMA']}"
+
+    stage_schema = f"{target_db}.enact_stage"
 
     kwargs = {
         "crc_schema": crc_schema,
@@ -117,6 +118,7 @@ def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
         "metadata_schema": metadata_schema,
         "pm_schema": pm_schema,
         "wd_schema": wd_schema,
+        "stage_schema": stage_schema,
         "source_schema": source_schema,
         "target_schema": target_schema,
         "target_db": target_db,
@@ -124,31 +126,28 @@ def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
         "project_hive": project_hive,
         "site": effective_site
     }
-    mapping = extract_table_mapping_from_file(MAPPING_PATH, effective_site)
-    if mapping:
-        kwargs.update(mapping)
-
     return kwargs
+
 
 def build_dag(cfg: RunConfig) -> Optional[DAG]:
     """
-    Build one DAG per config for i2b2 refresh.
+    Build one DAG per config for i2b2 project-specific configuration.
     """
     try:
         a = cfg.values
         snowflake_conn_id = a["CONNECTION_ID"]
 
-        dag_id = f"i2b2_data_refresh__{cfg.account}__{cfg.environment}__{cfg.site}"
+        dag_id = f"i2b2_project_configure__{cfg.account}__{cfg.environment}__{cfg.site}"
         schedule = a.get("SCHEDULE", DEFAULT_SCHEDULE)
 
         dag = DAG(
             dag_id=dag_id,
-            description=f"pcornet → i2b2 harmonization ({cfg.account}/{cfg.environment}/{cfg.site})",
+            description=f"i2b2 project-specific configuration in Snowflake ({cfg.account}/{cfg.environment}/{cfg.site})",
             schedule=schedule,
             start_date=DEFAULT_START_DATE,
             catchup=False,
             max_active_runs=1,
-            tags=["i2b2_data_refresh", cfg.account, cfg.environment, cfg.site],
+            tags=["i2b2_project_configure", cfg.account, cfg.environment, cfg.site],
             default_args={
                 "depends_on_past": False,
                 "email_on_failure": False,
@@ -157,60 +156,40 @@ def build_dag(cfg: RunConfig) -> Optional[DAG]:
             },
         )
 
-        kwargs = _build_kwargs(cfg)
-
-        dim_path = f"{BASE_PATH}/DIMENSION_TABLES"
-        fact_path = f"{BASE_PATH}/FACT_TABLES"
-        gen_count_path = f"{BASE_PATH}/CDM_COUNT/generate_count.sql"
-        missing_obs_path = f"{BASE_PATH}/MISSING_OBS"
-        project_config_path = f"{BASE_PATH}/CONFIGURE/project_config.sql"
+        render_kwargs = _build_kwargs(cfg)
 
         with dag:
-            dimension_tables = make_sql_chain_in_dir(
-                group_id="dimension_tables",
-                sql_dir=dim_path,
+            # 1) common configure SQL directory (sequential)
+            common_dir = f"{BASE_PATH}/CONFIGURE/COMMON/SERVICES"
+            common_cfg = make_sql_chain_in_dir(
+                group_id="i2b2_common_configure",
+                sql_dir=common_dir,
                 snowflake_conn_id=snowflake_conn_id,
-                render_kwargs=kwargs,
+                render_kwargs=render_kwargs,
             )
 
-            fact_tables =  make_sql_chain_in_dir(
-                group_id="fact_tables",
-                sql_dir=fact_path,
+            # 2) project configure SQL directory (sequential)
+            project_dir = f"{BASE_PATH}/CONFIGURE/PROJECT"
+            project_cfg = make_sql_chain_in_dir(
+                group_id="i2b2_project_configure",
+                sql_dir=project_dir,
                 snowflake_conn_id=snowflake_conn_id,
-                render_kwargs=kwargs,
+                render_kwargs=render_kwargs,
             )
 
-        
-            run_count_sql =  sf_sql_task(
-                    task_id="run_count_sql_task",
-                    conn_id=snowflake_conn_id,
-                    sql_path=gen_count_path,    
-                    render_kwargs=kwargs
-                )
-
-            missing_obs_tasks = make_sql_chain_in_dir(
-                group_id="missing_obs_tasks",
-                sql_dir=missing_obs_path,
-                snowflake_conn_id=snowflake_conn_id,
-                render_kwargs=kwargs,
-            )
-          
-
-            dimension_tables >> fact_tables
-            fact_tables >> run_count_sql
-            run_count_sql >> missing_obs_tasks
+            common_cfg >> project_cfg
 
         return dag
 
     except Exception:
-        logger.exception("Failed to build refresh DAG for config: %s", cfg.env_path)
+        logger.exception("Failed to build i2b2 project configure DAG for config: %s", cfg.env_path)
         return None
 
 
 # --------- register DAGs ---------
 _configs = discover_configs(BASE_ENV_DIR)
 if not _configs:
-    logger.warning("No refresh env configs found under %s", BASE_ENV_DIR)
+    logger.warning("No i2b2 env configs found under %s", BASE_ENV_DIR)
 
 for _cfg in _configs:
     _dag = build_dag(_cfg)

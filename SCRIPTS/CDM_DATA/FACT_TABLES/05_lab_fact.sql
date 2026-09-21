@@ -1,4 +1,4 @@
-create or replace view {{ target_schema }}.LAB_FACT as
+create or replace table {{ target_schema }}.LAB_FACT as
 -- Numeric results
 select
     {% if site == 'mu' %}

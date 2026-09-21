@@ -1,4 +1,4 @@
 [submodule "i2b2-data"]
 	path = SCRIPTS/DATA_INSTALLER/i2b2-data
 	url = https://github.com/Missouri-BMI/i2b2-data.git
-	branch = snowflake/release-1.8.2
+	branch = snowflake/v1.8.3
