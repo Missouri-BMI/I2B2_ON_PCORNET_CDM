@@ -8,7 +8,6 @@ from airflow.models.dag import DAG
 from airflow.sdk import TaskGroup
 from airflow.sdk import TriggerRule
 from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator
-from airflow.providers.standard.operators.bash import BashOperator
 from dotenv import dotenv_values
 
 from common import *
@@ -19,16 +18,13 @@ logger = logging.getLogger(__name__)
 BASE_ENV_DIR = os.getenv("I2B2_ENV_BASE_DIR", "/opt/airflow/env")
 BASE_PATH = os.getenv("I2B2_BASE_PATH", "/opt/airflow/SCRIPTS/DATA_INSTALLER")
 
-DATA_INSTALLER_PATH = f"{BASE_PATH}/i2b2-data"
-I2B2_SNOWFLAKE_DIR = f"{DATA_INSTALLER_PATH}/docker/i2b2-snowflake"
-I2B2_SNOWFLAKE_SCRIPT = f"{I2B2_SNOWFLAKE_DIR}/create_snowflake_image.sh"
-
-DEFAULT_SCHEDULE = os.getenv("I2B2_DATA_INSTALL_SCHEDULE", None)
+DEFAULT_SCHEDULE = os.getenv("I2B2_PROJECT_CONFIGURE_SCHEDULE", None)
 DEFAULT_START_DATE = pendulum.datetime(2025, 1, 1, tz="UTC")
 
-# Available in all Environment
+# Available in all Environment. Project configuration is applied per project/env,
+# so — unlike the sandbox-only data install — it defaults to every environment.
 FILTER_ACCOUNTS = set(x.strip() for x in os.getenv("I2B2_FILTER_ACCOUNTS", "deidentified").split(",") if x.strip())
-FILTER_ENVS = set(x.strip() for x in os.getenv("I2B2_FILTER_ENVS", "sandbox").split(",") if x.strip())
+FILTER_ENVS = set(x.strip() for x in os.getenv("I2B2_FILTER_ENVS", "dev, prod, sandbox").split(",") if x.strip())
 FILTER_SITES = set(x.strip() for x in os.getenv("I2B2_FILTER_SITES", "mu, gpc, shrine-mu, shrine-washu").split(",") if x.strip())
 
 REQUIRED_KEYS = [
@@ -97,6 +93,7 @@ def discover_configs(base_env_dir: str) -> List[RunConfig]:
 
     return configs
 
+
 def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
     a = cfg.values
     effective_site = resolve_site(cfg.account, cfg.site)
@@ -136,23 +133,23 @@ def _build_kwargs(cfg: RunConfig) -> Dict[str, str]:
 
 def build_dag(cfg: RunConfig) -> Optional[DAG]:
     """
-    Build one DAG per config for i2b2 data installation.
+    Build one DAG per config for i2b2 project-specific configuration.
     """
     try:
         a = cfg.values
         snowflake_conn_id = a["CONNECTION_ID"]
 
-        dag_id = f"i2b2_data_install__{cfg.account}__{cfg.environment}__{cfg.site}"
+        dag_id = f"i2b2_project_configure__{cfg.account}__{cfg.environment}__{cfg.site}"
         schedule = a.get("SCHEDULE", DEFAULT_SCHEDULE)
 
         dag = DAG(
             dag_id=dag_id,
-            description=f"i2b2 data loader in Snowflake ({cfg.account}/{cfg.environment}/{cfg.site})",
+            description=f"i2b2 project-specific configuration in Snowflake ({cfg.account}/{cfg.environment}/{cfg.site})",
             schedule=schedule,
             start_date=DEFAULT_START_DATE,
             catchup=False,
             max_active_runs=1,
-            tags=["i2b2_data_install", cfg.account, cfg.environment, cfg.site],
+            tags=["i2b2_project_configure", cfg.account, cfg.environment, cfg.site],
             default_args={
                 "depends_on_past": False,
                 "email_on_failure": False,
@@ -164,74 +161,30 @@ def build_dag(cfg: RunConfig) -> Optional[DAG]:
         render_kwargs = _build_kwargs(cfg)
 
         with dag:
-            # 1) create i2b2 schemas
-            with TaskGroup("create_i2b2_schema") as init:
-                create_schema_sql_path = f"{BASE_PATH}/CONFIGURE/COMMON/create_schema.sql"
-                sf_sql_task(
-                    task_id="create_schema_task",
-                    conn_id=snowflake_conn_id,
-                    sql_path=create_schema_sql_path,
-                    render_kwargs=render_kwargs
-                )
-            
-
-            # 2) load i2b2 data via the i2b2-snowflake installer script
-            #    (docker/i2b2-snowflake) instead of the ant create_database /
-            #    load_demodata targets. Snowflake connection details (account,
-            #    user, role, warehouse, key-pair file) are pulled from the Airflow
-            #    connection; the target database is the config's TARGET_DB.
-            i2b2_data = BashOperator(
-                task_id="i2b2_data",
-                # Trailing space is required: a bash_command ending in ".sh" is
-                # otherwise treated by Jinja as a template file to load.
-                bash_command=f"bash {I2B2_SNOWFLAKE_SCRIPT} ",
-                env={
-                    "SNOWFLAKE_ACCOUNT": f"{{{{ conn.{snowflake_conn_id}.extra_dejson.account }}}}",
-                    "I2B2_USER": f"{{{{ conn.{snowflake_conn_id}.login }}}}",
-                    "I2B2_ROLE": f"{{{{ conn.{snowflake_conn_id}.extra_dejson.role }}}}",
-                    "I2B2_WAREHOUSE": f"{{{{ conn.{snowflake_conn_id}.extra_dejson.warehouse }}}}",
-                    "I2B2_PRIVATE_KEY_FILE": f"{{{{ conn.{snowflake_conn_id}.extra_dejson.private_key_file }}}}",
-                    # The env-dir key is encrypted; the Snowflake provider uses the
-                    # connection password as the private-key passphrase, so reuse it.
-                    "I2B2_PRIVATE_KEY_PWD": f"{{{{ conn.{snowflake_conn_id}.password }}}}",
-                    "I2B2_DB": a["TARGET_DB"],
-                },
-                append_env=True,
-                retries=0,
+            # 1) common configure SQL directory (sequential)
+            common_dir = f"{BASE_PATH}/CONFIGURE/COMMON/SERVICES"
+            common_cfg = make_sql_chain_in_dir(
+                group_id="i2b2_common_configure",
+                sql_dir=common_dir,
+                snowflake_conn_id=snowflake_conn_id,
+                render_kwargs=render_kwargs,
             )
 
-            # NOTE: the common and project configure SQL (CONFIGURE/COMMON/SERVICES
-            # and CONFIGURE/PROJECT) has been split out into the separate
-            # `i2b2_project_configure` DAG. This DAG only performs the sandbox-only
-            # base install: create schemas, load the i2b2 data, then clean up.
-
-            # 3) clean up installer artifacts. The i2b2-snowflake script
-            #    overwrites the per-cell db.properties, sed-edits the pm_access
-            #    SQL, and unzips the crcdata/metadata archives into the module
-            #    script dirs. Restore the tracked files and delete the extracted
-            #    (untracked) ones so the i2b2-data submodule is left pristine.
-            #    Runs regardless of upstream success/failure (ALL_DONE).
-            newinstall_dir = f"{DATA_INSTALLER_PATH}/edu.harvard.i2b2.data/Release_1-8/NewInstall"
-            cleanup = BashOperator(
-                task_id="cleanup_installer_artifacts",
-                bash_command=(
-                    "set -e\n"
-                    f"git -C '{DATA_INSTALLER_PATH}' -c safe.directory='*' checkout -- "
-                    f"'{newinstall_dir}'\n"
-                    f"git -C '{DATA_INSTALLER_PATH}' -c safe.directory='*' clean -fdq -- "
-                    f"'{newinstall_dir}/Crcdata/act/scripts/snowflake' "
-                    f"'{newinstall_dir}/Metadata/act/scripts/snowflake'"
-                ),
-                trigger_rule=TriggerRule.ALL_DONE,
-                retries=0,
+            # 2) project configure SQL directory (sequential)
+            project_dir = f"{BASE_PATH}/CONFIGURE/PROJECT"
+            project_cfg = make_sql_chain_in_dir(
+                group_id="i2b2_project_configure",
+                sql_dir=project_dir,
+                snowflake_conn_id=snowflake_conn_id,
+                render_kwargs=render_kwargs,
             )
 
-            init >> i2b2_data >> cleanup
+            common_cfg >> project_cfg
 
         return dag
 
     except Exception:
-        logger.exception("Failed to build i2b2 DAG for config: %s", cfg.env_path)
+        logger.exception("Failed to build i2b2 project configure DAG for config: %s", cfg.env_path)
         return None
 
 

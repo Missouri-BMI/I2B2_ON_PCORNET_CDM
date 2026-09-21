@@ -1,4 +1,4 @@
-create or replace view {{ target_schema }}.PROVIDER_DIMENSION
+create or replace table {{ target_schema }}.PROVIDER_DIMENSION
 as 
 select 
     PROVIDERID                                              as PROVIDER_ID,

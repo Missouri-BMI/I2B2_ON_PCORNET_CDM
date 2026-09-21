@@ -1,4 +1,4 @@
-create or replace view {{ target_schema }}.DEMOGRAPHIC_FACT as
+create or replace table {{ target_schema }}.DEMOGRAPHIC_FACT as
 -- demographic hispanic
 select
     cast(-1 as NUMBER(38, 0)) as ENCOUNTER_NUM,

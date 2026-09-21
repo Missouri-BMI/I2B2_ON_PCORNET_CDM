@@ -1,4 +1,4 @@
-create or replace view {{ target_schema }}.PATIENT_DIMENSION as
+create or replace table {{ target_schema }}.PATIENT_DIMENSION as
 select
     {% if site == 'mu' %}
         cast(PATID as NUMBER(38, 0)) as PATIENT_NUM,

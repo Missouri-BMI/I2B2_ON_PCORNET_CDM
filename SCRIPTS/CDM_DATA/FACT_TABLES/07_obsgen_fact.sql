@@ -1,4 +1,4 @@
-create or replace view {{ target_schema }}.OBSGEN_FACT as
+create or replace table {{ target_schema }}.OBSGEN_FACT as
 select
     {% if site == 'mu' %}
         cast(ENCOUNTERID as NUMBER(38, 0)) as ENCOUNTER_NUM,
