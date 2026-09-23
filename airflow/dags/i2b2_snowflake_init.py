@@ -1,4 +1,3 @@
-from fileinput import filename
 import logging
 import os
 from dataclasses import dataclass
@@ -7,9 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 import pendulum
-from airflow.models import DAG
-from airflow.sdk import TaskGroup
-from airflow.sdk import TriggerRule
+from airflow.sdk import DAG, TaskGroup, TriggerRule
 from dotenv import dotenv_values
 
 from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator

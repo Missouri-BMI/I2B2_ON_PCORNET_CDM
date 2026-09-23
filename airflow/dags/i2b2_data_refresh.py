@@ -4,9 +4,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional
 
 import pendulum
-from airflow.models.dag import DAG
-from airflow.sdk import TaskGroup
-from airflow.sdk import TriggerRule
+from airflow.sdk import DAG, TaskGroup, TriggerRule
 from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator
 from airflow.providers.standard.operators.bash import BashOperator
 from dotenv import dotenv_values
@@ -190,17 +188,17 @@ def build_dag(cfg: RunConfig) -> Optional[DAG]:
                     render_kwargs=kwargs
                 )
 
-            # missing_obs_tasks = make_sql_chain_in_dir(
-            #     group_id="missing_obs_tasks",
-            #     sql_dir=missing_obs_path,
-            #     snowflake_conn_id=snowflake_conn_id,
-            #     render_kwargs=kwargs,
-            # )
+            missing_obs_tasks = make_sql_chain_in_dir(
+                group_id="missing_obs_tasks",
+                sql_dir=missing_obs_path,
+                snowflake_conn_id=snowflake_conn_id,
+                render_kwargs=kwargs,
+            )
           
 
             dimension_tables >> fact_tables
             fact_tables >> run_count_sql
-            # run_count_sql >> missing_obs_tasks
+            run_count_sql >> missing_obs_tasks
 
         return dag
 

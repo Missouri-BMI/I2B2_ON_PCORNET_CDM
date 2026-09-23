@@ -4,9 +4,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional
 
 import pendulum
-from airflow.models.dag import DAG
-from airflow.sdk import TaskGroup
-from airflow.sdk import TriggerRule
+from airflow.sdk import DAG, TaskGroup, TriggerRule
 from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator
 from airflow.providers.standard.operators.bash import BashOperator
 from dotenv import dotenv_values
