@@ -182,14 +182,6 @@ def build_dag(cfg: RunConfig) -> Optional[DAG]:
                 render_kwargs=kwargs,
             )
 
-           
-            project_config = sf_sql_task(
-                task_id="finalize_project_config_task",
-                conn_id=snowflake_conn_id,
-                sql_path=project_config_path,    
-                render_kwargs=kwargs
-            )
-
         
             run_count_sql =  sf_sql_task(
                     task_id="run_count_sql_task",
@@ -198,15 +190,17 @@ def build_dag(cfg: RunConfig) -> Optional[DAG]:
                     render_kwargs=kwargs
                 )
 
-            missing_obs_tasks = make_sql_chain_in_dir(
-                group_id="missing_obs_tasks",
-                sql_dir=missing_obs_path,
-                snowflake_conn_id=snowflake_conn_id,
-                render_kwargs=kwargs,
-            )
+            # missing_obs_tasks = make_sql_chain_in_dir(
+            #     group_id="missing_obs_tasks",
+            #     sql_dir=missing_obs_path,
+            #     snowflake_conn_id=snowflake_conn_id,
+            #     render_kwargs=kwargs,
+            # )
           
 
-            dimension_tables >> fact_tables >> project_config >> run_count_sql >> missing_obs_tasks
+            dimension_tables >> fact_tables
+            fact_tables >> run_count_sql
+            # run_count_sql >> missing_obs_tasks
 
         return dag
 
