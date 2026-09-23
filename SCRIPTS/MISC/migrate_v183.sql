@@ -120,27 +120,137 @@ GRANT USAGE ON FUTURE SEQUENCES IN SCHEMA i2b2_shrine_washu_dev.i2b2metadata_v18
 
 
 --i2b2
-use database i2b2_dev;
-create schema i2b2data_V183;
-create schema i2b2metadata_V183;
+use database i2b2_prod;
+
+create or replace schema i2b2data_V183 clone i2b2_etl_test.i2b2data;
+create or replace schema i2b2metadata_V183 clone i2b2_etl_test.i2b2metadata;
+
+
+
+--data
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA i2b2_prod.i2b2data_v183 TO ROLE i2b2_prod_app_role;
+GRANT  ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA i2b2_prod.i2b2data_v183 TO ROLE i2b2_prod_app_role;
+
+
+GRANT ALL PRIVILEGES ON ALL VIEWS IN SCHEMA i2b2_prod.i2b2data_v183 TO ROLE i2b2_prod_app_role;
+GRANT ALL PRIVILEGES ON FUTURE VIEWS IN SCHEMA i2b2_prod.i2b2data_v183 TO ROLE i2b2_prod_app_role;
+
+
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA i2b2_prod.i2b2data_v183 TO ROLE i2b2_prod_app_role;
+GRANT USAGE ON FUTURE SEQUENCES IN SCHEMA i2b2_prod.i2b2data_v183 TO ROLE i2b2_prod_app_role;
+
+
+--metadata
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA i2b2_prod.i2b2metadata_v183 TO ROLE i2b2_prod_app_role;
+GRANT  ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA i2b2_prod.i2b2metadata_v183 TO ROLE i2b2_prod_app_role;
+
+
+GRANT ALL PRIVILEGES ON ALL VIEWS IN SCHEMA i2b2_prod.i2b2metadata_v183 TO ROLE i2b2_prod_app_role;
+GRANT ALL PRIVILEGES ON FUTURE VIEWS IN SCHEMA i2b2_prod.i2b2metadata_v183 TO ROLE i2b2_prod_app_role;
+
+
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA i2b2_prod.i2b2metadata_v183 TO ROLE i2b2_prod_app_role;
+GRANT USAGE ON FUTURE SEQUENCES IN SCHEMA i2b2_prod.i2b2metadata_v183 TO ROLE i2b2_prod_app_role;
+
 
 --shrine-Mu
-use database i2b2_shrine_mu_dev;
-create schema i2b2data_V183;
-create schema i2b2metadata_V183;
+use database i2b2_shrine_mu_prod;
+
+create or replace schema i2b2data_V183 clone i2b2_etl_test.i2b2data;
+create or replace schema i2b2metadata_V183 clone i2b2_etl_test.i2b2metadata;
+
+
+--data
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA i2b2_shrine_mu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+GRANT  ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA i2b2_shrine_mu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+
+
+GRANT ALL PRIVILEGES ON ALL VIEWS IN SCHEMA i2b2_shrine_mu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+GRANT ALL PRIVILEGES ON FUTURE VIEWS IN SCHEMA i2b2_shrine_mu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+
+
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA i2b2_shrine_mu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+GRANT USAGE ON FUTURE SEQUENCES IN SCHEMA i2b2_shrine_mu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+
+
+--metadata
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA i2b2_shrine_mu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+GRANT  ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA i2b2_shrine_mu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+
+
+GRANT ALL PRIVILEGES ON ALL VIEWS IN SCHEMA i2b2_shrine_mu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+GRANT ALL PRIVILEGES ON FUTURE VIEWS IN SCHEMA i2b2_shrine_mu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+
+
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA i2b2_shrine_mu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+GRANT USAGE ON FUTURE SEQUENCES IN SCHEMA i2b2_shrine_mu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_MU_APP_ROLE;
+
 
 --shrine-WASHU
-use database i2b2_shrine_washu_dev;
-create schema i2b2data_V183;
-create schema i2b2metadata_V183;
+use database i2b2_shrine_washu_prod;
+
+create or replace schema i2b2data_V183 clone i2b2_etl_test.i2b2data;
+create or replace schema i2b2metadata_V183 clone i2b2_etl_test.i2b2metadata;
 
 
 
-select * from i2b2_shrine_washu_dev.i2b2metadata_v183.table_access;
+--data
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA i2b2_shrine_washu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+GRANT  ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA i2b2_shrine_washu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+
+
+GRANT ALL PRIVILEGES ON ALL VIEWS IN SCHEMA i2b2_shrine_washu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+GRANT ALL PRIVILEGES ON FUTURE VIEWS IN SCHEMA i2b2_shrine_washu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+
+
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA i2b2_shrine_washu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+GRANT USAGE ON FUTURE SEQUENCES IN SCHEMA i2b2_shrine_washu_prod.i2b2data_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+
+
+--metadata
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA i2b2_shrine_washu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+GRANT  ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA i2b2_shrine_washu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+
+
+GRANT ALL PRIVILEGES ON ALL VIEWS IN SCHEMA i2b2_shrine_washu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+GRANT ALL PRIVILEGES ON FUTURE VIEWS IN SCHEMA i2b2_shrine_washu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+
+
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA i2b2_shrine_washu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+GRANT USAGE ON FUTURE SEQUENCES IN SCHEMA i2b2_shrine_washu_prod.i2b2metadata_v183 TO ROLE SHRINE_PROD_WASHU_APP_ROLE;
+
+--gpc
+
+use database i2b2_gpc;
+
+create or replace schema i2b2data_V183 clone i2b2_etl_test.i2b2data;
+create or replace schema i2b2metadata_V183 clone i2b2_etl_test.i2b2metadata;
 
 
 
-select value from i2b2_dev.I2B2DATA_v183.QT_BREAKDOWN_PATH
+--data
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA i2b2_gpc.i2b2data_v183 TO ROLE I2B2_GPC;
+GRANT  ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA i2b2_gpc.i2b2data_v183 TO ROLE I2B2_GPC;
 
 
-select value from i2b2_prod.I2B2DATA.QT_BREAKDOWN_PATH
+GRANT ALL PRIVILEGES ON ALL VIEWS IN SCHEMA i2b2_gpc.i2b2data_v183 TO ROLE I2B2_GPC;
+GRANT ALL PRIVILEGES ON FUTURE VIEWS IN SCHEMA i2b2_gpc.i2b2data_v183 TO ROLE I2B2_GPC;
+
+
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA i2b2_gpc.i2b2data_v183 TO ROLE I2B2_GPC;
+GRANT USAGE ON FUTURE SEQUENCES IN SCHEMA i2b2_gpc.i2b2data_v183 TO ROLE I2B2_GPC;
+
+
+--metadata
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA i2b2_gpc.i2b2metadata_v183 TO ROLE I2B2_GPC;
+GRANT  ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA i2b2_gpc.i2b2metadata_v183 TO ROLE I2B2_GPC;
+
+
+GRANT ALL PRIVILEGES ON ALL VIEWS IN SCHEMA i2b2_gpc.i2b2metadata_v183 TO ROLE I2B2_GPC;
+GRANT ALL PRIVILEGES ON FUTURE VIEWS IN SCHEMA i2b2_gpc.i2b2metadata_v183 TO ROLE I2B2_GPC;
+
+
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA i2b2_gpc.i2b2metadata_v183 TO ROLE I2B2_GPC;
+GRANT USAGE ON FUTURE SEQUENCES IN SCHEMA i2b2_gpc.i2b2metadata_v183 TO ROLE I2B2_GPC;
+
+-- run data refresh for each site

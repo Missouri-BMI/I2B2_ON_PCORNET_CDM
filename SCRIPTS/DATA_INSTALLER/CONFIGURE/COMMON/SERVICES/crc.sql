@@ -1,23 +1,32 @@
 use schema {{ crc_schema }};
 
-DROP TABLE IF EXISTS patient_dimension;
-DROP TABLE IF EXISTS visit_dimension;
-DROP TABLE IF EXISTS provider_dimension;
-
-
 update QT_QUERY_RESULT_TYPE
-set classname = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultGenerator'
-where name = 'PATIENT_INOUT_XML';
-
-update QT_BREAKDOWN_PATH
-SET VALUE = '\\\\ACT_VISIT\\ACT\\Visit Details\\Visit type\\'
-WHERE NAME = 'PATIENT_INOUT_XML';
-
+set visual_attribute_type_id = 'LH'
+where Name not in (
+    'PATIENTSET'
+    , 'PATIENT_ENCOUNTER_SET'
+    , 'PATIENT_COUNT_XML'
+    , 'PATIENT_GENDER_COUNT_XML'
+    , 'PATIENT_VITALSTATUS_COUNT_XML'
+    , 'PATIENT_RACE_COUNT_XML'
+    , 'PATIENT_AGE_COUNT_XML'
+    , 'PATIENT_LOS_XML'
+    , 'PATIENT_TOP20MEDS_XML'
+    , 'PATIENT_TOP20DIAG_XML'
+    , 'PATIENT_INOUT_XML'
+    , 'PATIENT_TOP20DIAG_CLASS_XML'
+    , 'PATIENT_TOP20MEDS_CLASS_XML'
+)
+;
 
 UPDATE QT_BREAKDOWN_PATH
 SET VALUE = REPLACE(VALUE, 'observation_fact', 'diagnosis_fact')
 WHERE NAME = 'PATIENT_TOP20DIAG_XML';
 
 UPDATE QT_BREAKDOWN_PATH
+SET VALUE = REPLACE(VALUE, 'observation_fact', 'diagnosis_fact')
+WHERE NAME = 'PATIENT_TOP20DIAG_CLASS_XML';
+
+UPDATE QT_BREAKDOWN_PATH
 SET VALUE = REPLACE(VALUE, 'observation_fact', 'medication_fact')
-WHERE NAME = 'PATIENT_TOP20MEDS_XML';
+WHERE NAME = 'PATIENT_TOP20MEDS_CLASS_XML';
