@@ -5,7 +5,7 @@ LANGUAGE SQL
 AS
 $$
 DECLARE
-    fact_tables RESULTSET DEFAULT (select table_name from information_schema.tables where lower(table_name) like lower('%_FACT') and lower(table_name) != 'tumor_fact');
+    fact_tables RESULTSET DEFAULT (select table_name from {{ target_db }}.information_schema.tables where lower(table_schema) = lower('{{ crc_schema.split('.')[1] }}') and lower(table_name) like lower('%_FACT') and lower(table_name) != 'tumor_fact');
     v_sqlStr TEXT DEFAULT '';  
     fact_cur CURSOR FOR fact_tables; 
 
@@ -14,7 +14,7 @@ BEGIN
          if (v_sqlStr != '') then
             v_sqlStr := v_sqlStr || '\nunion\n';
          end if;
-         v_sqlStr := v_sqlStr || 'select concept_cd as CONCEPT_CD, ' || '''' || r.table_name || '''' || ' as FACT_TABLE' ||', COUNT(distinct patient_num) PATIENT_COUNT from i2b2data.' || r.table_name || ' Group by concept_cd';
+         v_sqlStr := v_sqlStr || 'select concept_cd as CONCEPT_CD, ' || '''' || r.table_name || '''' || ' as FACT_TABLE' ||', COUNT(distinct patient_num) PATIENT_COUNT from {{ crc_schema }}.' || r.table_name || ' Group by concept_cd';
     END FOR;
     
     -- create concepts
@@ -23,7 +23,7 @@ BEGIN
     -- create concept with paths
     CREATE OR REPLACE TEMP TABLE CONCEPTS_WITH_PATH as 
     SELECT concepts.*, cd.concept_path FROM CONCEPTS as concepts
-    left join i2b2data.concept_dimension as cd
+    left join {{ crc_schema }}.concept_dimension as cd
     using(concept_cd);
 END;
 $$

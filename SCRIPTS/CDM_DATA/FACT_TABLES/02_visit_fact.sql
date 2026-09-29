@@ -1,4 +1,4 @@
-create or replace view {{ target_schema }}.VISIT_FACT as
+create or replace table {{ target_schema }}.VISIT_FACT as
 -- visit type
 select
     dim.ENCOUNTER_NUM,

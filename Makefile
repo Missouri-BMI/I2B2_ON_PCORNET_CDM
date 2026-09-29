@@ -6,7 +6,7 @@ airflow-i2b2-build:
 	@echo "Checking for docker-compose.yaml..."
 	@if [ ! -f docker-compose.yaml ]; then \
 		echo "Downloading docker-compose.yaml..."; \
-		curl -LfO 'https://airflow.apache.org/docs/apache-airflow/3.1.6/docker-compose.yaml'; \
+		curl -LfO 'https://airflow.apache.org/docs/apache-airflow/3.3.1/docker-compose.yaml'; \
 	else \
 		echo "docker-compose.yaml already exists."; \
 	fi

@@ -1,13 +1,9 @@
 from pathlib import Path
-from datetime import datetime, timedelta
 import json, os, logging
 from jinja2 import Template
-from typing import Dict, List, Optional
-from airflow.models.dag import DAG
-from airflow.utils.task_group import TaskGroup
-from airflow.utils.trigger_rule import TriggerRule
+from typing import Dict, List
+from airflow.sdk import TaskGroup, TriggerRule
 from airflow.providers.snowflake.operators.snowflake import SnowflakeSqlApiOperator
-from airflow.operators.bash import BashOperator
 
 logger = logging.getLogger(__name__)
 

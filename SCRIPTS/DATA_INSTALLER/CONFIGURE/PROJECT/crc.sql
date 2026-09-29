@@ -1,3 +1,5 @@
+use schema {{ crc_schema }};
+
 {% if site == 'mu' %}
 -- MU
 select 1;

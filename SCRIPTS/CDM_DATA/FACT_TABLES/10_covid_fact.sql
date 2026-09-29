@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW {{ target_schema }}.COVID_FACT AS
+CREATE OR REPLACE table {{ target_schema }}.COVID_FACT AS
 SELECT * FROM {{ target_schema }}.DIAGNOSIS_FACT
 UNION ALL
 SELECT * FROM {{ target_schema }}.PROCEDURE_FACT

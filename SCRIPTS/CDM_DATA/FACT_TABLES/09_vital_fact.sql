@@ -1,4 +1,4 @@
-create or replace view {{ target_schema }}.VITAL_FACT as
+create or replace table {{ target_schema }}.VITAL_FACT as
 
 -- Height (HT)
 select

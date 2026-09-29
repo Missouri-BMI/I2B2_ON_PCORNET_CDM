@@ -1,6 +1,6 @@
-USE DATABASE {target_db};
-CREATE OR REPLACE SCHEMA {crc_schema};
-CREATE OR REPLACE SCHEMA {hive_schema};
-CREATE OR REPLACE SCHEMA {metadata_schema};
-CREATE OR REPLACE SCHEMA {pm_schema};
-CREATE OR REPLACE SCHEMA {wd_schema};
+USE DATABASE {{ target_db }};
+CREATE SCHEMA {{ crc_schema }};
+CREATE SCHEMA {{ hive_schema }};
+CREATE SCHEMA {{ metadata_schema }};
+CREATE SCHEMA {{ pm_schema }};
+CREATE SCHEMA {{ wd_schema }};
