@@ -404,3 +404,15 @@ select * from i2b2_prod.i2b2metadata.document_ontology;
 insert into i2b2_prod.i2b2data_v183.concept_dimension
 select * from i2b2_prod.i2b2data.concept_dimension
 where concept_path like  '%DocumentOntology%';
+
+
+update i2b2_prod.i2b2metadata_v183.table_access
+set c_visualattributes = replace(c_visualattributes, 'A', 'H')
+where
+c_table_cd in ('ACT_VAX', 'ACT_ZIPCODE', 'ACT_RESEARCH', 'ACT_DX_10_9');
+
+
+update i2b2_gpc.i2b2metadata_v183.table_access
+set c_visualattributes = replace(c_visualattributes, 'A', 'H')
+where
+c_table_cd in ('ACT_VAX', 'ACT_ZIPCODE', 'ACT_RESEARCH', 'ACT_DX_10_9');
